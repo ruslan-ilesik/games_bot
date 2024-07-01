@@ -12,6 +12,8 @@ namespace gb {
         Test_module_1();;
         virtual ~Test_module_1() = default;
 
+        virtual void run(const Modules& modules);
+
     };
 
     extern "C" Module_ptr create();

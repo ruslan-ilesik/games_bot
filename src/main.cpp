@@ -10,7 +10,7 @@
 
 int main() {
     auto m = gb::Modules_manager::create({"./modules"});
-
+    m->run();
     while(true){
         sleep(10);
     }

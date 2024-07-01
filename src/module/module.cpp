@@ -3,6 +3,7 @@
 //
 
 #include "module.hpp"
+#include "./modules_manager.hpp"
 
 
 namespace gb {
