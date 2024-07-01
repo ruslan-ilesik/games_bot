@@ -57,11 +57,35 @@ namespace gb {
         size_t iteration = 1;
         auto not_running = std::ranges::count_if(std::views::values(_modules),[](Internal_module& v){return !v.is_running();});
         while ( not_running > 0){
+            bool was_new_loaded = false;
             std::cout << "Modules_manager module run iteration "<< iteration << "\n";
             for (auto& m : std::views::values(_modules)){
                 if (!m.is_running() && m.has_sufficient_dependencies(_modules)){
+                    std::cout << "Modules_manager running module " << m.get_module()->get_name() << '\n';
                     m.run(_modules);
+                    was_new_loaded = true;
+                    std::cout << "Modules_manager module " << m.get_module()->get_name() << " is running\n";
                 }
+            }
+            if (!was_new_loaded){
+
+                auto join = [](const std::vector<std::string>& strings, std::string const& separator)
+                {
+                    std::ostringstream result;
+                    auto begin = strings.begin();
+                    if (begin != strings.end())
+                        result << *begin++;
+                    while (begin != strings.end())
+                        result << separator << *begin++;
+                    return result.str();
+                };
+                std::string msg;
+                for (auto& m : std::views::values(_modules)){
+                    if (!m.is_running()){
+                        msg += std::format("\n{} : dependencies: {}",m.get_module()->get_name(),join(m.get_module()->get_dependencies(),", "));
+                    }
+                }
+                throw std::runtime_error("There is not existing dependency or circular dependencies in"+ msg);
             }
 
             not_running = std::ranges::count_if(std::views::values(_modules),[](Internal_module& v){return !v.is_running();});
