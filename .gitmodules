@@ -1,0 +1,3 @@
+[submodule "src/utils/filewatch"]
+	path = src/utils/filewatch
+	url = https://github.com/ThomasMonkman/filewatch.git
