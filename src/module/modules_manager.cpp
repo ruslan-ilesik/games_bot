@@ -58,17 +58,24 @@ namespace gb {
         auto not_running = std::ranges::count_if(std::views::values(_modules),
                                                  [](Internal_module &v) { return !v.is_running(); });
         while (not_running > 0) {
-            bool was_new_loaded = false;
+            std::cout << "________________________________________\n";
             std::cout << "Modules_manager module run iteration " << iteration << "\n";
+            std::string modules_ran = "";
+            size_t cnt = 0;
             for (auto &m: std::views::values(_modules)) {
                 if (!m.is_running() && m.has_sufficient_dependencies(_modules)) {
                     std::cout << "Modules_manager running module " << m.get_module()->get_name() << '\n';
                     m.run(_modules);
-                    was_new_loaded = true;
+                    for (auto& i : m.get_module()->get_dependencies()){
+                        _modules.at(i).add_module_dependent(m.get_module()->get_name());
+                    }
+                    cnt++;
+                    modules_ran += std::format("\n{}) {}",cnt,m.get_module()->get_name());
                     std::cout << "Modules_manager module " << m.get_module()->get_name() << " is running\n";
                 }
             }
-            if (!was_new_loaded) {
+            std::cout << "Modules_manager module run iteration " << iteration << " ended\nModules: " << modules_ran << '\n';
+            if (cnt == 0) {
 
                 auto join = [](const std::vector<std::string> &strings, std::string const &separator) {
                     std::ostringstream result;
@@ -104,6 +111,8 @@ namespace gb {
     void Modules_manager::run() {
         std::scoped_lock<std::shared_mutex> m(this->_mutex);
         _modules.insert({"module_manager", {nullptr, getptr()}});
+        _modules.at("module_manager").run(_modules);
+
         std::cout << "Modules_manager running initial modules loading...\n";
         for (const auto &dirEntry: std::filesystem::recursive_directory_iterator(_modules_path)) {
             if (dirEntry.path().extension() != ".so") { continue; }
@@ -167,7 +176,7 @@ namespace gb {
 
     bool Modules_manager::Internal_module::has_sufficient_dependencies(const Internal_modules &modules) {
         for (auto &i: _module->get_dependencies()) {
-            if (!modules.contains(i) || !modules.at(i).is_running()) {
+            if ((!modules.contains(i)) || (!modules.at(i).is_running())) {
                 return false;
             }
         }
