@@ -186,7 +186,7 @@ namespace gb {
         std::unique_lock<std::shared_mutex> lock(this->_mutex);
         return do_stop_module(name);
     }
-    
+
     void Modules_manager::do_stop_module(const std::string &name) {
         if (!_modules.contains(name) || !_modules.at(name).is_running()) {
             return;
@@ -200,6 +200,12 @@ namespace gb {
         for (auto &i: m.get_module_dependent()) {
             std::cout << "Modules_manager closing " << name << " module dependency\n";
             this->do_stop_module(i);
+        }
+
+        for(auto & i: m.get_module()->get_dependencies()){
+            if (_modules.contains(i)){
+                _modules.at(i).remove_module_dependent(m.get_module()->get_name());
+            }
         }
         m.stop();
         _modules.erase(name);
