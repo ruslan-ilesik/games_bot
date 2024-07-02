@@ -18,4 +18,8 @@ namespace gb {
     void Test_module_1::run(const Modules &modules) {
         std::cout << "run module 1\n";
     }
+
+    void Test_module_1::stop() {
+        std::cout << "stop module 1\n";
+    }
 } // gb

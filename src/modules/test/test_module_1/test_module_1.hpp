@@ -14,6 +14,8 @@ namespace gb {
 
         virtual void run(const Modules& modules);
 
+        virtual void stop();
+
     };
 
     extern "C" Module_ptr create();

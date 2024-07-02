@@ -20,8 +20,17 @@ namespace gb {
 
     }
 
-
     void Modules_manager::load_module(const std::string &path) {
+        std::unique_lock<std::shared_mutex> lock(this->_mutex);
+        this->do_load_module(path);
+    }
+
+    void Modules_manager::do_load_module(const std::string &path) {
+
+        if (!_allow_modules_load) {
+            std::cout << "Modules_manager loading modules is disabled!!!\n";
+            return;
+        }
         std::cout << "Modules_manager loading module: " << path << '\n';
         void *libraryHandle = dlopen((path).c_str(), RTLD_LAZY);
         if (!libraryHandle) {
@@ -53,6 +62,7 @@ namespace gb {
     }
 
     void Modules_manager::run_modules() {
+        std::unique_lock<std::shared_mutex> lock(this->_mutex);
         std::cout << "Modules_manager start modules run\n";
         size_t iteration = 1;
         auto not_running = std::ranges::count_if(std::views::values(_modules),
@@ -64,17 +74,14 @@ namespace gb {
             size_t cnt = 0;
             for (auto &m: std::views::values(_modules)) {
                 if (!m.is_running() && m.has_sufficient_dependencies(_modules)) {
-                    std::cout << "Modules_manager running module " << m.get_module()->get_name() << '\n';
-                    m.run(_modules);
-                    for (auto& i : m.get_module()->get_dependencies()){
-                        _modules.at(i).add_module_dependent(m.get_module()->get_name());
-                    }
+                    this->do_run_module(m.get_module()->get_name());
                     cnt++;
-                    modules_ran += std::format("\n{}) {}",cnt,m.get_module()->get_name());
+                    modules_ran += std::format("\n{}) {}", cnt, m.get_module()->get_name());
                     std::cout << "Modules_manager module " << m.get_module()->get_name() << " is running\n";
                 }
             }
-            std::cout << "Modules_manager module run iteration " << iteration << " ended\nModules: " << modules_ran << '\n';
+            std::cout << "Modules_manager module run iteration " << iteration << " ended\nModules: " << modules_ran
+                      << '\n';
             if (cnt == 0) {
 
                 auto join = [](const std::vector<std::string> &strings, std::string const &separator) {
@@ -109,37 +116,117 @@ namespace gb {
     }
 
     void Modules_manager::run() {
-        std::scoped_lock<std::shared_mutex> m(this->_mutex);
-        _modules.insert({"module_manager", {nullptr, getptr()}});
-        _modules.at("module_manager").run(_modules);
+        {
+            std::unique_lock<std::shared_mutex> lock(this->_mutex);
+            _modules.insert({"module_manager", {nullptr, getptr()}});
+            _modules.at("module_manager").run(_modules);
 
-        std::cout << "Modules_manager running initial modules loading...\n";
-        for (const auto &dirEntry: std::filesystem::recursive_directory_iterator(_modules_path)) {
-            if (dirEntry.path().extension() != ".so") { continue; }
-            this->load_module(dirEntry.path());
+            std::cout << "Modules_manager running initial modules loading...\n";
+            for (const auto &dirEntry: std::filesystem::recursive_directory_iterator(_modules_path)) {
+                if (dirEntry.path().extension() != ".so") { continue; }
+                this->do_load_module(dirEntry.path());
+            }
+            std::string output = "";
+            size_t cnt = 0;
+            for (auto &[k, v]: _modules) {
+                cnt++;
+                output += std::format("\n {}) {}", cnt, k);
+            }
+            std::cout << "Modules_manager initial modules loading done.\nLoaded modules: " << output << '\n';
+            std::cout << "Modules_manager start modules initial run\n";
         }
-        std::string output = "";
-        size_t cnt = 0;
-        for (auto &[k, v]: _modules) {
-            cnt++;
-            output += std::format("\n {}) {}", cnt, k);
-        }
-        std::cout << "Modules_manager initial modules loading done.\nLoaded modules: " << output << '\n';
-        std::cout << "Modules_manager start modules initial run\n";
         run_modules();
+    }
+
+    void Modules_manager::run_module(const std::string &name) {
+        std::unique_lock<std::shared_mutex> lock(this->_mutex);
+        this->do_run_module(name);
+    }
+    void Modules_manager::do_run_module(const std::string &name) {
+
+        if (!_modules.contains(name)) {
+            throw std::invalid_argument("Module: " + name + " is not loaded");
+        }
+        auto &m = _modules.at(name);
+        if (m.is_running()) {
+            return;
+        }
+        if (!m.has_sufficient_dependencies(_modules)) {
+            throw std::runtime_error("Module: " + name + " does not have all dependencies loaded");
+        }
+        std::cout << "Modules_manager running module " << m.get_module()->get_name() << '\n';
+        m.run(_modules);
+        for (auto &i: m.get_module()->get_dependencies()) {
+            _modules.at(i).add_module_dependent(m.get_module()->get_name());
+        }
     }
 
     void Modules_manager::run(const Modules &modules) {}
 
-    void *Modules_manager::Internal_module::get_library_handler() {
+    void Modules_manager::stop_modules() {
+        std::unique_lock<std::shared_mutex> lock(this->_mutex);
+        std::cout << "____________________________________________\n";
+        std::cout << "Modules_manager running all modules stop\n";
+
+        // Collect all keys (module names) into a vector
+        std::vector<std::string> keys;
+        for (const auto& pair : _modules) {
+            if (pair.second.get_module().get() != this) {
+                keys.push_back(pair.first);
+            }
+        }
+
+        // Iterate over the copied keys and stop each module
+        for (const auto& k : keys) {
+            do_stop_module(k);
+        }
+    }
+
+    void Modules_manager::stop_module(const std::string &name) {
+        std::unique_lock<std::shared_mutex> lock(this->_mutex);
+        return do_stop_module(name);
+    }
+    void Modules_manager::do_stop_module(const std::string &name) {
+        if (!_modules.contains(name) || !_modules.at(name).is_running()) {
+            return;
+        }
+        std::cout << "Modules_manager closing module " << name << '\n';
+        auto &m = _modules.at(name);
+        if (m.get_module().get() == this) {
+            std::cout << "Module_manager closing error: Module_manager can not close itself!!!\n";
+            return;
+        }
+        for (auto &i: m.get_module_dependent()) {
+            std::cout << "Modules_manager closing " << name << " module dependency\n";
+            this->do_stop_module(i);
+        }
+        m.stop();
+        _modules.erase(name);
+        if (dlclose(m.get_library_handler()) != 0) {
+            throw std::runtime_error("Modules_manager error closing module " + name + " reason: " + dlerror());
+        }
+        std::cout << "Modules_manager module: " << name << " closed successfully \n";
+    }
+
+    void Modules_manager::set_allow_modules_load(bool v) {
+        std::unique_lock<std::shared_mutex> lock(this->_mutex);
+        this->_allow_modules_load = v;
+    }
+
+    bool Modules_manager::is_allowed_modules_load() {
+        std::shared_lock<std::shared_mutex> lock(this->_mutex);
+        return _allow_modules_load;
+    }
+
+    void *Modules_manager::Internal_module::get_library_handler() const{
         return _library_handler;
     }
 
-    Module_ptr Modules_manager::Internal_module::get_module() {
+    Module_ptr Modules_manager::Internal_module::get_module() const {
         return _module;
     }
 
-    std::vector<std::string> Modules_manager::Internal_module::get_module_dependent() {
+    std::vector<std::string> Modules_manager::Internal_module::get_module_dependent() const{
         return _module_dependent;
     }
 
@@ -181,6 +268,14 @@ namespace gb {
             }
         }
         return true;
+    }
+
+    void Modules_manager::Internal_module::stop() {
+        if (!_is_running) {
+            return;
+        }
+        _module->stop();
+        _is_running = false;
     }
 
 }// gb
