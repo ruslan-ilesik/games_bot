@@ -11,7 +11,7 @@ namespace gb {
             Module("modules_manager", {}),
             _watch(modules_path.string(),
                    [this](const std::string &path, const filewatch::Event event) {
-                       std::scoped_lock<std::shared_mutex> m(this->_mutex);
+                       std::unique_lock<std::shared_mutex> m(this->_mutex);
                        std::cout << "Modules manager: " << path << ' ' << filewatch::event_to_string(event) << '\n';
                    }) {
 
@@ -186,6 +186,7 @@ namespace gb {
         std::unique_lock<std::shared_mutex> lock(this->_mutex);
         return do_stop_module(name);
     }
+    
     void Modules_manager::do_stop_module(const std::string &name) {
         if (!_modules.contains(name) || !_modules.at(name).is_running()) {
             return;
