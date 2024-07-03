@@ -257,6 +257,7 @@ namespace gb {
         /**
          * @brief Internal method to stop a module by name.
          * @param name Name of the module to stop.
+         * @note It will also stop all modules dependent on current module.
          */
         void do_stop_module(const std::string &name);
 
