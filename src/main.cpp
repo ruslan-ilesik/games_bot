@@ -7,14 +7,14 @@
 #include <iostream>
 #include <format>
 #include <string>
-#define _TEST_DER __FILE__"123"
+#define _TEST_DER__FILE__ (__FILE__"123")
 int main() {
-    std::cout << _TEST_DER << '\n';
+    //std::cout << _TEST_DER << '\n';
     auto m = gb::Modules_manager::create({"./modules"});
     m->run();
     while(true){
         sleep(1);
-        m->stop_modules();
+        //m->stop_modules();
     }
     return 0;
 }

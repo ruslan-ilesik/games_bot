@@ -16,8 +16,8 @@ namespace gb {
     }
 
     void Test_module_1::run(const Modules &modules) {
-        //std::cout << "run module 1\n";
-        std::cout << _TEST_DER << '\n';
+        std::cout << "run module 1\n";
+        //std::cout << _TEST_DER << '\n';
     }
 
     void Test_module_1::stop() {

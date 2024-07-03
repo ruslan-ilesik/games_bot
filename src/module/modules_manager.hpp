@@ -29,9 +29,10 @@ namespace gb {
             void *_library_handler;
             Module_ptr _module;
             std::vector<std::string> _module_dependent;
+            std::string _file_path;
             bool _is_running = false;
         public:
-            Internal_module(void *library_handler, const Module_ptr &module,
+            Internal_module(void *library_handler, const Module_ptr &module, const std::string& path = "",
                             const std::vector<std::string> &module_dependent = {});
 
             void *get_library_handler() const;
@@ -50,6 +51,8 @@ namespace gb {
 
             void run(const Internal_modules &modules);
 
+            std::string get_file_path();
+
             void stop();
         };
 
@@ -65,7 +68,7 @@ namespace gb {
 
         void do_run_module(const std::string &name);
 
-        void do_load_module(const std::string &name);
+        std::string do_load_module(const std::string &name);
 
     protected:
         explicit Modules_manager(const std::filesystem::path &modules_path);
@@ -76,7 +79,7 @@ namespace gb {
         //do not use yourself, only for internal use
         virtual void run(const Modules &modules);
 
-        void load_module(const std::string &name);
+        std::string load_module(const std::string &name);
 
         //RUNS ALL THE MODULES;
         void run_modules();

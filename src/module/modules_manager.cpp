@@ -11,8 +11,35 @@ namespace gb {
             Module("modules_manager", {}),
             _watch(modules_path.string(),
                    [this](const std::string &path, const filewatch::Event event) {
-                       std::unique_lock<std::shared_mutex> m(this->_mutex);
+                       std::unique_lock<std::shared_mutex> lock(this->_mutex);
                        std::cout << "Modules manager: " << path << ' ' << filewatch::event_to_string(event) << '\n';
+                       std::string real_path = this->_modules_path.string() + "/" + path;
+                       std::vector<std::string> keys;
+                       for (const auto &pair: _modules) {
+                           if (pair.second.get_module().get() != this) {
+                               keys.push_back(pair.first);
+                           }
+                       }
+                       for (auto& k: keys) {
+                           auto& v = _modules.at(k);
+                           if (v.get_file_path() == real_path) {
+                               if (event == filewatch::Event::removed) {
+                                   auto t = v.get_module()->get_name();
+                                   do_stop_module(t);
+                                   return;
+                               }
+                               else if (event == filewatch::Event::modified){
+                                   auto t = v.get_module()->get_name();
+                                   do_stop_module(t);
+                                   do_run_module(do_load_module(real_path));
+                                   return;
+                               }
+
+                           }
+                       }
+                       if (( real_path.ends_with(".so")) && (event == filewatch::Event::added || (event == filewatch::Event::modified))){
+                           do_run_module(do_load_module(real_path));
+                       }
                    }) {
 
         this->_modules_path = modules_path;
@@ -20,29 +47,29 @@ namespace gb {
 
     }
 
-    void Modules_manager::load_module(const std::string &path) {
+    std::string Modules_manager::load_module(const std::string &path) {
         std::unique_lock<std::shared_mutex> lock(this->_mutex);
-        this->do_load_module(path);
+        return this->do_load_module(path);
     }
 
-    void Modules_manager::do_load_module(const std::string &path) {
+    std::string Modules_manager::do_load_module(const std::string &path) {
 
         if (!_allow_modules_load) {
             std::cout << "Modules_manager loading modules is disabled!!!\n";
-            return;
+            return "";
         }
         std::cout << "Modules_manager loading module: " << path << '\n';
         void *libraryHandle = dlopen((path).c_str(), RTLD_LAZY);
         if (!libraryHandle) {
             std::cout << "Modules_manager ERROR loading module: " << path << ' ' << dlerror() << '\n';
-            dlclose(libraryHandle);
-            return;
+            //dlclose(libraryHandle);
+            return "";
         }
         void *thing = (dlsym(libraryHandle, "create"));
         if (!thing) {
             std::cout << "Modules_manager ERROR loading getting module symbol: " << path << ' ' << dlerror() << '\n';
             dlclose(libraryHandle);
-            return;
+            return "";
         }
         Module_ptr module = reinterpret_cast<create_func_t>(thing)();
 
@@ -50,11 +77,12 @@ namespace gb {
             std::cout << "Modules_manager ERROR module: " << module->get_name() << " is already loaded" << '\n';
             module.reset();
             dlclose(libraryHandle);
-            return;
+            return "";
         }
 
-        _modules.insert({module->get_name(), {libraryHandle, module, {}}});
+        _modules.insert({module->get_name(), {libraryHandle, module, path, {}}});
         std::cout << "Modules_manager module: " << module->get_name() << " loaded successfully\n";
+        return module->get_name();
     }
 
     Modules_manager_ptr Modules_manager::create(const std::filesystem::path &modules_path) {
@@ -142,6 +170,7 @@ namespace gb {
         std::unique_lock<std::shared_mutex> lock(this->_mutex);
         this->do_run_module(name);
     }
+
     void Modules_manager::do_run_module(const std::string &name) {
 
         if (!_modules.contains(name)) {
@@ -170,14 +199,14 @@ namespace gb {
 
         // Collect all keys (module names) into a vector
         std::vector<std::string> keys;
-        for (const auto& pair : _modules) {
+        for (const auto &pair: _modules) {
             if (pair.second.get_module().get() != this) {
                 keys.push_back(pair.first);
             }
         }
 
         // Iterate over the copied keys and stop each module
-        for (const auto& k : keys) {
+        for (const auto &k: keys) {
             do_stop_module(k);
         }
         std::cout << "Modules_manager all modules stopped\n";
@@ -203,8 +232,8 @@ namespace gb {
             this->do_stop_module(i);
         }
 
-        for(auto & i: m.get_module()->get_dependencies()){
-            if (_modules.contains(i)){
+        for (auto &i: m.get_module()->get_dependencies()) {
+            if (_modules.contains(i)) {
                 _modules.at(i).remove_module_dependent(m.get_module()->get_name());
             }
         }
@@ -226,7 +255,7 @@ namespace gb {
         return _allow_modules_load;
     }
 
-    void *Modules_manager::Internal_module::get_library_handler() const{
+    void *Modules_manager::Internal_module::get_library_handler() const {
         return _library_handler;
     }
 
@@ -234,7 +263,7 @@ namespace gb {
         return _module;
     }
 
-    std::vector<std::string> Modules_manager::Internal_module::get_module_dependent() const{
+    std::vector<std::string> Modules_manager::Internal_module::get_module_dependent() const {
         return _module_dependent;
     }
 
@@ -248,10 +277,12 @@ namespace gb {
     }
 
     Modules_manager::Internal_module::Internal_module(void *library_handler, const Module_ptr &module,
+                                                      const std::string &path,
                                                       const std::vector<std::string> &module_dependent) {
         this->_library_handler = library_handler;
         this->_module = module;
         this->_module_dependent = module_dependent;
+        this->_file_path = path;
     }
 
     void Modules_manager::Internal_module::run(const Internal_modules &modules) {
@@ -284,6 +315,10 @@ namespace gb {
         }
         _module->stop();
         _is_running = false;
+    }
+
+    std::string Modules_manager::Internal_module::get_file_path() {
+        return _file_path;
     }
 
 }// gb
