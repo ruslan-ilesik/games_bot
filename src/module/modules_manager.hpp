@@ -214,7 +214,8 @@ namespace gb {
 
         /**
          * @brief Stop method to stop a specific module by name.
-         * @param name Name of the module to stop and dealocate.
+         * @param name Name of the module to stop and deallocate.
+         * @note It will also stop all modules dependent on current module.
          */
         void stop_module(const std::string &name);
 
