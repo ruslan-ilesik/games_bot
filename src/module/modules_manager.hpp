@@ -130,6 +130,7 @@ namespace gb {
             /**
              * @brief Run method to execute the module's functionality.
              * @param modules Map of internal modules managed by Modules_manager.
+             * @note It copies all of the modules defined as dependencies to new map and pass them to module + modules_manager
              */
             void run(const Internal_modules &modules);
 
