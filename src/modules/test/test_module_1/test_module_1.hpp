@@ -4,7 +4,7 @@
 
 #pragma once
 #include "../../../module/module.hpp"
-
+#define _TEST_DER (__FILE__ "123")
 namespace gb {
 
     class Test_module_1: public Module {

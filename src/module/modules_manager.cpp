@@ -180,6 +180,7 @@ namespace gb {
         for (const auto& k : keys) {
             do_stop_module(k);
         }
+        std::cout << "Modules_manager all modules stopped\n";
     }
 
     void Modules_manager::stop_module(const std::string &name) {

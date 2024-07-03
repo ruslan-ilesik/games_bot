@@ -7,10 +7,10 @@
 
 namespace gb {
 
-    class Test_module_1: public Module {
+    class Test_module_2: public Module {
     public:
-        Test_module_1();;
-        virtual ~Test_module_1() = default;
+        Test_module_2();;
+        virtual ~Test_module_2() = default;
 
         virtual void run(const Modules& modules);
 
