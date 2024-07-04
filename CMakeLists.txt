@@ -11,6 +11,7 @@ add_link_options(
         -stdlib=libc++
         -L/usr/lib/llvm-19/lib
         -Wl,-rpath,/usr/lib/llvm-19/lib
+        -Wdocumentation
 )
 
 
@@ -33,6 +34,28 @@ add_executable(games_bot
         src/module/modules_manager.cpp
         src/module/module.cpp
 )
+
+find_package(spdlog REQUIRED)
+
+# Print a message indicating spdlog was found
+if (spdlog_FOUND)
+    if (spdlog_VERSION)
+        message(STATUS "Found spdlog: ${spdlog_VERSION}")
+    else()
+        message(STATUS "Found spdlog")
+    endif()
+else()
+    message(FATAL_ERROR "spdlog library not found")
+endif()
+# Link spdlog to the main executable
+target_link_libraries(games_bot PRIVATE spdlog::spdlog)
+target_include_directories(games_bot PRIVATE ${SPDLOG_INCLUDE_DIRS})
+
+
+
+
+
+
 
 
 

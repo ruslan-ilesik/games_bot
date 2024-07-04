@@ -59,7 +59,7 @@ namespace gb {
             return "";
         }
         std::cout << "Modules_manager loading module: " << path << '\n';
-        void *libraryHandle = dlopen((path).c_str(), RTLD_LAZY);
+        void *libraryHandle = dlopen((path).c_str(), RTLD_NOW);
         if (!libraryHandle) {
             std::cout << "Modules_manager ERROR loading module: " << path << ' ' << dlerror() << '\n';
             //dlclose(libraryHandle);
