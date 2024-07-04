@@ -61,27 +61,27 @@ namespace gb {
         std::cout << "Modules_manager loading module: " << path << '\n';
         void *libraryHandle = dlopen((path).c_str(), RTLD_NOW);
         if (!libraryHandle) {
-            std::cout << "Modules_manager ERROR loading module: " << path << ' ' << dlerror() << '\n';
+            std::cout << "Modules_manager ERROR loading module: " << path << ' ' << dlerror() << std::endl;
             //dlclose(libraryHandle);
             return "";
         }
         void *thing = (dlsym(libraryHandle, "create"));
         if (!thing) {
-            std::cout << "Modules_manager ERROR loading getting module symbol: " << path << ' ' << dlerror() << '\n';
+            std::cout << "Modules_manager ERROR loading getting module symbol: " << path << ' ' << dlerror() << std::endl;
             dlclose(libraryHandle);
             return "";
         }
         Module_ptr module = reinterpret_cast<create_func_t>(thing)();
 
         if (_modules.contains(module->get_name())) {
-            std::cout << "Modules_manager ERROR module: " << module->get_name() << " is already loaded" << '\n';
+            std::cout << "Modules_manager ERROR module: " << module->get_name() << " is already loaded" << std::endl;
             module.reset();
             dlclose(libraryHandle);
             return "";
         }
 
         _modules.insert({module->get_name(), {libraryHandle, module, path, {}}});
-        std::cout << "Modules_manager module: " << module->get_name() << " loaded successfully\n";
+        std::cout << "Modules_manager module: " << module->get_name() << " loaded successfully" << std::endl;
         return module->get_name();
     }
 
@@ -105,11 +105,11 @@ namespace gb {
                     this->do_run_module(m.get_module()->get_name());
                     cnt++;
                     modules_ran += std::format("\n{}) {}", cnt, m.get_module()->get_name());
-                    std::cout << "Modules_manager module " << m.get_module()->get_name() << " is running\n";
+                    std::cout << "Modules_manager module " << m.get_module()->get_name() << " is running" << std::endl;
                 }
             }
             std::cout << "Modules_manager module run iteration " << iteration << " ended\nModules: " << modules_ran
-                      << '\n';
+                      << std::endl;
             if (cnt == 0) {
 
                 auto join = [](const std::vector<std::string> &strings, std::string const &separator) {
@@ -160,8 +160,8 @@ namespace gb {
                 cnt++;
                 output += std::format("\n {}) {}", cnt, k);
             }
-            std::cout << "Modules_manager initial modules loading done.\nLoaded modules: " << output << '\n';
-            std::cout << "Modules_manager start modules initial run\n";
+            std::cout << "Modules_manager initial modules loading done.\nLoaded modules: " << output << std::endl;
+            std::cout << "Modules_manager start modules initial run" << std::endl;
         }
         run_modules();
     }
@@ -183,7 +183,7 @@ namespace gb {
         if (!m.has_sufficient_dependencies(_modules)) {
             throw std::runtime_error("Module: " + name + " does not have all dependencies loaded");
         }
-        std::cout << "Modules_manager running module " << m.get_module()->get_name() << '\n';
+        std::cout << "Modules_manager running module " << m.get_module()->get_name() << std::endl;
         m.run(_modules);
         for (auto &i: m.get_module()->get_dependencies()) {
             _modules.at(i).add_module_dependent(m.get_module()->get_name());
@@ -194,8 +194,8 @@ namespace gb {
 
     void Modules_manager::stop_modules() {
         std::unique_lock<std::shared_mutex> lock(this->_mutex);
-        std::cout << "____________________________________________\n";
-        std::cout << "Modules_manager running all modules stop\n";
+        std::cout << "____________________________________________" << std::endl;
+        std::cout << "Modules_manager running all modules stop" << std::endl;
 
         // Collect all keys (module names) into a vector
         std::vector<std::string> keys;
@@ -209,7 +209,7 @@ namespace gb {
         for (const auto &k: keys) {
             do_stop_module(k);
         }
-        std::cout << "Modules_manager all modules stopped\n";
+        std::cout << "Modules_manager all modules stopped" << std::endl;
     }
 
     void Modules_manager::stop_module(const std::string &name) {
@@ -221,14 +221,14 @@ namespace gb {
         if (!_modules.contains(name) || !_modules.at(name).is_running()) {
             return;
         }
-        std::cout << "Modules_manager closing module " << name << '\n';
+        std::cout << "Modules_manager closing module " << name << std::endl;
         auto &m = _modules.at(name);
         if (m.get_module().get() == this) {
-            std::cout << "Module_manager closing error: Module_manager can not close itself!!!\n";
+            std::cout << "Module_manager closing error: Module_manager can not close itself!!!" << std::endl;
             return;
         }
         for (auto &i: m.get_module_dependent()) {
-            std::cout << "Modules_manager closing " << name << " module dependency\n";
+            std::cout << "Modules_manager closing " << name << " module dependency" << std::endl;
             this->do_stop_module(i);
         }
 
@@ -240,9 +240,9 @@ namespace gb {
         m.stop();
         _modules.erase(name);
         if (dlclose(m.get_library_handler()) != 0) {
-            throw std::runtime_error("Modules_manager error closing module " + name + " reason: " + dlerror());
+            throw std::runtime_error("Modules_manager error closing module " + name + " reason: " + dlerror() + "\n");
         }
-        std::cout << "Modules_manager module: " << name << " closed successfully \n";
+        std::cout << "Modules_manager module: " << name << " closed successfully" << std::endl;
     }
 
     void Modules_manager::set_allow_modules_load(bool v) {
