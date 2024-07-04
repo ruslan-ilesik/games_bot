@@ -190,7 +190,7 @@ namespace gb {
         }
     }
 
-    void Modules_manager::run(const Modules &modules) {}
+    void Modules_manager::run(const Modules &modules) {};
 
     void Modules_manager::stop_modules() {
         std::unique_lock<std::shared_mutex> lock(this->_mutex);
@@ -254,6 +254,8 @@ namespace gb {
         std::shared_lock<std::shared_mutex> lock(this->_mutex);
         return _allow_modules_load;
     }
+
+    void Modules_manager::stop() {}
 
     void *Modules_manager::Internal_module::get_library_handler() const {
         return _library_handler;

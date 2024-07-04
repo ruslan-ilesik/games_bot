@@ -154,7 +154,7 @@ namespace gb {
         /**
          * @brief File watcher for monitoring module file changes.
          */
-        filewatch::FileWatch<std::string> _watch;
+        filewatch::FileWatch <std::string> _watch;
 
         /**
          * @brief Map of loaded internal modules.
@@ -246,6 +246,12 @@ namespace gb {
          * @note This method must be overridden by subclasses to define module behavior.
          */
         virtual void run(const Modules &modules) override;
+
+        /**
+         * @brief Stop method to be overridden by subclasses.
+         * @note This method must be overridden by subclasses to define module behavior.
+         */
+        virtual void stop() override;;
 
     private:
         /**

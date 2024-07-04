@@ -90,13 +90,13 @@ namespace gb {
          *        Any additional dependencies required by the module should also be included in this map.
          * @note This method must be overridden by subclasses to define module behavior.
          */
-        virtual void run(const Modules& modules);
+        virtual void run(const Modules& modules) = 0;
 
         /**
          * @brief Stop method to be implemented by subclasses.
          * @note This method must be overridden by subclasses to define module stopping behavior.
          */
-        virtual void stop();
+        virtual void stop() = 0;
     };
 
     /**

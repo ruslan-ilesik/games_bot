@@ -21,7 +21,7 @@ namespace gb {
     class Spdlog_logger : public Logging {
     private:
         /// Shared pointer to the asynchronous logger.
-        std::shared_ptr<spdlog::async_logger> log;
+        std::shared_ptr<spdlog::async_logger> _log;
 
     public:
         /**
@@ -42,10 +42,10 @@ namespace gb {
             static auto rotating = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(log_name, 1024 * 1024 * 5, 10);
             sinks.push_back(stdout_sink);
             sinks.push_back(rotating);
-            log = std::make_shared<spdlog::async_logger>("logs", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
-            spdlog::register_logger(log);
-            log->set_pattern("%^%Y-%m-%d %H:%M:%S.%e [%L] [th#%t]%$ : %v");
-            log->set_level(spdlog::level::level_enum::debug);
+            _log = std::make_shared<spdlog::async_logger>("logs", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
+            spdlog::register_logger(_log);
+            _log->set_pattern("%^%Y-%m-%d %H:%M:%S.%e [%L] [th#%t]%$ : %v");
+            _log->set_level(spdlog::level::level_enum::debug);
         }
 
         /**
@@ -54,7 +54,7 @@ namespace gb {
          * @param message The message to log.
          */
         virtual void info(const std::string& message) override {
-            log->info(message);
+            _log->info(message);
         }
 
         /**
@@ -63,7 +63,7 @@ namespace gb {
          * @param message The message to log.
          */
         virtual void trace(const std::string& message) override {
-            log->trace(message);
+            _log->trace(message);
         }
 
         /**
@@ -72,7 +72,7 @@ namespace gb {
          * @param message The message to log.
          */
         virtual void debug(const std::string& message) override {
-            log->debug(message);
+            _log->debug(message);
         }
 
         /**
@@ -81,7 +81,7 @@ namespace gb {
          * @param message The message to log.
          */
         virtual void warn(const std::string& message) override {
-            log->warn(message);
+            _log->warn(message);
         }
 
         /**
@@ -90,7 +90,7 @@ namespace gb {
          * @param message The message to log.
          */
         virtual void error(const std::string& message) override {
-            log->error(message);
+            _log->error(message);
         }
 
         /**
@@ -99,7 +99,7 @@ namespace gb {
          * @param message The message to log.
          */
         virtual void critical(const std::string& message) override {
-            log->critical(message);
+            _log->critical(message);
         }
 
         /**

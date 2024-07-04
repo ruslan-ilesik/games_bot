@@ -16,14 +16,6 @@ namespace gb {
         return _dependencies;
     }
 
-    void Module::run(const Modules &modules) {
-        throw Not_implemented_exception("Method run is not implemented in Module");
-    }
-
-    void Module::stop() {
-        throw Not_implemented_exception("Method run is not implemented in Module");
-    }
-
     Module::Module(const std::string &name, const std::vector<std::string> &_dependencies) {
         this->_name = name;
         this->_dependencies = _dependencies;
