@@ -24,7 +24,7 @@ namespace gb {
     std::string Env_config::get_value(const std::string &name) {
         const char* env_var_value = std::getenv(name.c_str());
         if (env_var_value == nullptr){
-            throw Config_value_not_found_exception("Value "+ name + " was not found in environment variables");
+            throw std::runtime_error("Value "+ name + " was not found in environment variables");
         }
         return {env_var_value};
     }

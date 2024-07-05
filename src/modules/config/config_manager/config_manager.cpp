@@ -19,11 +19,11 @@ namespace gb {
             try{
                 return config->get_value(name);
             }
-            catch (const Config_value_not_found_exception&){
+            catch (const std::runtime_error&){
 
             }
         }
-        throw Config_value_not_found_exception(std::format("Value {} not found in provided configs",name));
+        throw std::runtime_error(std::format("Value {} not found in provided configs",name));
     }
 
     void Config_manager::add_config(Config* config) {
@@ -48,7 +48,7 @@ namespace gb {
         try{
             return this->get_value(name);
         }
-        catch (const Config_value_not_found_exception&){
+        catch (const  std::runtime_error&){
         }
         return default_return;
     }
