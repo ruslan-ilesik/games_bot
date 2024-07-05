@@ -67,6 +67,11 @@ namespace gb {
             std::string _file_path;
 
             /**
+             * @brief Flag indicating if the module is initialized.
+             */
+            bool _is_initialized = false;
+
+            /**
              * @brief Flag indicating if the module is running.
              */
             bool _is_running = false;
@@ -115,7 +120,13 @@ namespace gb {
             void remove_module_dependent(const std::string &name);
 
             /**
-             * @brief Check if the module is currently running.
+             * @brief Check if the module is innitialized.
+             * @return True if the module is innitialized, false otherwise.
+             */
+            bool is_initialized() const;
+
+            /**
+             * @brief Check if the module is running.
              * @return True if the module is running, false otherwise.
              */
             bool is_running() const;
@@ -128,11 +139,16 @@ namespace gb {
             bool has_sufficient_dependencies(const Internal_modules &modules);
 
             /**
-             * @brief Run method to execute the module's functionality.
+             * @brief Innit method to innit the module's functionality.
              * @param modules Map of internal modules managed by Modules_manager.
              * @note It copies all of the modules defined as dependencies to new map and pass them to module + modules_manager
              */
-            void run(const Internal_modules &modules);
+            void innit(const Internal_modules &modules);
+
+            /**
+             * @brief Run method to execute the module's functionality.
+             */
+            void run();
 
             /**
              * @brief Get the file path of the dynamic library.
@@ -191,26 +207,53 @@ namespace gb {
          */
         virtual ~Modules_manager() = default;
 
-        /**
-         * @brief Run method to execute all loaded modules.
-         */
-        void run();
 
         /**
-        * @brief Run method to execute all loaded modules.
+        * @brief Innit_modules method to innit all loaded modules.
+        */
+        void innit_modules();
+
+        /**
+         * @brief Innit_module method to execute a innit module by name.
+         * @param name Name of the module to innit.
+         */
+        void innit_module(const std::string &name);
+
+        /**
+         * @brief Stop method to stop all running modules and deallocate them.
+         */
+        void stop_modules();
+
+        /**
+         * @brief Run method to run all loaded methods.
         */
         void run_modules();
 
         /**
-         * @brief Run method to execute a specific module by name.
-         * @param name Name of the module to run.
+         * @brief Run method to be overridden by subclasses.
+         * @param modules Map of all modules managed by the application, including the module manager as "module_manager".
+         *        Any additional dependencies required by the module should also be included in this map.
+         * @note This method must be overridden by subclasses to define module behavior.
          */
-        void run_module(const std::string &name);
+        virtual void innit(const Modules &modules);
 
         /**
-         * @brief Stop method to stop all running modules and dealocate them.
+         * @brief Stop method to be overridden by subclasses.
+         * @note This method must be overridden by subclasses to define module behavior.
          */
-        void stop_modules();
+        virtual void stop();
+
+        /**
+         * @brief Run method to be overridden by subclasses.
+         * @note This method must be overridden by subclasses to define module behavior.
+         */
+        virtual void run();
+
+        /**
+        * @brief Method to run a module by name.
+        * @param name Name of the module to innit.
+        */
+        void run_module(const std::string& name);
 
         /**
          * @brief Stop method to stop a specific module by name.
@@ -239,19 +282,7 @@ namespace gb {
         bool is_allowed_modules_load();
 
     protected:
-        /**
-         * @brief Run method to be overridden by subclasses.
-         * @param modules Map of all modules managed by the application, including the module manager as "module_manager".
-         *        Any additional dependencies required by the module should also be included in this map.
-         * @note This method must be overridden by subclasses to define module behavior.
-         */
-        virtual void run(const Modules &modules) override;
 
-        /**
-         * @brief Stop method to be overridden by subclasses.
-         * @note This method must be overridden by subclasses to define module behavior.
-         */
-        virtual void stop() override;;
 
     private:
         /**
@@ -268,8 +299,14 @@ namespace gb {
         void do_stop_module(const std::string &name);
 
         /**
+         * @brief Internal method to innit a module by name.
+         * @param name Name of the module to innit.
+         */
+        void do_innit_module(const std::string &name);
+
+        /**
          * @brief Internal method to run a module by name.
-         * @param name Name of the module to run.
+         * @param name Name of the module to innit.
          */
         void do_run_module(const std::string &name);
 

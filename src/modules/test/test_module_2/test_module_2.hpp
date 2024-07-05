@@ -12,10 +12,11 @@ namespace gb {
         Test_module_2();;
         virtual ~Test_module_2() = default;
 
-        virtual void run(const Modules& modules);
+        virtual void innit(const Modules& modules);
 
         virtual void stop();
 
+        virtual void run();
     };
 
     extern "C" Module_ptr create();

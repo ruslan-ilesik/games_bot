@@ -16,7 +16,7 @@ namespace gb {
     Test_module_2::Test_module_2() : Module("test_module_2",{}){
     }
 
-    void Test_module_2::run(const Modules &modules) {
+    void Test_module_2::innit(const Modules &modules) {
         //std::cout << "run module 2\n";
         std::cout << _TEST_DER << '\n';
     }
@@ -24,4 +24,6 @@ namespace gb {
     void Test_module_2::stop() {
         std::cout << "stop module 2\n";
     }
+
+    void Test_module_2::run() {}
 } // gb

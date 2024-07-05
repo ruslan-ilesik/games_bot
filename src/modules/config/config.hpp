@@ -21,6 +21,8 @@ namespace gb{
 
         virtual std::string get_value(const std::string& name) = 0;
 
+        virtual std::string get_value_or(const std::string& name, const std::string& default_return) = 0;
+
     };
 
     typedef std::shared_ptr<Config> Config_ptr;

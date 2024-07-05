@@ -15,6 +15,8 @@
 int main() {
 
     auto m = gb::Modules_manager::create({"./modules"});
+    const char* env_var_value = getenv("PATH");
+    std::cout << "AAAAAAAA: "<< env_var_value << '\n';
     m->run();
     while(true){
         sleep(1);

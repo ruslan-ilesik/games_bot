@@ -30,11 +30,11 @@ namespace gb {
         Spdlog_logger() : Logging("logging", {}) {}
 
         /**
-         * @brief Runs the logging module and initializes spdlog settings.
+         * @brief Innit the logging module and initializes spdlog settings.
          *
          * @param modules A reference to a map of modules.
          */
-        virtual void run(const Modules& modules) override {
+        virtual void innit(const Modules& modules) override {
             spdlog::init_thread_pool(8192, 2);
             const std::string log_name = "bot_log.log";
             static std::vector<spdlog::sink_ptr> sinks;
@@ -46,6 +46,9 @@ namespace gb {
             spdlog::register_logger(_log);
             _log->set_pattern("%^%Y-%m-%d %H:%M:%S.%e [%L] [th#%t]%$ : %v");
             _log->set_level(spdlog::level::level_enum::debug);
+        }
+
+        virtual void run() override{
         }
 
         /**

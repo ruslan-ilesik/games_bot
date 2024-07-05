@@ -86,7 +86,7 @@ namespace gb {
          *
          * @param modules A reference to a map of modules.
          */
-        virtual void run(const Modules& modules) {};
+        virtual void innit(const Modules& modules) {};
 
         /**
          * @brief Stops the logging module.

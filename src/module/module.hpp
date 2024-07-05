@@ -85,18 +85,24 @@ namespace gb {
         std::vector<std::string> get_dependencies();
 
         /**
-         * @brief Run method to be implemented by subclasses.
+         * @brief Innit method to be implemented by subclasses.
          * @param modules Map of all modules managed by the application, including the module manager as "module_manager".
          *        Any additional dependencies required by the module should also be included in this map.
          * @note This method must be overridden by subclasses to define module behavior.
          */
-        virtual void run(const Modules& modules) = 0;
+        virtual void innit(const Modules& modules) = 0;
 
         /**
          * @brief Stop method to be implemented by subclasses.
          * @note This method must be overridden by subclasses to define module stopping behavior.
          */
         virtual void stop() = 0;
+
+        /**
+       * @brief Run method to be implemented by subclasses.
+       * @note This method must be overridden by subclasses to define module stopping behavior. Execution order is not guaranteed here, depndencies can innit later than your code, that is why you need innit.
+       */
+        virtual void run() = 0;
     };
 
     /**
