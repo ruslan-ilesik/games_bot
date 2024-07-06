@@ -38,7 +38,7 @@
 **/Makefile
 **/*.cbp
 **/CMakeScripts
-**/compile_commands.json
+**/compile_commands._json
 
 include/divisible/*
 

@@ -18,7 +18,7 @@ namespace gb {
         /**
          * @brief Shared pointer to a Config_manager instance.
          */
-        Config_manager_ptr config_manager;
+        Config_manager_ptr _config_manager;
 
     public:
         /**

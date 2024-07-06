@@ -18,12 +18,12 @@ namespace gb {
         /**
          * @brief JSON object to store configuration values.
          */
-        nlohmann::json json;
+        nlohmann::json _json;
 
         /**
          * @brief Shared pointer to a Config_manager instance.
          */
-        Config_manager_ptr config_manager;
+        Config_manager_ptr _config_manager;
 
     public:
         /**

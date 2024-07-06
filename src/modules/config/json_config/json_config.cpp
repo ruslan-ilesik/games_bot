@@ -13,10 +13,10 @@ namespace gb {
     }
 
     void Json_config::innit(const Modules &modules) {
-        this->config_manager = std::static_pointer_cast<Config_manager>(modules.at("config"));
-        config_manager->add_config(this);
+        this->_config_manager = std::static_pointer_cast<Config_manager>(modules.at("config"));
+        _config_manager->add_config(this);
         std::ifstream ifs("./data/config.json");
-        json = nlohmann::json::parse(ifs);
+        _json = nlohmann::json::parse(ifs);
     }
 
     Json_config::Json_config() : Config("json_config",{"config"}){}
@@ -26,14 +26,14 @@ namespace gb {
     }
 
     void Json_config::stop() {
-        config_manager->remove_config(this);
+        _config_manager->remove_config(this);
     }
 
     std::string Json_config::get_value(const std::string &name) {
-        if (!json.contains(name)){
+        if (!_json.contains(name)){
             throw  std::runtime_error("Value " + name + " not found in json config");
         }
-        auto value = json.at(name);
+        auto value = _json.at(name);
         return to_string(value);
     }
 
