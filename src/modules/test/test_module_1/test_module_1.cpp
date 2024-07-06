@@ -27,5 +27,6 @@ namespace gb {
     void Test_module_1::run() {
         log->warn(config->get_value_or("AAAAAAAAAAAAAAAAAAAAA","b"));
         log->warn(config->get_value("PATH"));
+        log->warn(config->get_value("test"));
     }
 } // gb

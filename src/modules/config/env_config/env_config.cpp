@@ -38,4 +38,8 @@ namespace gb {
     }
 
     void Env_config::run() {}
+
+    Module_ptr create() {
+        return std::dynamic_pointer_cast<Module>(std::make_shared<Env_config>());
+    }
 } // gb

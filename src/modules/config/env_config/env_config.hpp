@@ -68,8 +68,6 @@ namespace gb {
      * @return Shared pointer to a new Module instance.
      * @note This function is intended for dynamic module loading.
      */
-    extern "C" Module_ptr create() {
-        return std::dynamic_pointer_cast<Module>(std::make_shared<Env_config>());
-    }
+    extern "C" Module_ptr create();
 
 } // namespace gb
