@@ -8,7 +8,7 @@
 
 namespace gb {
     Modules_manager::Modules_manager(const std::filesystem::path &modules_path) :
-            Module("modules_manager", {}),
+            Module("module_manager", {}),
             _watch(modules_path.string(),
                    [this](const std::string &path, const filewatch::Event event) {
                        std::unique_lock<std::shared_mutex> lock(this->_mutex);
@@ -109,7 +109,7 @@ namespace gb {
                     this->do_innit_module(m.get_module()->get_name());
                     cnt++;
                     modules_ran += std::format("\n{}) {}", cnt, m.get_module()->get_name());
-                    std::cout << "Modules_manager module " << m.get_module()->get_name() << " is running" << std::endl;
+                    std::cout << "Modules_manager module " << m.get_module()->get_name() << " is initialized" << std::endl;
                 }
             }
             std::cout << "Modules_manager module innit iteration " << iteration << " ended\nModules: " << modules_ran
@@ -148,25 +148,8 @@ namespace gb {
     }
 
     void Modules_manager::run() {
-        {
-            std::unique_lock<std::shared_mutex> lock(this->_mutex);
-            _modules.insert({"module_manager", {nullptr, getptr()}});
-            _modules.at("module_manager").innit(_modules);
-
-            std::cout << "Modules_manager running initial modules loading...\n";
-            for (const auto &dirEntry: std::filesystem::recursive_directory_iterator(_modules_path)) {
-                if (dirEntry.path().extension() != ".so") { continue; }
-                this->do_load_module(dirEntry.path());
-            }
-            std::string output = "";
-            size_t cnt = 0;
-            for (auto &[k, v]: _modules) {
-                cnt++;
-                output += std::format("\n {}) {}", cnt, k);
-            }
-            std::cout << "Modules_manager initial modules loading done.\nLoaded modules: " << output << std::endl;
-            std::cout << "Modules_manager start modules initial innit" << std::endl;
-        }
+        load_modules();
+        std::cout << "Modules_manager start modules initial innit" << std::endl;
         innit_modules();
         std::cout << "____________________________________________" << std::endl;
         std::cout << "Modules_manager running modules" << std::endl;
@@ -283,6 +266,32 @@ namespace gb {
     void Modules_manager::run_module(const std::string &name) {
         std::unique_lock<std::shared_mutex> lock(_mutex);
         this->do_run_module(name);
+    }
+
+    std::vector<std::string> Modules_manager::get_module_names() {
+        std::shared_lock<std::shared_mutex> lock(_mutex);
+        auto kv = std::views::keys(_modules);
+        return {kv.begin(),kv.end()};
+    }
+
+    void Modules_manager::load_modules() {
+
+        std::unique_lock<std::shared_mutex> lock(this->_mutex);
+        _modules.insert({"module_manager", {nullptr, getptr()}});
+        _modules.at("module_manager").innit(_modules);
+
+        std::cout << "Modules_manager running initial modules loading...\n";
+        for (const auto &dirEntry: std::filesystem::recursive_directory_iterator(_modules_path)) {
+            if (dirEntry.path().extension() != ".so") { continue; }
+            this->do_load_module(dirEntry.path());
+        }
+        std::string output = "";
+        size_t cnt = 0;
+        for (auto &[k, v]: _modules) {
+            cnt++;
+            output += std::format("\n {}) {}", cnt, k);
+        }
+        std::cout << "Modules_manager initial modules loading done.\nLoaded modules: " << output << std::endl;
     }
 
     void *Modules_manager::Internal_module::get_library_handler() const {

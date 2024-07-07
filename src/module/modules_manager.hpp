@@ -211,23 +211,23 @@ namespace gb {
         /**
         * @brief Innit_modules method to innit all loaded modules.
         */
-        void innit_modules();
+        virtual void innit_modules();
 
         /**
          * @brief Innit_module method to execute a innit module by name.
          * @param name Name of the module to innit.
          */
-        void innit_module(const std::string &name);
+        virtual void innit_module(const std::string &name);
 
         /**
          * @brief Stop method to stop all running modules and deallocate them.
          */
-        void stop_modules();
+        virtual void stop_modules();
 
         /**
          * @brief Run method to run all loaded methods.
         */
-        void run_modules();
+        virtual void run_modules();
 
         /**
          * @brief Run method to be overridden by subclasses.
@@ -253,33 +253,44 @@ namespace gb {
         * @brief Method to run a module by name.
         * @param name Name of the module to innit.
         */
-        void run_module(const std::string& name);
+        virtual void run_module(const std::string& name);
 
         /**
          * @brief Stop method to stop a specific module by name.
          * @param name Name of the module to stop and deallocate.
          * @note It will also stop all modules dependent on current module.
          */
-        void stop_module(const std::string &name);
+        virtual void stop_module(const std::string &name);
+
+        /**
+        * @brief Load all module dynamically from the default path.
+        */
+        virtual void load_modules();
 
         /**
          * @brief Load a module dynamically from the specified file path.
          * @param path path of the module to load.
          * @return Name of the loaded module.
          */
-        std::string load_module(const std::string &path);
+        virtual std::string load_module(const std::string &path);
 
         /**
          * @brief Set whether module loading is allowed.
          * @param v True to allow module loading, false otherwise.
          */
-        void set_allow_modules_load(bool v);
+        virtual void set_allow_modules_load(bool v);
 
         /**
          * @brief Check if module loading is allowed.
          * @return True if module loading is allowed, false otherwise.
          */
-        bool is_allowed_modules_load();
+        virtual bool is_allowed_modules_load();
+
+        /**
+         * @brief Get list of all loaded module names.
+         * @return std::vector<std::string> list of module names.
+         */
+        virtual std::vector<std::string> get_module_names();
 
     protected:
 

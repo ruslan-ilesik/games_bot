@@ -15,11 +15,10 @@
 int main() {
 
     auto m = gb::Modules_manager::create({"./modules"});
-    const char* env_var_value = getenv("PATH");
-    std::cout << "AAAAAAAA: "<< env_var_value << '\n';
     m->run();
     while(true){
-        sleep(1);
+        sleep(10);
+        //m->stop_module("admin_terminal");
         //m->stop_modules();
     }
     return 0;
