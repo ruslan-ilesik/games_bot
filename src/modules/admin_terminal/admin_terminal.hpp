@@ -74,13 +74,13 @@ namespace gb {
          * @param cmd The command to add.
          * @throws std::runtime_error if the command is already registered.
          */
-        void add_command(const Terminal_command& cmd);
+        virtual void add_command(const Terminal_command& cmd);
 
         /**
          * @brief Method to remove a command from the terminal.
          * @param name The name of the command to remove.
          */
-        void remove_command(const std::string& name);
+        virtual void remove_command(const std::string& name);
 
         /**
          * @brief Method to initialize the Admin_terminal instance.
@@ -106,7 +106,5 @@ namespace gb {
      * @return Shared pointer to a new Module instance.
      * @note This function is intended for dynamic module loading.
      */
-    extern "C" Module_ptr create() {
-        return std::dynamic_pointer_cast<Module>(std::make_shared<Admin_terminal>());
-    }
+    extern "C" Module_ptr create();
 } // namespace gb

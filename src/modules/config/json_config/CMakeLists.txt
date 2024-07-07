@@ -1,6 +1,7 @@
 add_library(json_config SHARED
 ./json_config.cpp
 ../../../module/module.cpp
+../../admin_terminal/terminal_command.cpp
 )
 
 find_package(nlohmann_json 3.10.0 REQUIRED)

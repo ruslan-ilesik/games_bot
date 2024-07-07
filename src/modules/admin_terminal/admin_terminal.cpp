@@ -8,7 +8,7 @@
 #include <poll.h>
 
 namespace gb {
-    Admin_terminal::Admin_terminal() : Module("admin_console", {}) {
+    Admin_terminal::Admin_terminal() : Module("admin_terminal", {}) {
         if (pipe(_pipe_fd) == -1) {
             throw std::runtime_error("Failed to create pipe");
         }
@@ -228,6 +228,22 @@ namespace gb {
                      }
                     });
 
+        add_command({"module_load_disable",
+                     "Command to disable modules loading in module_manager.",
+                     "Arguments: no arguments.",
+                     [this](const std::vector<std::string> &args) {
+                         _modules_manager->set_allow_modules_load(false);
+                         std::cout << "module load disabled" << std::endl;
+                     }
+                    });
+        add_command({"module_load_enable",
+                     "Command to enable modules loading in module_manager.",
+                     "Arguments: no arguments.",
+                     [this](const std::vector<std::string> &args) {
+                         _modules_manager->set_allow_modules_load(true);
+                         std::cout << "module load enabled" << std::endl;
+                     }
+                    });
         add_command({"module_stop",
                      "Command to stop specified module in module_manager and deallocate it.",
                      "Arguments: module name to stop.",
@@ -263,4 +279,7 @@ namespace gb {
         close(_pipe_fd[1]);
     }
 
+    Module_ptr create() {
+        return std::dynamic_pointer_cast<Module>(std::make_shared<Admin_terminal>());
+    }
 } // gb
