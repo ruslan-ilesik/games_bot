@@ -71,7 +71,11 @@ namespace gb {
         if (!_json.contains(name)) {
             throw std::runtime_error("Value " + name + " not found in json config");
         }
-        auto value = _json.at(name);
-        return to_string(value);
+        auto value = to_string(_json.at(name));
+        if (value.starts_with('"')){
+            return value.substr(1, value.length() - 2);
+        }
+        return value;
+
     }
 } // gb

@@ -95,6 +95,7 @@ namespace gb {
 
     void Modules_manager::innit_modules() {
         std::unique_lock<std::shared_mutex> lock(this->_mutex);
+        _running_order.clear();
         std::cout << "Modules_manager start modules innit\n";
         size_t iteration = 1;
         auto not_running = std::ranges::count_if(std::views::values(_modules),
@@ -174,6 +175,7 @@ namespace gb {
         if (!m.has_sufficient_dependencies(_modules)) {
             throw std::runtime_error("Module: " + name + " does not have all dependencies loaded");
         }
+        _running_order.push_back(m.get_module());
         std::cout << "Modules_manager running module " << m.get_module()->get_name() << std::endl;
         m.innit(_modules);
         for (auto &i: m.get_module()->get_dependencies()) {
@@ -214,6 +216,8 @@ namespace gb {
         }
         std::cout << "Modules_manager closing module " << name << std::endl;
         auto &m = _modules.at(name);
+        auto e = std::ranges::remove(_running_order,m.get_module());
+        _running_order.erase(e.begin(), e.end());
         if (m.get_module().get() == this) {
             std::cout << "Module_manager closing error: Module_manager can not close itself!!!" << std::endl;
             return;
@@ -258,8 +262,8 @@ namespace gb {
 
     void Modules_manager::run_modules() {
         std::unique_lock<std::shared_mutex> lock(_mutex);
-        for(auto& [k,v] : _modules){
-            do_run_module(k);
+        for(auto& v : _running_order){
+            do_run_module(v->get_name());
         }
     }
 

@@ -108,20 +108,20 @@ namespace gb {
             /**
              * @brief Add a module name to the list of dependent on this module.
              * @param name Module name to add as a dependent on this module.
-             * @note it is called by modules_manger when some depndent module gets loaded.
+             * @note it is called by modules_manger when some dependent module gets loaded.
              */
             void add_module_dependent(const std::string &name);
 
             /**
              * @brief Remove a module name from the list of dependent on this module.
              * @param name Module name to remove from dependent on this module.
-             * @note it is called by modules_manger when some depndent module gets closed.
+             * @note it is called by modules_manger when some dependent module gets closed.
              */
             void remove_module_dependent(const std::string &name);
 
             /**
-             * @brief Check if the module is innitialized.
-             * @return True if the module is innitialized, false otherwise.
+             * @brief Check if the module is initialized.
+             * @return True if the module is initialized, false otherwise.
              */
             bool is_initialized() const;
 
@@ -189,6 +189,12 @@ namespace gb {
         bool _allow_modules_load = true;
 
         /**
+         * @brief List of modules in orde they should be ran.
+         * @note innit_modules clear it.
+         */
+        std::vector<Module_ptr> _running_order{};
+
+        /**
          * @brief Private constructor for Modules_manager.
          * @param modules_path Path to the directory containing module files.
          */
@@ -251,7 +257,7 @@ namespace gb {
 
         /**
         * @brief Method to run a module by name.
-        * @param name Name of the module to innit.
+        * @param name Name of the module to run.
         */
         virtual void run_module(const std::string& name);
 
