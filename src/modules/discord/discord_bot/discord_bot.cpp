@@ -29,9 +29,9 @@ namespace gb {
         /**
          * @brief Destructor for the Discord_bot_impl class.
          */
-        ~Discord_bot_impl() {
+        virtual ~Discord_bot_impl() {
             // Memory cleanup to prevent memory leak, originally created in innit method.
-            delete bot;
+            delete _bot;
         }
 
         /**
@@ -46,23 +46,36 @@ namespace gb {
          * @brief Starts the Discord bot.
          * Throws an exception if the bot is already initialized, indicating a potential memory leak.
          */
-        virtual void run() override {
-            if (bot != nullptr) {
+        virtual void run() override{
+            if (_bot != nullptr) {
                 throw std::runtime_error("Bot variable is not nullptr, memory leak possible");
             }
-            bot = new dpp::cluster(config->get_value("discord_bot_token"));
-            bot->start(dpp::st_return);
+            _bot = new dpp::cluster(config->get_value("discord_bot_token"));
+
+            //run all pre requirements.
+            for (auto& i : pre_requirements){
+                i();
+            }
+            _bot->start(dpp::st_return);
         }
 
         /**
          * @brief Stops the Discord bot.
          * Throws an exception if the bot is not initialized, indicating that there is no bot to stop.
          */
-        virtual void stop() override {
-            if (bot == nullptr) {
+        virtual void stop() override{
+            if (_bot == nullptr) {
                 throw std::runtime_error("Bot is nullptr, no way to stop it");
             }
-            bot->shutdown();
+            _bot->shutdown();
+        }
+
+        /**
+         * @brief Getter for bot.
+         * @return dpp::cluster* bot pointer.
+         */
+        virtual dpp::cluster* get_bot() override{
+            return _bot;
         }
     };
 

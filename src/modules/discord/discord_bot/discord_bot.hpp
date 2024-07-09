@@ -16,12 +16,17 @@ namespace gb {
      * for interacting with the Discord API through the DPP library.
      */
     class Discord_bot : public Module {
-    public:
+    protected:
         /**
          * @brief A pointer to the DPP cluster object representing the bot.
          */
-        dpp::cluster* bot = nullptr;
+        dpp::cluster* _bot = nullptr;
 
+    public:
+        /**
+         * @brief A list of function which should called after module innit but before bot start. cleared and ignored after start
+         */
+        std::vector<std::function<void()>> pre_requirements;
         /**
          * @brief Constructs a Discord_bot object.
          * @param name The name of the module.
@@ -35,6 +40,12 @@ namespace gb {
          * Virtual destructor to allow proper cleanup of derived class objects.
          */
         virtual ~Discord_bot() = default;
+
+        /**
+         * @brief Getter for bot.
+         * @return dpp::cluster* bot pointer.
+         */
+        virtual dpp::cluster* get_bot() = 0;
     };
 
     /**
