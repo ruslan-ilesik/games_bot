@@ -27,7 +27,7 @@ namespace gb {
          * @brief A list of function which should called after module innit but before bot start. cleared and ignored after start
          */
         std::vector<std::function<void()>> pre_requirements;
-        
+
         /**
          * @brief Constructs a Discord_bot object.
          * @param name The name of the module.

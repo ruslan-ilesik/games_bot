@@ -44,7 +44,7 @@ namespace gb {
         };
         if (_discord_bot->get_bot() == nullptr){
             _discord_bot->pre_requirements.emplace_back([this,log_fn]() {
-
+                _bot_log_handle = _discord_bot->get_bot()->on_log(log_fn);
             });
         }
         else{
