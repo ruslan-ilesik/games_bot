@@ -228,6 +228,21 @@ namespace gb {
                      }
                     });
 
+        add_command({"module_load_innit_run_all",
+                     "Command to run whole process of loading and running modules.",
+                     "Arguments: no arguments.",
+                     [this](const std::vector<std::string> &args) {
+                            try{
+                                _modules_manager->load_modules();
+                                _modules_manager->innit_modules();
+                                _modules_manager->run_modules();
+                            }
+                            catch (...){
+                                std::cout << "Command module_load_innit_run_all error" << std::endl;
+                            }
+                     }
+                    });
+
         add_command({"module_load_disable",
                      "Command to disable modules loading in module_manager.",
                      "Arguments: no arguments.",
@@ -236,6 +251,7 @@ namespace gb {
                          std::cout << "module load disabled" << std::endl;
                      }
                     });
+
         add_command({"module_load_enable",
                      "Command to enable modules loading in module_manager.",
                      "Arguments: no arguments.",
@@ -244,6 +260,7 @@ namespace gb {
                          std::cout << "module load enabled" << std::endl;
                      }
                     });
+
         add_command({"module_stop",
                      "Command to stop specified module in module_manager and deallocate it.",
                      "Arguments: module name to stop.",
@@ -277,6 +294,11 @@ namespace gb {
     Admin_terminal::~Admin_terminal() {
         close(_pipe_fd[0]);
         close(_pipe_fd[1]);
+    }
+
+    void Admin_terminal::add_command(std::string name, std::string description, std::string help,
+                                     Terminal_command_callback callback) {
+        add_command({name,description,help,callback});
     }
 
     Module_ptr create() {

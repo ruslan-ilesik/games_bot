@@ -77,6 +77,16 @@ namespace gb {
         virtual void add_command(const Terminal_command& cmd);
 
         /**
+         * @brief Constructor for Terminal_command.
+         * @param name The name of the command.
+         * @param description A brief description of the command.
+         * @param help Help text explaining the command usage.
+         * @param callback The callback function to execute when the command is called.
+         */
+        virtual void add_command(std::string name, std::string description, std::string help,
+                                 Terminal_command_callback callback);
+
+        /**
          * @brief Method to remove a command from the terminal.
          * @param name The name of the command to remove.
          */

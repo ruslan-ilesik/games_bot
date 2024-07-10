@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include <functional>
 #include <string>
 #include <vector>
@@ -49,7 +50,8 @@ namespace gb {
          * @param help Help text explaining the command usage.
          * @param callback The callback function to execute when the command is called.
          */
-        Terminal_command(std::string name, std::string description, std::string help, Terminal_command_callback callback);
+        Terminal_command(const std::string &name, const std::string &description, const std::string &help,
+                         const Terminal_command_callback &callback);
 
         /**
          * @brief Get the name of the command.
@@ -73,7 +75,7 @@ namespace gb {
          * @brief Operator overload to call the command's callback function.
          * @param arguments A vector of strings representing the arguments passed to the command.
          */
-        void operator()(const std::vector<std::string>& arguments);
+        void operator()(const std::vector<std::string> &arguments);
     };
 
     /**

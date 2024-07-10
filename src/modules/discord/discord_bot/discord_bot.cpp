@@ -18,7 +18,22 @@ namespace gb {
         /**
          * @brief A shared pointer to the Config module.
          */
-        Config_ptr config;
+        Config_ptr _config;
+
+        /**
+         * @brief Mutex for synchronization of operations.
+         */
+        std::mutex _mutex;
+
+        /**
+         * @brief A pointer to the object representing the bot.
+         */
+        Discord_cluster *_bot = nullptr;
+
+        /**
+         * @brief A list of function which should called after module innit but before bot start. cleared and ignored after start
+         */
+        std::vector<std::function<void()>> _pre_requirements;
 
     public:
         /**
@@ -29,7 +44,7 @@ namespace gb {
         /**
          * @brief Destructor for the Discord_bot_impl class.
          */
-        virtual ~Discord_bot_impl() {
+        ~Discord_bot_impl() override {
             // Memory cleanup to prevent memory leak, originally created in innit method.
             delete _bot;
         }
@@ -38,23 +53,26 @@ namespace gb {
          * @brief Initializes the Discord_bot_impl with the provided modules.
          * @param modules A map of module names to module pointers.
          */
-        virtual void innit(const Modules &modules) override {
-            config = std::static_pointer_cast<Config>(modules.at("config"));
+        void innit(const Modules &modules) override {
+            _config = std::static_pointer_cast<Config>(modules.at("config"));
         }
 
         /**
          * @brief Starts the Discord bot.
          * Throws an exception if the bot is already initialized, indicating a potential memory leak.
          */
-        virtual void run() override{
+        void run() override{
             if (_bot != nullptr) {
                 throw std::runtime_error("Bot variable is not nullptr, memory leak possible");
             }
-            _bot = new dpp::cluster(config->get_value("discord_bot_token"));
+            _bot = new Discord_cluster(_config->get_value("discord_bot_token"));
 
             //run all pre requirements.
-            for (auto& i : pre_requirements){
-                i();
+            {
+                std::unique_lock<std::mutex> lock(_mutex);
+                for (auto& i : _pre_requirements){
+                    i();
+                }
             }
             _bot->start(dpp::st_return);
         }
@@ -63,7 +81,7 @@ namespace gb {
          * @brief Stops the Discord bot.
          * Throws an exception if the bot is not initialized, indicating that there is no bot to stop.
          */
-        virtual void stop() override{
+        void stop() override{
             if (_bot == nullptr) {
                 throw std::runtime_error("Bot is nullptr, no way to stop it");
             }
@@ -74,8 +92,20 @@ namespace gb {
          * @brief Getter for bot.
          * @return dpp::cluster* bot pointer.
          */
-        virtual dpp::cluster* get_bot() override{
+        Discord_cluster* get_bot() override{
             return _bot;
+        }
+
+        /**
+         * @brief Adds a pre-requirement function to be executed before the bot is initialized or execute immediately if bot initialized.
+         */
+        void add_pre_requirement(const std::function<void()> &func) override{
+            std::unique_lock<std::mutex> lock(_mutex);
+            if (_bot == nullptr) {
+                _pre_requirements.push_back(func);
+            } else {
+                func();
+            }
         }
     };
 

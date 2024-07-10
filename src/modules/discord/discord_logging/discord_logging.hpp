@@ -6,7 +6,6 @@
 
 #include <dpp/dpp.h>
 #include "../../../module/module.hpp"
-#include "../discord_bot/discord_bot.hpp"
 #include "../../logging/logging.hpp"
 
 namespace gb {
@@ -20,26 +19,12 @@ namespace gb {
      */
     class Discord_logging : public Module {
     private:
-        /**
-         * @brief A shared pointer to the Discord_bot module.
-         */
-        Discord_bot_ptr _discord_bot;
-
-        /**
-         * @brief A shared pointer to the Logging module.
-         */
-        Logging_ptr _log;
-
-        /**
-         * @brief Handle for the bot's log event.
-         */
-        dpp::event_handle _bot_log_handle;
 
     public:
         /**
          * @brief Constructs a Discord_logging object.
          */
-        Discord_logging();
+        Discord_logging(const std::string& name, const std::vector<std::string>& dependencies) : Module(name,dependencies){};
 
         /**
          * @brief Destructor for Discord_logging object.
@@ -47,25 +32,20 @@ namespace gb {
         virtual ~Discord_logging() = default;
 
         /**
-         * @brief Initializes the Discord_logging module with the provided modules.
-         *
-         * This method sets up the dependencies on the Discord_bot and Logging modules,
-         * and attaches a logging handler to the bot's log events.
-         *
+         * @brief Inherited from module method
          * @param modules A map of module names to module shared pointers.
          */
-        virtual void innit(const Modules &modules);
+        virtual void innit(const Modules &modules) = 0;
 
         /**
          * @brief Stops the Discord_logging module.
-         * This method detaches the logging handler from the bot's log events.
          */
-        virtual void stop();
+        virtual void stop() = 0;
 
         /**
          * @brief Runs the Discord_logging module.
          */
-        virtual void run();
+        virtual void run() = 0;
     };
 
     /**

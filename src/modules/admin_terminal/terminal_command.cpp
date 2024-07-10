@@ -17,8 +17,8 @@ namespace gb{
         _callback(arguments);
     }
 
-    Terminal_command::Terminal_command(std::string name, std::string description, std::string help,
-                                       Terminal_command_callback callback) {
+    Terminal_command::Terminal_command(const std::string &name, const std::string &description, const std::string &help,
+                                       const Terminal_command_callback &callback) {
         this->_name = name;
         this->_description = description;
         this->_callback = callback;
