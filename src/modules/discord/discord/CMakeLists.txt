@@ -1,5 +1,5 @@
 add_library(discord SHARED
-        ./discord.cpp
+        discord_impl.cpp
         ../../../module/module.cpp
 
 )

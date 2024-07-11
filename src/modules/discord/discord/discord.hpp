@@ -11,7 +11,7 @@ namespace gb {
     //This is basically interface class for constructing all discord types custom wrapped to reduce compilation time of other modules
     class Discord: public Module {
     public:
-        Discord();
+        Discord(const std::string& name, const std::vector<std::string>& dependencies): Module(name,dependencies){};
 
         /**
         * @brief Destructor for the Discord class.
@@ -23,20 +23,20 @@ namespace gb {
          * @brief Inherited from module method
          * @param modules A map of module names to module shared pointers.
          */
-         void innit(const Modules &modules) override;
+         void innit(const Modules &modules) override  = 0;
 
         /**
          * @brief Stops the Discord module.
          */
-        virtual void stop() override;
+        void stop() override = 0;
 
         /**
          * @brief Runs the Discord module.
          */
-        virtual void run() override;
+        void run() override  = 0;
 
         virtual Discord_command_ptr create_discord_command(const dpp::slashcommand &command, const slash_command_handler_t &handler,
-                                                       const Command_data &command_data);
+                                                       const Command_data &command_data) = 0;
 
     };
 

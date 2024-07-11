@@ -1,5 +1,5 @@
 add_library(discord_bot SHARED
-        ./discord_bot.cpp
+        discord_bot_impl.cpp
         ./discord_cluster.cpp
         ../../../module/module.cpp
 )

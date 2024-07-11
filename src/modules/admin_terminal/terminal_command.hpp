@@ -21,61 +21,35 @@ namespace gb {
      * Each command has a name, description, help text, and a callback function that is executed when the command is called.
      */
     class Terminal_command {
-    private:
-        /**
-        * @brief The name of the command.
-        */
-        std::string _name;
-
-        /**
-         * @brief A brief description of the command.
-         */
-        std::string _description;
-
-        /**
-         * @brief Help text explaining the command usage.
-         */
-        std::string _help;
-
-        /**
-        * @brief The callback function executed when the command is called.
-        */
-        Terminal_command_callback _callback;
-
     public:
         /**
          * @brief Constructor for Terminal_command.
-         * @param name The name of the command.
-         * @param description A brief description of the command.
-         * @param help Help text explaining the command usage.
-         * @param callback The callback function to execute when the command is called.
          */
-        Terminal_command(const std::string &name, const std::string &description, const std::string &help,
-                         const Terminal_command_callback &callback);
+        Terminal_command() = default;
 
         /**
          * @brief Get the name of the command.
          * @return The name of the command.
          */
-        std::string get_name() const;
+        virtual std::string get_name() const = 0;
 
         /**
          * @brief Get the description of the command.
          * @return The description of the command.
          */
-        std::string get_description() const;
+        virtual std::string get_description() const = 0;
 
         /**
          * @brief Get the help text of the command.
          * @return The help text of the command.
          */
-        std::string get_help() const;
+        virtual std::string get_help() const = 0;
 
         /**
          * @brief Operator overload to call the command's callback function.
          * @param arguments A vector of strings representing the arguments passed to the command.
          */
-        void operator()(const std::vector<std::string> &arguments);
+        virtual void operator()(const std::vector<std::string> &arguments) = 0;
     };
 
     /**

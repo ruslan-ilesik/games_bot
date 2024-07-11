@@ -1,5 +1,5 @@
 add_library( discord_command_handler SHARED
-    ./discord_command_handler.cpp
+        discord_command_handler_impl.cpp
     ../../../module/module.cpp
 )
 

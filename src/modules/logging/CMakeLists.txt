@@ -1,5 +1,5 @@
 add_library(logging SHARED
-        ./logging.cpp
+        logging_impl.cpp
         ../../module/module.cpp
 )
 
