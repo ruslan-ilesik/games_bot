@@ -5,6 +5,7 @@
 #pragma once
 
 #include <dpp/dpp.h>
+#include "./discord_cluster.hpp"
 #include "../../../module/module.hpp"
 
 namespace gb {
@@ -16,24 +17,14 @@ namespace gb {
      * for interacting with the Discord API through the DPP library.
      */
     class Discord_bot : public Module {
-    protected:
-        /**
-         * @brief A pointer to the DPP cluster object representing the bot.
-         */
-        dpp::cluster* _bot = nullptr;
-
     public:
-        /**
-         * @brief A list of function which should called after module innit but before bot start. cleared and ignored after start
-         */
-        std::vector<std::function<void()>> pre_requirements;
 
         /**
          * @brief Constructs a Discord_bot object.
          * @param name The name of the module.
          * @param dependencies A vector of strings representing the dependencies of the module.
          */
-        Discord_bot(const std::string& name, const std::vector<std::string>& dependencies)
+        Discord_bot(const std::string &name, const std::vector<std::string> &dependencies)
             : Module(name, dependencies) {};
 
         /**
@@ -44,9 +35,14 @@ namespace gb {
 
         /**
          * @brief Getter for bot.
-         * @return dpp::cluster* bot pointer.
+         * @return Discord_cluster* bot pointer.
          */
-        virtual dpp::cluster* get_bot() = 0;
+        virtual Discord_cluster *get_bot() = 0;
+
+        /**
+         * @brief Adds a pre-requirement function to be executed before the bot is initialized or execute immediately if bot initialized.
+         */
+        virtual void add_pre_requirement(const std::function<void()> &func) = 0;
     };
 
     /**

@@ -17,7 +17,7 @@ namespace gb {
         _config_manager->add_config(this);
         reload_from_file();
         this->_admin_terminal = std::static_pointer_cast<Admin_terminal>(modules.at("admin_terminal"));
-        _admin_terminal->add_command({"json_config_reload",
+        _admin_terminal->add_command("json_config_reload",
                                       "Command to reload json config from file",
                                       "Arguments: no arguments",
                                       [this](const std::vector<std::string> &args) {
@@ -30,7 +30,7 @@ namespace gb {
                                                         << std::endl;
                                           }
                                       }
-                                     });
+                                     );
 
     }
 

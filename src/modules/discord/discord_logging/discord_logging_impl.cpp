@@ -2,22 +2,26 @@
 // Created by ilesik on 7/9/24.
 //
 
-#include "discord_logging.hpp"
+#include "discord_logging_impl.hpp"
+
 
 namespace gb {
-    Discord_logging::Discord_logging() : Module("discord_logging", {"logging", "discord_bot"}) {}
 
-    void Discord_logging::stop() {
+    Discord_logging_imp::Discord_logging_imp()
+        : Discord_logging("discord_logging", {"logging", "discord_bot"}) {}
+
+    void Discord_logging_imp::stop() {
         _discord_bot->get_bot()->on_log.detach(_bot_log_handle);
     }
 
-    void Discord_logging::run() {
-
+    void Discord_logging_imp::run() {
+        // No operation needed in run() for this implementation
     }
 
-    void Discord_logging::innit(const Modules &modules) {
+    void Discord_logging_imp::innit(const Modules &modules) {
         this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         this->_log = std::static_pointer_cast<Logging>(modules.at("logging"));
+
         auto log_fn = [this](const dpp::log_t &event) {
             std::string message = "Discord bot: " + event.message;
             switch (event.severity) {
@@ -42,18 +46,18 @@ namespace gb {
                     break;
             }
         };
-        if (_discord_bot->get_bot() == nullptr){
-            _discord_bot->pre_requirements.emplace_back([this,log_fn]() {
-                _bot_log_handle = _discord_bot->get_bot()->on_log(log_fn);
-            });
-        }
-        else{
+
+        _discord_bot->add_pre_requirement([this, log_fn]() {
             _bot_log_handle = _discord_bot->get_bot()->on_log(log_fn);
-        };
-
+        });
     }
 
+    /**
+     * @brief Function to create a new instance of the Discord_logging_imp module.
+     * @return A shared pointer to the newly created Discord_logging_imp module.
+     */
     Module_ptr create() {
-        return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_logging>());
+        return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_logging_imp>());
     }
+
 } // gb

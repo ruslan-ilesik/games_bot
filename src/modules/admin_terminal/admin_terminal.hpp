@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include "../../module/module.hpp"
 #include "../../module/modules_manager.hpp"
 #include "./terminal_command.hpp"
@@ -20,80 +21,61 @@ namespace gb {
      * It inherits from the Module class and integrates with the Modules_manager for additional functionality.
      */
     class Admin_terminal : public Module {
-    private:
-        /**
-         * @brief Shared pointer to the Modules_manager instance.
-         */
-        Modules_manager_ptr _modules_manager;
-
-        /**
-         * @brief Thread for running the terminal interface.
-         */
-        std::thread _terminal_thread;
-
-        /**
-         * @brief Flag to indicate when to stop the terminal thread.
-         */
-        std::atomic_bool _stop_flag = false;
-
-        /**
-         * @brief Mutex for synchronizing access to shared resources.
-         */
-        std::mutex _mutex;
-
-        /**
-         * @brief Map of terminal commands, indexed by command name.
-         */
-        std::map<std::string, Terminal_command> _commands;
-
-        /**
-         * @brief Pipe file descriptors for communication between threads. Used to stop user input waiting thread.
-         */
-        int _pipe_fd[2];
-
     public:
         /**
          * @brief Constructor for Admin_terminal.
+         * @param name Module name.
+         * @param dependencies Module dependecies.
          * Initializes a new instance of Admin_terminal.
          */
-        Admin_terminal();
+        Admin_terminal(const std::string &name, const std::vector<std::string>& dependencies): Module(name,dependencies){};
 
         /**
          * @brief Virtual destructor for Admin_terminal.
          */
-        virtual ~Admin_terminal();
+        virtual ~Admin_terminal() = default;
 
         /**
          * @brief Method to run the Admin_terminal instance.
          * @note This method defines the runtime behavior of the Admin_terminal instance.
          */
-        virtual void run();
+        virtual void run() = 0;
 
         /**
          * @brief Method to add a command to the terminal.
          * @param cmd The command to add.
          * @throws std::runtime_error if the command is already registered.
          */
-        virtual void add_command(const Terminal_command& cmd);
+        virtual void add_command(const Terminal_command_ptr &cmd) = 0;
+
+        /**
+         * @brief Constructor for Terminal_command.
+         * @param name The name of the command.
+         * @param description A brief description of the command.
+         * @param help Help text explaining the command usage.
+         * @param callback The callback function to execute when the command is called.
+         */
+        virtual void add_command(std::string name, std::string description, std::string help,
+                                 Terminal_command_callback callback) = 0;
 
         /**
          * @brief Method to remove a command from the terminal.
          * @param name The name of the command to remove.
          */
-        virtual void remove_command(const std::string& name);
+        virtual void remove_command(const std::string &name) = 0;
 
         /**
          * @brief Method to initialize the Admin_terminal instance.
          * @param modules Map of all modules managed by the application, including the module manager.
          * @note This method sets the modules_manager by retrieving it from the provided modules.
          */
-        virtual void innit(const Modules& modules);
+        virtual void innit(const Modules &modules) = 0;
 
         /**
          * @brief Method to stop the Admin_terminal instance.
          * @note This method performs any necessary cleanup or shutdown procedures for the Admin_terminal instance.
          */
-        virtual void stop();
+        virtual void stop() = 0;
     };
 
     /**

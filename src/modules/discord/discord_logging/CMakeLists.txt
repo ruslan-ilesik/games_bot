@@ -1,5 +1,5 @@
 add_library(discord_logging SHARED
-        ./discord_logging.cpp
+        discord_logging_impl.cpp
         ../../../module/module.cpp
 )
 
