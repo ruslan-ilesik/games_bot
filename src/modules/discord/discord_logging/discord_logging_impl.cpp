@@ -7,18 +7,18 @@
 
 namespace gb {
 
-    Discord_logging_imp::Discord_logging_imp()
+    Discord_logging_impl::Discord_logging_impl()
         : Discord_logging("discord_logging", {"logging", "discord_bot"}) {}
 
-    void Discord_logging_imp::stop() {
+    void Discord_logging_impl::stop() {
         _discord_bot->get_bot()->on_log.detach(_bot_log_handle);
     }
 
-    void Discord_logging_imp::run() {
+    void Discord_logging_impl::run() {
         // No operation needed in run() for this implementation
     }
 
-    void Discord_logging_imp::innit(const Modules &modules) {
+    void Discord_logging_impl::innit(const Modules &modules) {
         this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         this->_log = std::static_pointer_cast<Logging>(modules.at("logging"));
 
@@ -57,7 +57,7 @@ namespace gb {
      * @return A shared pointer to the newly created Discord_logging_imp module.
      */
     Module_ptr create() {
-        return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_logging_imp>());
+        return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_logging_impl>());
     }
 
 } // gb

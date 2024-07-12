@@ -17,7 +17,7 @@ namespace gb {
      * It initializes by setting up dependencies on the Discord_bot and Logging modules, and attaches a logging
      * handler to the bot's log events.
      */
-    class Discord_logging_imp : public Discord_logging {
+    class Discord_logging_impl : public Discord_logging {
     private:
         Discord_bot_ptr _discord_bot; ///< Pointer to the Discord bot module.
         Logging_ptr _log; ///< Pointer to the logging module.
@@ -27,12 +27,12 @@ namespace gb {
         /**
          * @brief Constructs a Discord_logging_imp object.
          */
-        Discord_logging_imp();
+        Discord_logging_impl();
 
         /**
          * @brief Destructor for Discord_logging_imp object.
          */
-        virtual ~Discord_logging_imp() = default;
+        virtual ~Discord_logging_impl() = default;
 
         /**
          * @brief Stops the Discord_logging_imp module.
