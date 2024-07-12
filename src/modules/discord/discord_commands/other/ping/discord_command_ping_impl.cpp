@@ -10,6 +10,8 @@ namespace gb {
 
     void Discord_command_ping_impl::stop() {
         _command_handler->remove_command("ping");
+        //wait until all running executions of command will stop;
+        std::unique_lock<std::shared_mutex> lock (_mutex);
     }
 
     void Discord_command_ping_impl::run() {
@@ -28,6 +30,7 @@ namespace gb {
             _command_handler->register_command(discord->create_discord_command(
                 command,
                 [this](const dpp::slashcommand_t &event){
+                    std::shared_lock<std::shared_mutex> lock (_mutex);
                     double discord_api_ping = _discord_bot->get_bot()->rest_ping * 1000;
                     dpp::embed embed = dpp::embed().
                         set_color(dpp::colors::green).
