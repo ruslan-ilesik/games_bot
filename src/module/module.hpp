@@ -100,7 +100,7 @@ namespace gb {
 
         /**
        * @brief Run method to be implemented by subclasses.
-       * @note This method must be overridden by subclasses to define module stopping behavior. Execution order is not guaranteed here, depndencies can innit later than your code, that is why you need innit.
+       * @note This method must be overridden by subclasses to define module stopping behavior. Execution order is the same as innit.
        */
         virtual void run() = 0;
     };

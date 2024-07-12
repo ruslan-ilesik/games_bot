@@ -25,6 +25,8 @@ namespace gb {
         Admin_terminal_ptr _admin_terminal; ///< Pointer to the admin terminal.
         std::vector<std::string> _command_register_queue; ///< Queue of commands to register.
         std::map<std::string, Discord_command_ptr> _commands; ///< Map of registered commands.
+        dpp::event_handle  _on_ready_handler = 0; ///< Handler of on ready event to remove in stop
+        dpp::event_handle  _on_slashcommand_handler = 0; ///< Handler of on slashcommand event to remove in stop
 
         /**
          * @brief Perform bulk actions.

@@ -3,7 +3,7 @@
 //
 
 #include "discord_command_handler_impl.hpp"
-
+#include <coroutine>
 
 namespace gb {
 
@@ -36,22 +36,50 @@ namespace gb {
     }
 
     Discord_command_handler_impl::Discord_command_handler_impl()
-        : Discord_command_handler("discord_command_handler", {"discord_bot", "admin_terminal"}) {}
+        : Discord_command_handler("discord_command_handler", {"discord_bot", "admin_terminal"}){}
 
     void Discord_command_handler_impl::run() {
         set_bulk(false);
     }
 
     void Discord_command_handler_impl::stop() {
+        _discord_bot->get_bot()->on_ready.detach(_on_ready_handler);
+        //remove handler before locking, so new command calls will not appear
+        _discord_bot->get_bot()->on_slashcommand.detach(_on_slashcommand_handler);
+        _discord_bot->get_bot()->global_bulk_command_delete();
+        //this will ensure all commands currently running will finish their job
+        std::unique_lock<std::shared_mutex> lock (_mutex);
         _admin_terminal->remove_command("discord_command_handler_bulk_disable");
         _admin_terminal->remove_command("discord_command_handler_bulk_enable");
         _admin_terminal->remove_command("discord_command_handler_run_bulk");
         _admin_terminal->remove_command("discord_command_handler_get_bulk");
+
     }
 
     void Discord_command_handler_impl::innit(const Modules &modules) {
         this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         this->_admin_terminal = std::static_pointer_cast<Admin_terminal>(modules.at("admin_terminal"));
+
+        _discord_bot->add_pre_requirement([this](){
+            this->_on_ready_handler = _discord_bot->get_bot()->on_ready([this](const dpp::ready_t& event){
+                if (dpp::run_once<struct register_bot_commands>()) {
+                    set_bulk(false);
+                }
+            });
+        });
+
+
+        _discord_bot->add_pre_requirement([this](){
+            this->_on_slashcommand_handler = _discord_bot->get_bot()->on_slashcommand([this](const dpp::slashcommand_t& event) -> dpp::task<void>{
+                std::shared_lock<std::shared_mutex> lock (_mutex);
+                if (!_commands.contains(event.command.get_command_name())){
+                    _discord_bot->get_bot()->log(dpp::ll_error,"Command "+ event.command.get_command_name() + " was not found");
+                    co_return;
+                }
+                _commands.at(event.command.get_command_name())->get_handler()(event);
+                co_return;
+            });
+        });
 
         _admin_terminal->add_command(
             "discord_command_handler_get_bulk",
@@ -118,7 +146,8 @@ namespace gb {
 
     void Discord_command_handler_impl::set_bulk(bool value) {
         std::unique_lock<std::shared_mutex> lock(_mutex);
-        if (value && _bulk != value) {
+        if (!value && _bulk != value) {
+            _bulk = value;
             bulk_actions();
         }
         _bulk = value;
