@@ -43,6 +43,20 @@ namespace gb {
          * @brief Adds a pre-requirement function to be executed before the bot is initialized or execute immediately if bot initialized.
          */
         virtual void add_pre_requirement(const std::function<void()> &func) = 0;
+
+        /**
+         * @brief Sends a reply to a slash command event in Discord.
+         *
+         * This function is used to send a response message to a slash command event. It allows you to provide a custom
+         * message and optionally handle the completion of the command with a callback function.
+         *
+         * @param event The slash command event that triggered the reply.
+         * @param message The message to be sent as a reply.
+         * @param callback Optional. The callback function to handle the completion of the command. By default, it uses
+         *                 `dpp::utility::log_error` to log any errors that occur during the execution of the command.
+         *                 You can provide a custom callback function to handle the completion event as needed.
+         */
+        virtual void reply(const dpp::slashcommand_t& event, const dpp::message& message, const dpp::command_completion_event_t& callback = dpp::utility::log_error()) = 0;
     };
 
     /**

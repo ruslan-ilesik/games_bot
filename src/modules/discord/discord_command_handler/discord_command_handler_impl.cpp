@@ -11,6 +11,7 @@ namespace gb {
         if (_bulk) {
             throw std::runtime_error("Discord_command_handler can not apply bulk as it set to true");
         }
+        _discord_bot->get_bot()->log(dpp::ll_info,"Bulk commands create is running");
         std::vector<dpp::slashcommand> slash_cmds;
         std::ranges::transform(_command_register_queue, std::back_inserter(slash_cmds),
                                [this](const std::string& c) { return _commands.at(c)->get_command(); });
@@ -25,6 +26,14 @@ namespace gb {
                 _commands.at(v.name)->get_command().id = k;
             }
         });
+
+        std::string registered_commands = "Registered commands:";
+        size_t cnt = 0;
+        for (auto& i : slash_cmds ){
+            cnt++;
+            registered_commands += std::format("\n {}) {}",cnt,i.name);
+        }
+        _discord_bot->get_bot()->log(dpp::ll_info,registered_commands);
         _command_register_queue.clear();
     }
 
@@ -36,7 +45,7 @@ namespace gb {
     }
 
     Discord_command_handler_impl::Discord_command_handler_impl()
-        : Discord_command_handler("discord_command_handler", {"discord_bot", "admin_terminal"}){}
+        : Discord_command_handler("discord_command_handler", {"discord_bot", "admin_terminal"}) {}
 
     void Discord_command_handler_impl::run() {
         set_bulk(false);

@@ -115,4 +115,9 @@ namespace gb {
         void register_commands() override;
     };
 
+    /**
+    * @brief External C function declaration to create a Discord_command_handler_impl instance.
+    * @return Shared pointer to a new Module instance.
+    */
+    extern "C" Module_ptr create();
 } // gb
