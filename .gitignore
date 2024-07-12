@@ -56,3 +56,4 @@ test/test_runner
 
 ## Project
 dependencies.txt
+docs/*
