@@ -15,7 +15,7 @@ namespace gb {
      * @typedef slash_command_handler_t
      * @brief Type definition for a function that handles slash commands.
      */
-    typedef std::function<void(const dpp::slashcommand_t &)> slash_command_handler_t;
+    typedef std::function<dpp::task<void>(const dpp::slashcommand_t &)> slash_command_handler_t;
 
     /**
      * @struct Command_data

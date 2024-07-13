@@ -85,7 +85,7 @@ namespace gb {
                     _discord_bot->get_bot()->log(dpp::ll_error,"Command "+ event.command.get_command_name() + " was not found");
                     co_return;
                 }
-                _commands.at(event.command.get_command_name())->get_handler()(event);
+                co_await _commands.at(event.command.get_command_name())->get_handler()(event);
                 co_return;
             });
         });
