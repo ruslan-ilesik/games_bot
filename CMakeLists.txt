@@ -12,7 +12,7 @@ add_link_options(
         -L/usr/lib/llvm-19/lib
         -Wl,-rpath,/usr/lib/llvm-19/lib
         -Wdocumentation
-
+        -Wno-unused-value
 )
 
 

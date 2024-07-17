@@ -5,7 +5,27 @@
 #include "database_impl.hpp"
 
 namespace gb {
-    Database_impl::Database_impl() : Database("database", {"config", "logging"}) {}
+    Database_impl::Database_impl() : Database("database", {"config", "logging"}) {
+        _bg_thread = std::thread([this]()->Task<void>{
+            while(1){
+                std::unique_lock lk (_bg_thread_mutex);
+                _cv_bg.wait(lk,[this](){ return !_bg_queue.empty() || !_is_bg_running;});
+                if (_bg_queue.empty() && !_is_bg_running){
+                    break;
+                }
+                if(_bg_queue.empty()) {
+                    continue;
+                }
+                auto e = _bg_queue.front();
+                _bg_queue.pop();
+                lk.unlock();
+                co_await execute(e);
+                queries_amount--;
+                _cv_stop.notify_all();
+            }
+            co_return;
+        });
+    }
 
     void Database_impl::innit(const Modules &modules) {
         this->_log = std::static_pointer_cast<Logging>(modules.at("logging"));
@@ -20,10 +40,13 @@ namespace gb {
     }
 
     void Database_impl::stop() {
+        _is_bg_running = false;
+        _cv_bg.notify_all();
         std::mutex m;
         std::unique_lock lk(m);
         _cv_stop.wait(lk, [this] { return queries_amount == 0; });
         _mysql_list.clear();
+        _bg_thread.join();
     }
 
     void Database_impl::new_connection() {
@@ -62,29 +85,34 @@ namespace gb {
                 }
 
                 // Get the number of columns
-                int num_fields = mysql_num_fields(confres);
-                // Get the column names
-                MYSQL_FIELD *fields = mysql_fetch_fields(confres);
-                std::vector<std::string> column_names;
-                column_names.reserve(num_fields);
-                for (int i = 0; i < num_fields; ++i) {
-                    column_names.push_back(fields[i].name);
-                }
-                // Fetch each row
-                MYSQL_ROW row;
-                while ((row = mysql_fetch_row(confres))) {
-                    unsigned long *lengths = mysql_fetch_lengths(confres);
-                    std::map<std::string, std::string> row_map;
+                if (confres){
+                    int num_fields = mysql_num_fields(confres);
+                    // Get the column names
+                    MYSQL_FIELD *fields = mysql_fetch_fields(confres);
+                    std::vector<std::string> column_names;
+                    column_names.reserve(num_fields);
                     for (int i = 0; i < num_fields; ++i) {
-                        if (row[i]) {
-                            row_map[column_names[i]] = std::string(row[i], lengths[i]);
-                        } else {
-                            row_map[column_names[i]] = "NULL";
-                        }
+                        column_names.push_back(fields[i].name);
                     }
-                    storage->push_back(row_map);
+                    // Fetch each row
+                    MYSQL_ROW row;
+                    while ((row = mysql_fetch_row(confres))) {
+                        unsigned long *lengths = mysql_fetch_lengths(confres);
+                        std::map<std::string, std::string> row_map;
+                        for (int i = 0; i < num_fields; ++i) {
+                            if (row[i]) {
+                                row_map[column_names[i]] = std::string(row[i], lengths[i]);
+                            } else {
+                                row_map[column_names[i]] = "NULL";
+                            }
+                        }
+                        storage->push_back(row_map);
+                    }
+                    mysql_free_result(confres);
                 }
-                mysql_free_result(confres);
+                else{
+                    storage->push_back({{}});
+                }
                 conn->_busy = false;
             }
             co_return *storage;
@@ -98,6 +126,15 @@ namespace gb {
         queries_amount--;
         _cv_stop.notify_all();
         co_return r;
+    }
+
+    void Database_impl::background_execute(const std::string &sql) {
+        {
+            std::unique_lock lk (_bg_thread_mutex);
+            _bg_queue.emplace(sql);
+            queries_amount++;
+        }
+        _cv_bg.notify_all();
     }
 
 

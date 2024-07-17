@@ -20,7 +20,7 @@ namespace gb {
                 return config->get_value(name);
             }
             catch (const std::runtime_error&){
-
+                continue;
             }
         }
         throw std::runtime_error(std::format("Value {} not found in provided configs",name));

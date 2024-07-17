@@ -30,17 +30,17 @@ namespace gb {
 
     void Test_module_2::run() {
         auto cc = [this](size_t i)-> Task<void>{
-            auto db_task = db->execute(std::format("Select {};",i));
+            db->background_execute(std::format("Select  {};",i));
             //log->info("THIS WORKS");
             //std::this_thread::sleep_for(std::chrono::milliseconds(10));
-            Database_return_t r = co_await db_task;
+
             /*for (const auto &row : r) {
                 for (const auto &col : row) {
                     std::cout << col.first << ": " << col.second << " | ";
                 }
                 std::cout << "\n";
-            }*/
-            //std::cout << std::endl;
+            }
+            std::cout << std::endl;*/
             co_return;
         };
         auto myid = std::this_thread::get_id();
@@ -51,7 +51,7 @@ namespace gb {
         log->warn("MAIN THREAD: "+mystring);
         std::vector<std::thread> threads;
 
-        /*size_t requests_per_thread = 1000000;
+        size_t requests_per_thread = 10;
         for (int i = 0; i < 10; ++i) {
             int start = i * requests_per_thread;
             threads.emplace_back([start,requests_per_thread,cc] {
@@ -64,7 +64,7 @@ namespace gb {
         // Join all threads
         for (auto& thread : threads) {
             thread.join();
-        }*/
+        }
 
     }
 } // gb
