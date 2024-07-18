@@ -18,7 +18,8 @@ and full redesign of architecture.
 Every module is a runtime linking .so which inherits [Module](https://github.com/ruslan-ilesik/games_bot/blob/main/src/module/module.hpp) class
 
 ### Basic principal 
-Every module inherits basic module and implements 3 methods `innit`, `run` and `stop`
+Every module inherits basic module and implements 3 methods `innit`, `run` and `stop` and also `create` factory function which will create module
+and return shared_ptr to it.
 
 ### In practice (Abstract classes + Factories)
 Every module (if it is planned to be accessible) should have an abstract class of it which will be included into

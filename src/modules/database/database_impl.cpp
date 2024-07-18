@@ -5,7 +5,7 @@
 #include "database_impl.hpp"
 
 namespace gb {
-    Database_impl::Database_impl() : Database("database", {"config", "logging"}) {
+    Database_impl::Database_impl() : Database("database", {"config", "logging", "admin_terminal"}) {
         _bg_thread = std::thread([this]()->Task<void>{
             while(1){
                 std::unique_lock lk (_bg_thread_mutex);
@@ -30,6 +30,57 @@ namespace gb {
     void Database_impl::innit(const Modules &modules) {
         this->_log = std::static_pointer_cast<Logging>(modules.at("logging"));
         this->_config = std::static_pointer_cast<Config>(modules.at("config"));
+        this->_admin_terminal = std::static_pointer_cast<Admin_terminal>(modules.at("admin_terminal"));
+
+        _admin_terminal->add_command(
+            "database_add_connection",
+            "Adds new database connection to pool",
+            "Arguments: no arguments.",
+            [this](const std::vector<std::string>& arguments){
+                try{
+                    new_connection();
+                }
+                catch(...){
+                    std::cout << "database_add_connection command error: Error adding connection" << std::endl;
+                }
+            }
+        );
+
+        _admin_terminal->add_command(
+            "database_get_connections",
+            "Prints all connection from pool and their status",
+            "Arguments: no arguments.",
+            [this](const std::vector<std::string>& arguments){
+                try{
+                    std::unique_lock lock(_mutex);
+                    std::string r = "Connections list:\ntotal amount: " + std::to_string(_mysql_list.size());
+                    size_t cnt = 0;
+                    for (auto& i : _mysql_list){
+                        r += std::format("\n{}) is busy: {}",cnt, i->_busy.load());
+                        cnt++;
+                    }
+                    std::cout << r << std::endl;
+                }
+                catch(...){
+                    std::cout << "database_remove_connection command error: Error printing connections" << std::endl;
+                }
+            }
+        );
+
+        _admin_terminal->add_command(
+            "database_request_queue_size",
+            "Shows length of request queue (including currently running)",
+            "Arguments: no arguments.",
+            [this](const std::vector<std::string>& arguments){
+                try{
+                    std::unique_lock lock(_bg_thread_mutex);
+                    std::cout << "Database queries in queue: " << (queries_amount - _bg_queue.size()) << std::endl;
+                }
+                catch(...){
+                    std::cout << "database_remove_connection command error: Error getting request queue size" << std::endl;
+                }
+            }
+        );
     }
 
     void Database_impl::run() {
@@ -40,6 +91,9 @@ namespace gb {
     }
 
     void Database_impl::stop() {
+        _admin_terminal->remove_command("database_get_connections");
+        _admin_terminal->remove_command("database_add_connection");
+        _admin_terminal->remove_command("database_request_queue_size");
         _is_bg_running = false;
         _cv_bg.notify_all();
         std::mutex m;

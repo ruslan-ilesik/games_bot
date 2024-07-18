@@ -7,6 +7,7 @@
 #include "./database.hpp"  // Include base class definition
 #include "src/modules/logging/logging.hpp"
 #include "src/modules/config/config.hpp"
+#include "src/modules/admin_terminal/admin_terminal.hpp"
 
 #include <iostream>
 #include <memory>
@@ -98,6 +99,7 @@ namespace gb {
     private:
         Logging_ptr _log;                       ///< Pointer to the logging module
         Config_ptr _config;                     ///< Pointer to the configuration module
+        Admin_terminal_ptr _admin_terminal;     ///< Pointer to the admin terminal module
         std::vector<std::unique_ptr<Mysql_connection>> _mysql_list{};  ///< List of MySQL connections
         std::atomic_size_t queries_amount = 0;  ///< Atomic counter for active queries
         std::condition_variable _cv_stop;       ///< Condition variable for stopping background tasks
