@@ -32,6 +32,10 @@ Every module has its own name and dependencies list (list of names of modules th
 [Modules_manager](https://github.com/ruslan-ilesik/games_bot/blob/main/src/module/modules_manager.hpp) will handle them and load in appropriate order,
 also it is made to notify about missing or circular dependencies.
 
+## Admin terminal
+Bot implements admin terminal running with executable. Each command can add its own command to terminal at runtime which 
+can be run by owner. For example, manually load/stop modules, forbidding modules loading, adding new connection
+to Database pool, etc.
 
 ## Database
 [Database](https://github.com/ruslan-ilesik/games_bot/blob/main/src/modules/database/) is based on using combination of **connections pool** and **C++20 coroutines**, you can define amount of
