@@ -45,7 +45,7 @@ namespace gb {
     }
 
     Discord_command_handler_impl::Discord_command_handler_impl()
-        : Discord_command_handler("discord_command_handler", {"discord_bot", "admin_terminal"}) {}
+        : Discord_command_handler("discord_command_handler", {"discord_bot", "admin_terminal", "database"}) {}
 
     void Discord_command_handler_impl::run() {
         set_bulk(false);
@@ -68,6 +68,7 @@ namespace gb {
     void Discord_command_handler_impl::innit(const Modules &modules) {
         this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         this->_admin_terminal = std::static_pointer_cast<Admin_terminal>(modules.at("admin_terminal"));
+        this->_db = std::static_pointer_cast<Database>(modules.at("database"));
 
         _discord_bot->add_pre_requirement([this](){
             this->_on_ready_handler = _discord_bot->get_bot()->on_ready([this](const dpp::ready_t& event){
@@ -85,6 +86,12 @@ namespace gb {
                     _discord_bot->get_bot()->log(dpp::ll_error,"Command "+ event.command.get_command_name() + " was not found");
                     co_return;
                 }
+                _db->background_execute(std::format("INSERT INTO  `commands_use` (`command`, `time`, `user_id`, `channel_id`, `guild_id`) VALUES ('{}', UTC_TIMESTAMP(), '{}', '{}', '{}' )",
+                                                    event.command.get_command_name(),
+                                                    event.command.usr.id,
+                                                    event.command.channel_id,
+                                                    event.command.guild_id
+                                                    ));
                 co_await _commands.at(event.command.get_command_name())->get_handler()(event);
                 co_return;
             });

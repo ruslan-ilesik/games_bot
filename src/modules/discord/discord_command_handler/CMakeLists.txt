@@ -4,7 +4,7 @@ add_library( discord_command_handler SHARED
 )
 
 # Find the dpp package
-find_package(dpp REQUIRED)
+find_package(dpp REQUIRED CONFIG)
 
 # Link dpp to the logging library
 target_link_libraries(discord_command_handler PRIVATE dpp)

@@ -6,7 +6,7 @@ add_library(discord SHARED
 
 
 # Find the dpp package
-find_package(dpp REQUIRED)
+find_package(dpp REQUIRED CONFIG)
 
 # Link dpp to the logging library
 target_link_libraries(discord PRIVATE dpp)

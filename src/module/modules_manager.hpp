@@ -329,7 +329,7 @@ namespace gb {
 
         /**
          * @brief Internal method to load a module dynamically from the specified file path.
-         * @param file path of the module to load.
+         * @param path path of the module to load.
          * @return Name of the loaded module.
          */
         std::string do_load_module(const std::string &path);

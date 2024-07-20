@@ -7,6 +7,7 @@
 #include "discord_command_handler.hpp"
 #include "../discord_bot/discord_bot.hpp"
 #include "../../admin_terminal/admin_terminal.hpp"
+#include "src/modules/database/database.hpp"
 
 #include <shared_mutex>
 #include <map>
@@ -22,6 +23,7 @@ namespace gb {
         bool _bulk = true; ///< Indicates if bulk operations are enabled.
         std::shared_mutex _mutex; ///< Mutex for thread-safe operations.
         Discord_bot_ptr _discord_bot; ///< Pointer to the Discord bot.
+        Database_ptr _db; ///< Pointer to the Databsase.
         Admin_terminal_ptr _admin_terminal; ///< Pointer to the admin terminal.
         std::vector<std::string> _command_register_queue; ///< Queue of commands to register.
         std::map<std::string, Discord_command_ptr> _commands; ///< Map of registered commands.

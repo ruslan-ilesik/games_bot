@@ -11,8 +11,6 @@ add_link_options(
         -stdlib=libc++
         -L/usr/lib/llvm-19/lib
         -Wl,-rpath,/usr/lib/llvm-19/lib
-        -Wdocumentation
-        -Wno-unused-value
 )
 
 
@@ -21,6 +19,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang
     add_compile_options(
             -Wno-return-type-c-linkage
             -Wno-unused-command-line-argument
+            -Wdocumentation
+            -Wno-unused-value
             -DDPP_CORO
     )
 endif ()

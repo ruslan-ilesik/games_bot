@@ -268,13 +268,13 @@ namespace gb {
                 query_state = mysql_query(_conn, query.c_str());
                 if (query_state != 0) {
                     _log->critical("Database ERROR: Failed to execute query after reconnecting: " +
-                                   std::string(mysql_error(_conn)));
+                                   std::string(mysql_error(_conn)) + " query: "+ query);
                     throw std::runtime_error("Database ERROR: Failed to execute query after reconnecting: " +
-                                             std::string(mysql_error(_conn)));
+                                             std::string(mysql_error(_conn)) + " query: "+ query);
                 }
             } else {
-                _log->critical("Database ERROR: Failed to execute query: " + std::string(mysql_error(_conn)));
-                throw std::runtime_error("Database ERROR: Failed to execute query: " + std::string(mysql_error(_conn)));
+                _log->critical("Database ERROR: Failed to execute query: " + std::string(mysql_error(_conn)) + " query: "+ query);
+                throw std::runtime_error("Database ERROR: Failed to execute query: " + std::string(mysql_error(_conn)) + " query: "+ query);
             }
         }
         return  mysql_use_result(_conn);
