@@ -68,4 +68,4 @@ to make life of self-bots a bit harder (self-bots are forbidden by TOS of discor
 Interaction handlers implement way to await interactions on specific message using our unique ids, check for specific users allow to interact and timeouts which make them really handy.
 
 ### Additional
-As additional advantage now the length of our custom basically has no limit (discord limits custom component ids to 100 bytes) in size so we can store as much data as we want there.
+As advantage now the length of our custom ids basically has no limit (discord limits custom component ids to 100 bytes) in size so we can store as much data as we want there.
