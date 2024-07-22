@@ -52,7 +52,7 @@ have response from database which will make awaiting instant as it will just ret
 Support for background queries, if you need to insert something why make user wait for it to happen, just do request in background.
 
 ## Components and interactions
-All the components ids are hidden from user to prevent user bots make automation based on ids.
+All the components ids are hidden from user to prevent self-bots make automation based on ids.
 
 ### Details
 We have created [Id_cache](https://github.com/ruslan-ilesik/games_bot/tree/main/src/modules/discord/discord_interactions_handler)
