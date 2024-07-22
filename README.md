@@ -51,3 +51,21 @@ have response from database which will make awaiting instant as it will just ret
 ### Background queries
 Support for background queries, if you need to insert something why make user wait for it to happen, just do request in background.
 
+## Components and interactions
+All the components ids are hidden from user to prevent user bots make automation based on ids.
+
+### Details
+We have created [Id_cache](https://github.com/ruslan-ilesik/games_bot/tree/main/src/modules/discord/discord_interactions_handler)
+class for automating id hiding. it uses 64-bit unsigned integer to map them discord components ids.
+to store ids at runtime which are always cleared when no needed anymore. They are randomly chosen every time, so 
+same custom_id will not produce same hidden id which is passed to discord and user.
+
+### Usage
+This approach is used in [select_click_handler](https://github.com/ruslan-ilesik/games_bot/tree/main/src/modules/discord/discord_interactions_handler/discord_select_menu_handler)
+and [button_click_handler](https://github.com/ruslan-ilesik/games_bot/tree/main/src/modules/discord/discord_interactions_handler/discord_button_click_handler) 
+to make life of self-bots a bit harder (self-bots are forbidden by TOS of discord).
+
+Interaction handlers implement way to await interactions on specific message using our unique ids, check for specific users allow to interact and timeouts which make them really handy.
+
+### Additional
+As additional advantage now the length of our custom basically has no limit (discord limits custom component ids to 100 bytes) in size so we can store as much data as we want there.
