@@ -81,6 +81,12 @@ namespace gb {
          * @brief Registers all loaded commands to Discord in bulk, ignoring individual operations.
          */
         virtual void register_commands() = 0;
+
+        /**
+        * @brief Getter for commands.
+        * @returns std::map<std::string, Discord_command_ptr> of commands.
+        */
+        virtual std::map<std::string, Discord_command_ptr> get_commands() = 0;
     };
 
     /**

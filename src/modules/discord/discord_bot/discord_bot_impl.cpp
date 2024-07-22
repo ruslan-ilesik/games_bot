@@ -26,7 +26,7 @@ namespace gb {
         // Run all pre-requirements.
         {
             std::unique_lock<std::mutex> lock(_mutex);
-            for (auto& i : _pre_requirements) {
+            for (auto &i: _pre_requirements) {
                 i();
             }
         }
@@ -40,7 +40,7 @@ namespace gb {
         _bot->shutdown();
     }
 
-    Discord_cluster* Discord_bot_impl::get_bot() {
+    Discord_cluster *Discord_bot_impl::get_bot() {
         return _bot;
     }
 
@@ -56,14 +56,19 @@ namespace gb {
     void Discord_bot_impl::reply(const dpp::slashcommand_t &event, const dpp::message &message,
                                  const dpp::command_completion_event_t &callback) {
 
-        event.reply(message_preprocessing(message),callback);
+        event.reply(message_preprocessing(message), callback);
     }
 
     dpp::message Discord_bot_impl::message_preprocessing(dpp::message message) {
-        for(auto& embed : message.embeds){
+        for (auto &embed: message.embeds) {
             embed.set_timestamp(time(nullptr));
         }
         return message;
+    }
+
+    void Discord_bot_impl::reply(const dpp::select_click_t &event, const dpp::message &message,
+                                 const dpp::command_completion_event_t &callback) {
+        event.reply(dpp::ir_update_message, message_preprocessing(message), callback);
     }
 
     Module_ptr create() {

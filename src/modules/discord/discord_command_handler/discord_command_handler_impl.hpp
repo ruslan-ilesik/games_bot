@@ -115,6 +115,12 @@ namespace gb {
          * Registers all commands in the internal map to Discord in bulk.
          */
         void register_commands() override;
+
+        /**
+        * @brief Getter for commands.
+        * @returns std::map<std::string, Discord_command_ptr> of commands.
+        */
+        std::map<std::string, Discord_command_ptr> get_commands() override;
     };
 
     /**

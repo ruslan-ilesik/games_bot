@@ -57,6 +57,20 @@ namespace gb {
          *                 You can provide a custom callback function to handle the completion event as needed.
          */
         virtual void reply(const dpp::slashcommand_t& event, const dpp::message& message, const dpp::command_completion_event_t& callback = dpp::utility::log_error()) = 0;
+
+        /**
+        * @brief Sends a reply to a select click event in Discord.
+        *
+        * This function is used to send a response message to a select click event. It allows you to provide a custom
+        * message and optionally handle the completion of the command with a callback function.
+        *
+        * @param event The select click event that triggered the reply.
+        * @param message The message to be sent as a reply.
+        * @param callback Optional. The callback function to handle the completion of the command. By default, it uses
+        *                 `dpp::utility::log_error` to log any errors that occur during the execution of the command.
+        *                 You can provide a custom callback function to handle the completion event as needed.
+        */
+        virtual void reply(const dpp::select_click_t& event, const dpp::message& message, const dpp::command_completion_event_t& callback = dpp::utility::log_error()) = 0;
     };
 
     /**

@@ -23,7 +23,7 @@ namespace gb {
      */
     struct Command_data {
         std::string help_text; ///< Help text for the command.
-        std::vector<std::string> category; ///< Categories for the command, nested in each other.
+        std::vector<std::string> category; ///< List of categories for the command
     };
 
     /**

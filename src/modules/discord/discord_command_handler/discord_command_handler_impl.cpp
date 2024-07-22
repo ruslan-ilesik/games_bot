@@ -210,6 +210,11 @@ namespace gb {
         });
     }
 
+    std::map<std::string, Discord_command_ptr> Discord_command_handler_impl::get_commands() {
+            std::shared_lock lock (_mutex);
+            return _commands;
+    }
+
     extern "C" Module_ptr create() {
         return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_command_handler_impl>());
     }
