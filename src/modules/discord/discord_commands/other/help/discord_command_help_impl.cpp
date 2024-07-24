@@ -24,8 +24,10 @@ namespace gb {
             _command_handler->register_command(discord->create_discord_command(
                 command,
                 [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                    std::shared_lock<std::shared_mutex> lock(_mutex);
+                    _running_cnt++;
                     co_await help_command(event);
+                    _running_cnt--;
+                    _cv.notify_all();
                     co_return;
                 },
                 {
@@ -39,7 +41,9 @@ namespace gb {
     void Discord_command_help_impl::stop() {
         _command_handler->remove_command("help");
         //wait until all running executions of command will stop;
-        std::unique_lock<std::shared_mutex> lock(_mutex);
+        std::mutex m;
+        std::unique_lock lk (m);
+        _cv.wait(lk,[this](){return _running_cnt == 0;});
     }
 
     Discord_command_help_impl::Discord_command_help_impl() : Discord_command_help("discord_command_help",
@@ -50,7 +54,6 @@ namespace gb {
     void Discord_command_help_impl::run() {}
 
     dpp::task<void> Discord_command_help_impl::help_command(const dpp::slashcommand_t &event) {
-        std::shared_lock lock(_mutex);
         auto coma_sep = [](std::string a, std::string b) {
             return std::move(a) + ", " + std::move(b);
         };

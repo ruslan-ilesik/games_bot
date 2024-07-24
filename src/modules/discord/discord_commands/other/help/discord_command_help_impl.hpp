@@ -33,9 +33,14 @@ namespace gb {
         Discord_select_menu_handler_ptr _select_menu_handler;
 
         /**
-         * @brief Shared mutex for synchronizing access to shared resources.
+         * @brief Counter for amount of currently running commands.
          */
-        std::shared_mutex _mutex;
+        std::atomic_uint64_t _running_cnt;
+
+        /**
+         * @brief Condition variable for proper work of stop.
+         */
+        std::condition_variable _cv;
 
         /**
          * @brief Handles the help command.

@@ -30,9 +30,14 @@ namespace gb {
         Discord_bot_ptr _discord_bot;
 
         /**
-         * @brief Shared mutex for synchronizing access to shared resources.
-         */
-        std::shared_mutex _mutex;
+        * @brief Counter for amount of currently running commands.
+        */
+        std::atomic_uint64_t _running_cnt;
+
+        /**
+        * @brief Condition variable for proper work of stop.
+        */
+        std::condition_variable _cv;
 
     public:
         /**
