@@ -224,12 +224,19 @@ namespace gb {
     }
 
     void Database_impl::remove_prepared_statement(Prepared_statement st) {
-        std::unique_lock lk2 (_mutex);
-        std::unique_lock lk (_prepared_statements_mutex);
-        for (auto& i :_mysql_list){
-            i->remove_statement(st);
+        {
+            std::unique_lock lk2(_mutex);
+            std::unique_lock lk(_prepared_statements_mutex);
+            auto tt = [this, st]() -> Task<Database_return_t> {
+                for (auto &i: _mysql_list) {
+                    i->remove_statement(st);
+                }
+                _prepared_statements.erase(st);
+                co_return {};
+            };
+            _sql_queue.emplace_back(tt);
         }
-        _prepared_statements.erase(st);
+        _cv.notify_all();
     }
 
     Prepared_statement Database_impl::create_prepared_statement(const std::string &sql) {
