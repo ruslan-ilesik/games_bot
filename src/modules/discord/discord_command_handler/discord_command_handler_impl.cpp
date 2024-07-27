@@ -62,6 +62,7 @@ namespace gb {
         _admin_terminal->remove_command("discord_command_handler_bulk_enable");
         _admin_terminal->remove_command("discord_command_handler_run_bulk");
         _admin_terminal->remove_command("discord_command_handler_get_bulk");
+        _db->remove_prepared_statement(_insert_command_use_stmt);
 
     }
 
@@ -69,6 +70,7 @@ namespace gb {
         this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         this->_admin_terminal = std::static_pointer_cast<Admin_terminal>(modules.at("admin_terminal"));
         this->_db = std::static_pointer_cast<Database>(modules.at("database"));
+        this->_insert_command_use_stmt = _db->create_prepared_statement("INSERT INTO  `commands_use` (`command`, `time`, `user_id`, `channel_id`, `guild_id`) VALUES (?, UTC_TIMESTAMP(), ?, ?, ? )");
 
         _discord_bot->add_pre_requirement([this](){
             this->_on_ready_handler = _discord_bot->get_bot()->on_ready([this](const dpp::ready_t& event){
@@ -86,12 +88,12 @@ namespace gb {
                     _discord_bot->get_bot()->log(dpp::ll_error,"Command "+ event.command.get_command_name() + " was not found");
                     co_return;
                 }
-                _db->background_execute(std::format("INSERT INTO  `commands_use` (`command`, `time`, `user_id`, `channel_id`, `guild_id`) VALUES ('{}', UTC_TIMESTAMP(), '{}', '{}', '{}' )",
+                co_await _db->execute_prepared_statement(_insert_command_use_stmt,
                                                     event.command.get_command_name(),
                                                     event.command.usr.id,
                                                     event.command.channel_id,
                                                     event.command.guild_id
-                                                    ));
+                                                    );
                 co_await _commands.at(event.command.get_command_name())->get_handler()(event);
                 co_return;
             });

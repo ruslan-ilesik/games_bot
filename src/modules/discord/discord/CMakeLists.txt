@@ -5,11 +5,8 @@ add_library(discord SHARED
 )
 
 
-# Find the dpp package
 find_package(dpp REQUIRED CONFIG)
 
-# Link dpp to the logging library
 target_link_libraries(discord PRIVATE dpp)
 
-# Include dpp headers
 target_include_directories(discord PRIVATE ${DPP_INCLUDE_DIR})

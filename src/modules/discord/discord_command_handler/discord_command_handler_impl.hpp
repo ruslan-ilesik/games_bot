@@ -29,6 +29,7 @@ namespace gb {
         std::map<std::string, Discord_command_ptr> _commands; ///< Map of registered commands.
         dpp::event_handle  _on_ready_handler = 0; ///< Handler of on ready event to remove in stop
         dpp::event_handle  _on_slashcommand_handler = 0; ///< Handler of on slashcommand event to remove in stop
+        Prepared_statement _insert_command_use_stmt; ///< ID of insert command use database query.
 
         /**
          * @brief Perform bulk actions.

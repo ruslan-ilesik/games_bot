@@ -50,7 +50,7 @@ namespace gb {
 
         log->warn("MAIN THREAD: "+mystring);
         std::vector<std::thread> threads;
-
+        std::vector<std::thread> prepared_threads;
         size_t requests_per_thread = 10;
         for (int i = 0; i < 10; ++i) {
             int start = i * requests_per_thread;
@@ -61,10 +61,38 @@ namespace gb {
             });
         }
 
+        auto cc2 = [this](int id)-> Task<void> {
+            auto i = db->create_prepared_statement("SELECT id FROM commands_use where id=?");
+            co_await db->execute_prepared_statement(i, id);
+            /*for (const auto &row : r) {
+                for (const auto &col : row) {
+                    std::cout << col.first << ": " << col.second << " | ";
+                }
+                std::cout << "\n";
+            }
+            std::cout << std::endl;*/
+            co_return;
+        };
+
+        for(int i = 80; i < 100; i++){
+            //cc2(i);
+        }
+        cc2(10);
+        /*for (int i = 0; i < 10; ++i) {
+            int start = i * requests_per_thread;
+            prepared_threads.emplace_back([start,requests_per_thread,cc2] {
+                for (int i = start; i < start + requests_per_thread; ++i) {
+                    cc2(i);
+                }
+            });
+        }*/
         // Join all threads
         for (auto& thread : threads) {
             thread.join();
         }
-
+        // Join all threads
+        for (auto& thread : prepared_threads) {
+            thread.join();
+        }
     }
 } // gb
