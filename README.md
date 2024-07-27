@@ -48,6 +48,9 @@ When you create task of sql request it is automatically adds itself to the queue
 picked up by one of open connections. So by the time you call co_await (somewhere later in the code) you can already 
 have response from database which will make awaiting instant as it will just return value. 
 
+### Prepared statements
+Database module also supports prepared statements and executing them is made as template so no need to predefine parameters amount or their types.
+
 ### Background queries
 Support for background queries, if you need to insert something why make user wait for it to happen, just do request in background.
 
