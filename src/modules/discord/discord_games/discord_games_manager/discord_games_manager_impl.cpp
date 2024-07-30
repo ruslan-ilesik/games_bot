@@ -32,6 +32,8 @@ namespace gb {
     void Discord_games_manager_impl::innit(const Modules &modules) {
     }
 
+    Discord_games_manager_impl::Discord_games_manager_impl() : Discord_games_manager("discord_games_manager", {}) {}
+
     Module_ptr create() {
         return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_games_manager_impl>());
     }

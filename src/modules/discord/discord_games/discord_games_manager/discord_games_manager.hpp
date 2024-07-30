@@ -4,9 +4,13 @@
 
 #pragma once
 #include "src/module/module.hpp"
-#include "../discord_game.hpp"
 
 namespace gb {
+
+    /*
+    * @brief Forward declaration of Discord_game class to eliminate circular dependencies problem.
+    */
+    class Discord_game;
 
     /**
      * @class Discord_games_manager
@@ -54,4 +58,12 @@ namespace gb {
         virtual void remove_game(Discord_game* game) = 0;
     };
 
+    /**
+    * @typedef Discord_games_manager_ptr
+    * @brief A shared pointer type for Discord_games_manager.
+    */
+    typedef std::shared_ptr<Discord_games_manager> Discord_games_manager_ptr;
+
 } // gb
+
+#include "../discord_game.hpp"

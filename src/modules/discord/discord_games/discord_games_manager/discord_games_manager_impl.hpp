@@ -30,7 +30,7 @@ namespace gb {
          *
          * Initializes the manager with no dependencies.
          */
-        Discord_games_manager_impl() : Discord_games_manager("discord_games_manager", {}) {};
+        Discord_games_manager_impl();;
 
         /**
          * @brief Adds a game to the manager.
