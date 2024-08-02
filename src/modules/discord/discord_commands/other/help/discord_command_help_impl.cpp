@@ -7,7 +7,8 @@
 namespace gb {
     std::map<std::string, std::string> category_emojis = {
         {"Other", "🔄"},
-        {"Game",  "🎮"}
+        {"Game",  "🎮"},
+        {"Multiplayer", "🌐"}
     };
 
 
@@ -140,7 +141,7 @@ namespace gb {
                                         cat[0], // start with first element
                                         coma_sep);
         command_embed.add_field(select_cat.values[0],
-                                std::format("Description: {}\n\nDetailed: {}\n\nCategories: **{}**",
+                                std::format("Description: {}\n\nDetailed: \n{}\n\nCategories: **{}**",
                                             command->get_command().description, command->get_command_data().help_text,
                                             s));
         if (!command->get_command().options.empty()) {

@@ -80,6 +80,14 @@ namespace gb {
          * @return The custom component ID associated with the given generated ID.
          */
         std::string get_value(uint64_t key);
+
+        /**
+         * @brief Returns list of ids occupied by message in cache (works only with previously prepared messages).
+         *
+         * @param m message from which ids will be extracted.
+         * @return vector of ids occupied by message in cache.
+         */
+        std::vector<uint64_t> get_ids(const dpp::message& m);
     };
 
 } // gb

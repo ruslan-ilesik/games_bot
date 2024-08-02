@@ -46,9 +46,18 @@ namespace gb {
         * @param m The DPP message containing the button component.
         * @param users A list of user IDs that are allowed to interact with the button.
         * @param timeout The maximum time to wait for an interaction.
+        * @param generate_ids Flag to make hides ids of message or not (for example if we need await same message second time we will not hide id).
+        * @param clear_ids Flag to clear ids after event awaiting finished (should note that in case of timeouts ids cleared anyway).
         * @return A dpp::task<Button_click_return> containing the result of the interaction.
         */
-        dpp::task<Button_click_return> wait_for(dpp::message& m, const std::vector<dpp::snowflake>& users, time_t timeout) override;
+        dpp::task<Button_click_return> wait_for(dpp::message& m, const std::vector<dpp::snowflake>& users, time_t timeout, bool generate_ids = true, bool clear_ids = false) override;
+
+        /**
+        * @brief Clears ids from hash in specific message.
+        *
+        * @param m message which ids should be removed from cache.
+        */
+        void clear_ids(const dpp::message& m) override;
 
         /**
          * @brief Starts the handler's operation.

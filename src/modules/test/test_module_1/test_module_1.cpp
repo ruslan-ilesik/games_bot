@@ -12,7 +12,7 @@ namespace gb {
             return std::dynamic_pointer_cast<Module>(std::make_shared<Test_module_1>());
     };
 
-    Test_module_1::Test_module_1() : Module("test_module_1",{"test_module_2","logging","config"}){
+    Test_module_1::Test_module_1() : Module("test_module_1",{"test_module_2","logging","config","image_processing"}){
     }
     void Test_module_1::innit(const Modules &modules) {
         log = std::static_pointer_cast<Logging>(modules.at("logging"));

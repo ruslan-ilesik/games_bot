@@ -3,6 +3,7 @@ add_library(discord_game_tic_tac_toe SHARED
     ../discord_game_command.cpp
     ../../../discord_games/discord_game.cpp
     ../../../discord_games/tic_tac_toe/discord_tic_tac_toe_game.cpp
+    ../../../../../module/module.cpp
 )
 
 

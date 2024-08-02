@@ -114,6 +114,34 @@ namespace gb {
        *                 You can provide a custom callback function to handle the completion event as needed.
        */
        void reply(const dpp::select_click_t& event, const dpp::message& message, const dpp::command_completion_event_t& callback = dpp::utility::log_error()) override;
+
+      /**
+       * @brief Sends a reply to a button click event in Discord.
+       *
+       * This function is used to send a response message to a button click event. It allows you to provide a custom
+       * message and optionally handle the completion of the command with a callback function.
+       *
+       * @param event The button click event that triggered the reply.
+       * @param message The message to be sent as a reply.
+       * @param callback Optional. The callback function to handle the completion of the command. By default, it uses
+       *                 `dpp::utility::log_error` to log any errors that occur during the execution of the command.
+       *                 You can provide a custom callback function to handle the completion event as needed.
+       */
+       void reply(const dpp::button_click_t& event, const dpp::message& message, const dpp::command_completion_event_t& callback = dpp::utility::log_error()) override;
+
+      /**
+       * @brief Sends new message as a reply to a button click event in Discord.
+       *
+       * This function is used to send new message response message to a button click event. It allows you to provide a custom
+       * message and optionally handle the completion of the command with a callback function.
+       *
+       * @param event The button click event that triggered the reply.
+       * @param message The message to be sent as a reply.
+       * @param callback Optional. The callback function to handle the completion of the command. By default, it uses
+       *                 `dpp::utility::log_error` to log any errors that occur during the execution of the command.
+       *                 You can provide a custom callback function to handle the completion event as needed.
+       */
+       void reply_new(const dpp::button_click_t& event, const dpp::message& message, const dpp::command_completion_event_t& callback = dpp::utility::log_error())override;
     };
 
     /**

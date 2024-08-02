@@ -10,6 +10,7 @@
 #include "src/modules/database/database.hpp"
 #include "src/modules/discord/discord_bot/discord_bot.hpp"
 #include "./discord_games_manager/discord_games_manager.hpp"
+#include "src/modules/image_processing/image_processing.hpp"
 
 
 namespace gb {
@@ -28,6 +29,7 @@ namespace gb {
         Database_ptr db;
         Discord_bot_ptr bot;
         Discord_games_manager_ptr games_manager;
+        Image_processing_ptr image_processing;
     };
 
     class Discord_game {
