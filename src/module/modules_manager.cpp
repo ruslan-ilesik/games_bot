@@ -66,7 +66,7 @@ namespace gb {
         void *libraryHandle = dlopen((path).c_str(), RTLD_NOW);
         if (!libraryHandle) {
             std::cout << "Modules_manager ERROR loading module: " << path << ' ' << dlerror() << std::endl;
-            //dlclose(libraryHandle);
+            dlclose(libraryHandle);
             return "";
         }
         void *thing = (dlsym(libraryHandle, "create"));

@@ -12,7 +12,6 @@
 
 #define _TEST_DER__FILE__ (__FILE__"123")
 int main() {
-
     auto m = gb::Modules_manager::create({"./modules"});
     m->run();
     while(true){

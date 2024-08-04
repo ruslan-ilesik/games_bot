@@ -38,6 +38,7 @@ namespace gb {
         size_t _current_player_ind;
         Game_data_initialization _data;
     public:
+        virtual ~Discord_game() = default;
 
         static std::vector<std::string> get_basic_game_dependencies();
 
@@ -50,9 +51,6 @@ namespace gb {
         dpp::snowflake get_current_player();
 
         void remove_player(USER_REMOVE_REASON reason, const dpp::snowflake &user);
-
-        virtual void run() = 0;
-
     };
 
 } // gb

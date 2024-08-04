@@ -20,6 +20,7 @@ namespace gb {
     }
 
     dpp::snowflake Discord_game::next_player() {
+        std::format("{}",dpp::snowflake(10));
         _current_player_ind++;
         if (_current_player_ind >= _players.size()) {
             _current_player_ind = 0;

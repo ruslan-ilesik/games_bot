@@ -30,6 +30,7 @@ namespace gb {
     }
 
     void Discord_game_command::run() {
+
     }
 
     void Discord_game_command::command_finished() {
@@ -37,24 +38,31 @@ namespace gb {
         _cv.notify_all();
     }
 
-    dpp::task<std::pair<bool, dpp::button_click_t> > Discord_game_command::lobby(const dpp::slashcommand_t &event,
+    dpp::task<Discord_game_command::Lobby_return> Discord_game_command::lobby(const dpp::slashcommand_t &event,
         std::vector<dpp::snowflake> players, const dpp::snowflake &host, unsigned int players_amount) {
         std::vector<dpp::snowflake> joined_players{host};
+        std::vector<dpp::snowflake> required_players = players;
         auto e = std::ranges::find(players, host);
         if (e != players.end()) {
             players.erase(e);
         }
+        required_players.push_back(host);
+        dpp::button_click_t click;
+        bool is_click = false;
         while(true){
+            unsigned int waiting_for_amount = players_amount - joined_players.size() - players.size();
+            if (waiting_for_amount == joined_players.size()) {
+                co_return {false,click,joined_players};
+            }
             dpp::message m;
             dpp::embed embed;
-
 
             std::string players_joined = std::accumulate(
                 std::next(joined_players.begin()),
                 joined_players.end(),
                 dpp::utility::user_mention(joined_players[0]),
-                [](const dpp::snowflake &a, const dpp::snowflake &b) {
-                    return dpp::utility::user_mention(a) + ", " + dpp::utility::user_mention(b);
+                [](const std::string& a, const dpp::snowflake &b) {
+                    return a + ", " + dpp::utility::user_mention(b);
                 }
             );
 
@@ -65,12 +73,11 @@ namespace gb {
                     std::next(players.begin()),
                     players.end(),
                     dpp::utility::user_mention(players[0]),
-                    [](const dpp::snowflake &a, const dpp::snowflake &b) {
-                        return dpp::utility::user_mention(a) + ", " + dpp::utility::user_mention(b);
+                    [](const std::string &a, const dpp::snowflake &b) {
+                        return a + ", " + dpp::utility::user_mention(b);
                     }
                 );
             }
-
 
             embed.add_field("Lobby for " + lobby_title + " game.", lobby_description)
                 .set_description(std::format("Timeout: <t:{}:R>",
@@ -79,8 +86,8 @@ namespace gb {
                                             )
                                         )
                 .add_field("Joined players:", players_joined)
-                .add_field("Waiting for:", std::format("{}\nAny {} player/s", players_waiting,
-                                                      players_amount - joined_players.size() - players.size()))
+                .add_field("Waiting for:", std::format("{}\nAny {} player/s", players_waiting,waiting_for_amount
+                                                      ))
                 .set_thumbnail(lobby_image_url)
                 .set_color(dpp::colors::gold);
 
@@ -108,7 +115,14 @@ namespace gb {
             }
             bool fst = true;
             auto awaitable = _button_click_handler->wait_for(m,waiting,60,fst,false);
-            _bot->reply(event,m);
+            if (is_click) {
+                _bot->reply(click,m);
+            }
+            else {
+                _bot->reply(event,m);
+            }
+
+            is_click = true;
             time_t timeout =  std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count() +60;
             while(1) {
                 if (!fst) {
@@ -118,12 +132,12 @@ namespace gb {
                 fst = false;
                 if (r.second) {
                     _button_click_handler->clear_ids(m);
-                    co_return {false,{}};
+                    co_return {true,{},{}};
                 }
 
-                auto click = r.first;
+                 click = r.first;
                 if (click.custom_id == "join") {
-                    auto e = std::ranges::find(joined_players, event.command.usr.id);
+                    auto e = std::ranges::find(joined_players, click.command.usr.id);
                     if (e != joined_players.end()) {
                         dpp::message error_msg;
                         error_msg.set_flags(dpp::m_ephemeral)
@@ -135,18 +149,37 @@ namespace gb {
                         _bot->reply_new(click,error_msg);
                         continue;
                     }
+                    joined_players.push_back(click.command.usr.id);
+                    e = std::ranges::find(players, click.command.usr.id);
+                    if (e != players.end()) {
+                        players.erase(e);
+                    }
+                    _button_click_handler->clear_ids(m);
+                    break;
                 }
 
                 //cancel
                 else {
-
+                    auto e = std::ranges::find(required_players, click.command.usr.id);
+                    if (e == required_players.end()) {
+                        e = std::ranges::find(joined_players, click.command.usr.id);
+                        joined_players.erase(e);
+                        _button_click_handler->clear_ids(m);
+                        break;
+                    }
+                    //required player left, stop the game
+                    dpp::embed error_embed {};
+                    error_embed.set_color(dpp::colors::red)
+                                .set_title(lobby_title+" lobby closed!")
+                                .set_description("Player " + dpp::utility::user_mention(click.command.usr.id)+ "left the game while they were required for game to start.")
+                                .set_thumbnail(lobby_image_url);
+                    _bot->reply(click,dpp::message().add_embed(error_embed));
+                    _button_click_handler->clear_ids(m);
+                    co_return {true,{},{}};
                 }
             }
-
-
         }
-
-        co_return {true, {}};
+        co_return {true, {},{}};
     }
 
     void Discord_game_command::command_run() {

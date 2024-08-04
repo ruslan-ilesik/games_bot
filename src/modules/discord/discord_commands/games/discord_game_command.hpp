@@ -23,13 +23,22 @@ namespace gb {
         std::string lobby_description;
         std::string lobby_image_url;
     public:
+
+        struct Lobby_return {
+            bool is_timeout;
+            dpp::button_click_t event;
+            std::vector<dpp::snowflake> players;
+        };
+
         Discord_game_command(const std::string& name, const std::vector<std::string>& dependencies);
 
         void command_run();
 
         void command_finished();
 
-        dpp::task<std::pair<bool,dpp::button_click_t>> lobby(const dpp::slashcommand_t& event, std::vector<dpp::snowflake> players, const dpp::snowflake& host, unsigned int players_amount);
+
+        //true in first argument if fail (timeout or error).
+        dpp::task<Lobby_return> lobby(const dpp::slashcommand_t& event, std::vector<dpp::snowflake> players, const dpp::snowflake& host, unsigned int players_amount);
 
         virtual void innit(const Modules& modules);
 
