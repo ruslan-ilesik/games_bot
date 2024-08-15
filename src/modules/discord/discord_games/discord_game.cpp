@@ -62,4 +62,10 @@ namespace gb {
     void Discord_game::game_stop() {
         _data.games_manager->remove_game(this);
     }
+
+    std::string Discord_game::add_image(dpp::message &m, const Image_ptr &image) {
+        auto str = image->convert_to_string();
+        m.set_filename("test"+str.first).set_file_content(str.second);
+        return "attachment://test"+str.first;
+    }
 } // gb

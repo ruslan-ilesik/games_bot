@@ -4,6 +4,8 @@
 
 #include "image_impl.hpp"
 
+#include <iostream>
+
 namespace gb {
 
     Image_impl::Image_impl(const std::string &file) {
@@ -22,7 +24,7 @@ namespace gb {
     }
 
     cv::Scalar Image_impl::color_to_cv_scalar(const Color &color) {
-        return (color.b,color.g,color.r,std::max(0, std::min(255, (int)floor(color.a * 256.0))));
+        return (color.b,color.g,color.r,std::max(0, std::min(255, static_cast<int>(floor(color.a * 256.0)))));
     }
 
     Image_impl::Image_impl(size_t x, size_t y, const Color &color) {

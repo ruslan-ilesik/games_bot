@@ -12,7 +12,7 @@
 
 namespace gb {
 
-    class Image_processing_impl:public Image_processing {
+    class Image_processing_impl:public Image_processing, public std::enable_shared_from_this<Image_processing>{
         std::map<std::string,image_generator_t> _image_cache;
         std::shared_mutex _mutex;
     public:
@@ -21,6 +21,7 @@ namespace gb {
 
         Image_ptr create_image(const std::string& file) override;
         Image_ptr create_image(size_t x, size_t y, const Color &color) override;
+        Image_ptr create_image(const Vector2i& resolution, const Color &color) override;
 
         void stop() override;
         void run() override;

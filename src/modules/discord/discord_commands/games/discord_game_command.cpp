@@ -38,8 +38,10 @@ namespace gb {
         _cv.notify_all();
     }
 
+
+
     dpp::task<Discord_game_command::Lobby_return> Discord_game_command::lobby(const dpp::slashcommand_t &event,
-        std::vector<dpp::snowflake> players, const dpp::snowflake &host, unsigned int players_amount) {
+                                                                              std::vector<dpp::snowflake> players, const dpp::snowflake &host, unsigned int players_amount) {
         std::vector<dpp::snowflake> joined_players{host};
         std::vector<dpp::snowflake> required_players = players;
         auto e = std::ranges::find(players, host);
@@ -51,7 +53,7 @@ namespace gb {
         bool is_click = false;
         while(true){
             unsigned int waiting_for_amount = players_amount - joined_players.size() - players.size();
-            if (waiting_for_amount == joined_players.size()) {
+            if (players_amount ==  joined_players.size()) {
                 co_return {false,click,joined_players};
             }
             dpp::message m;

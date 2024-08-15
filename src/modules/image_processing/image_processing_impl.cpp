@@ -9,7 +9,7 @@
 namespace gb {
     static const std::string base_dir_path = "./cache/image/";
 
-    Image_processing_impl::Image_processing_impl(): Image_processing("image_processing", {"config"}) {
+    Image_processing_impl::Image_processing_impl(): Image_processing("image_processing", {}) {
     }
 
     Image_ptr Image_processing_impl::create_image(const std::string &file) {
@@ -29,7 +29,7 @@ namespace gb {
             }
         }
         if (!std::filesystem::exists(base_dir_path + name) || !std::filesystem::is_directory(base_dir_path + name)) {
-            std::filesystem::create_directory(base_dir_path + name);
+            std::filesystem::create_directories(base_dir_path + name);
         }
         std::unique_lock lk(_mutex);
         _image_cache.emplace(name, image_generator);
@@ -69,8 +69,11 @@ namespace gb {
         if (std::filesystem::exists(filename)) {
             return create_image(filename);
         }
-
-        auto image = _image_cache.at(name)(resolution);
+        Image_ptr image;
+        {
+            std::shared_lock lk (_mutex);
+            image = _image_cache.at(name)(shared_from_this(),resolution);
+        }
         auto image_impl = std::static_pointer_cast<Image_impl>(image);
         cv::imwrite(filename,image_impl->get_image());
         return image;
@@ -81,6 +84,10 @@ namespace gb {
 
     Image_ptr Image_processing_impl::create_image(size_t x, size_t y, const Color &color) {
         return std::dynamic_pointer_cast<Image>(std::make_shared<Image_impl>(x, y, color));
+    }
+
+    Image_ptr Image_processing_impl::create_image(const Vector2i &resolution, const Color &color) {
+        return create_image(resolution.x,resolution.y,color);
     }
 
     Module_ptr create() {

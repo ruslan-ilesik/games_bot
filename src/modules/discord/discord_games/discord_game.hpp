@@ -35,7 +35,7 @@ namespace gb {
     class Discord_game {
     private:
         std::vector<dpp::snowflake> _players;
-        size_t _current_player_ind;
+        size_t _current_player_ind = 0;
     protected:
         Game_data_initialization _data;
     public:
@@ -58,6 +58,8 @@ namespace gb {
         void game_start();
 
         void game_stop();
+
+        std::string add_image(dpp::message& m, const Image_ptr& image);
 
     };
 

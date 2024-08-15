@@ -6,8 +6,11 @@
 #include "image.hpp"
 #include <src/module/module.hpp>
 namespace gb{
+    class Image_processing;
 
-    typedef std::function<Image_ptr(const Vector2i& resolution)> image_generator_t;
+    typedef std::shared_ptr<Image_processing> Image_processing_ptr;
+
+    typedef std::function<Image_ptr(Image_processing_ptr image_processing, const Vector2i& resolution)> image_generator_t;
 
     class Image_processing : public Module{
     public:
@@ -18,6 +21,8 @@ namespace gb{
         virtual Image_ptr create_image(const std::string& file) = 0;
 
         virtual Image_ptr create_image(size_t x, size_t y, const Color &color) = 0;
+
+        virtual Image_ptr create_image(const Vector2i& resolution, const Color &color) = 0;
 
         virtual void cache_create(const std::string& name, const image_generator_t& generator) = 0;
 
@@ -32,5 +37,5 @@ namespace gb{
         virtual Image_ptr cache_get(const std::string& name, const Vector2i& resolution) = 0;
     };
 
-    typedef std::shared_ptr<Image_processing> Image_processing_ptr;
+
 } //gb
