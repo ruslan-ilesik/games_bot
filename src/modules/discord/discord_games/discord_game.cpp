@@ -6,6 +6,10 @@
 
 
 namespace gb {
+    Discord_game::~Discord_game() {
+        game_stop();
+    }
+
     std::vector<std::string> Discord_game::get_basic_game_dependencies() {
         return {"database","discord_bot","discord_games_manager","image_processing"};
     }
@@ -49,5 +53,13 @@ namespace gb {
             }
         }
         _players.erase(_players.begin() + index);
+    }
+
+    void Discord_game::game_start() {
+        _data.games_manager->add_game(this);
+    }
+
+    void Discord_game::game_stop() {
+        _data.games_manager->remove_game(this);
     }
 } // gb

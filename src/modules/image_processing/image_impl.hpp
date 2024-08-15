@@ -26,6 +26,7 @@ namespace gb {
 
         std::pair<std::string,std::string> convert_to_string() override;
 
+        cv::Mat& get_image();
     };
 
 } // gb

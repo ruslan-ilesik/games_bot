@@ -36,4 +36,7 @@ namespace gb {
         return {".jpg",s};
     }
 
+    cv::Mat & Image_impl::get_image() {
+        return _image;
+    }
 } // gb

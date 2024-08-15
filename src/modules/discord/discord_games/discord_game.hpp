@@ -36,11 +36,14 @@ namespace gb {
     private:
         std::vector<dpp::snowflake> _players;
         size_t _current_player_ind;
+    protected:
         Game_data_initialization _data;
     public:
-        virtual ~Discord_game() = default;
+        virtual ~Discord_game();
 
         static std::vector<std::string> get_basic_game_dependencies();
+
+        static std::vector<std::pair<std::string,image_generator_t>> get_image_generators();
 
         Discord_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players);
 
@@ -51,6 +54,11 @@ namespace gb {
         dpp::snowflake get_current_player();
 
         void remove_player(USER_REMOVE_REASON reason, const dpp::snowflake &user);
+
+        void game_start();
+
+        void game_stop();
+
     };
 
 } // gb
