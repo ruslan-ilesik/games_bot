@@ -33,7 +33,7 @@ namespace gb {
         /**
          * @brief A pointer to the object representing the bot.
          */
-        Discord_cluster *_bot = nullptr;
+        std::unique_ptr<Discord_cluster> _bot;
 
         /**
          * @brief A list of functions to be called after module init but before bot start. Cleared and ignored after start.

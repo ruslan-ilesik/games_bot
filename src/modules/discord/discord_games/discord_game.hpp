@@ -5,6 +5,7 @@
 #pragma once
 
 #include <dpp/dpp.h>
+#include <src/modules/discord/discord_interactions_handler/discord_button_click_handler/discord_button_click_handler.hpp>
 
 #include "src/module/module.hpp"
 #include "src/modules/database/database.hpp"
@@ -30,6 +31,7 @@ namespace gb {
         Discord_bot_ptr bot;
         Discord_games_manager_ptr games_manager;
         Image_processing_ptr image_processing;
+        Discord_button_click_handler_ptr button_click_handler;
     };
 
     class Discord_game {
@@ -52,6 +54,8 @@ namespace gb {
         dpp::snowflake next_player();
 
         dpp::snowflake get_current_player();
+
+        size_t get_current_player_index() const;
 
         void remove_player(USER_REMOVE_REASON reason, const dpp::snowflake &user);
 

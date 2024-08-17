@@ -82,13 +82,15 @@ namespace gb {
                         if (args.empty()) {
                             continue;
                         }
-                        std::unique_lock<std::mutex> lock(_mutex);
+                        std::unique_lock lock(_mutex);
                         if (!_commands.contains(args[0])) {
                             std::cout << "Admin_terminal_impl command " << args[0]
                                       << " not found. Write help to get list of commands\n";
                             continue;
                         }
-                        _commands.at(args[0])->operator()({args.begin() + 1, args.end()});
+                        auto command = _commands.at(args[0]);
+                        lock.unlock();
+                        command->operator()({args.begin() + 1, args.end()});
                     }
                 } else if (ret == -1) {
                     std::cerr << "Error in poll" << std::endl;

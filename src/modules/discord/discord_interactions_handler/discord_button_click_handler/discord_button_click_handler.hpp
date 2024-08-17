@@ -40,7 +40,7 @@ namespace gb{
         * @param clear_ids Flag to clear ids after event awaiting finished (should note that in case of timeouts ids cleared anyway).
         * @return A dpp::task<Button_click_return> containing the result of the interaction.
         */
-        virtual dpp::task<Button_click_return> wait_for(dpp::message& m, const std::vector<dpp::snowflake>& users, time_t timeout, bool generate_ids = true, bool clear_ids = false) = 0;
+        virtual dpp::task<Button_click_return> wait_for(dpp::message& m, const std::vector<dpp::snowflake>& users, time_t timeout, bool generate_ids = true, bool clear_ids = true) = 0;
 
         /**
          * @brief Clears ids from hash in specific message.

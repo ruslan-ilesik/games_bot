@@ -41,7 +41,13 @@ namespace gb {
         if (!_commands.contains(name)) {
             throw std::runtime_error("Discord_command_handler error: command " + name + " cannot be removed as it does not exist");
         }
-        _discord_bot->get_bot()->global_command_delete(_commands.at(name)->get_command().id);
+        try {
+            _discord_bot->get_bot()->global_command_delete_sync(_commands.at(name)->get_command().id);
+        }
+        catch (const dpp::rest_exception& e) {
+
+        }
+        _commands.erase(name);
     }
 
     Discord_command_handler_impl::Discord_command_handler_impl()
@@ -55,7 +61,12 @@ namespace gb {
         _discord_bot->get_bot()->on_ready.detach(_on_ready_handler);
         //remove handler before locking, so new command calls will not appear
         _discord_bot->get_bot()->on_slashcommand.detach(_on_slashcommand_handler);
-        _discord_bot->get_bot()->global_bulk_command_delete();
+        try {
+            _discord_bot->get_bot()->global_bulk_command_delete_sync();
+        }
+        catch (const dpp::rest_exception& e) {
+
+        }
         //this will ensure all commands currently running will finish their job
         std::unique_lock<std::shared_mutex> lock (_mutex);
         _admin_terminal->remove_command("discord_command_handler_bulk_disable");
@@ -191,7 +202,9 @@ namespace gb {
     }
 
     void Discord_command_handler_impl::remove_commands() {
-        _discord_bot->get_bot()->global_bulk_command_delete();
+        _discord_bot->get_bot()->global_bulk_command_delete_sync();
+        std::unique_lock<std::shared_mutex> lock(_mutex);
+        _commands.clear();
     }
 
     void Discord_command_handler_impl::register_commands() {

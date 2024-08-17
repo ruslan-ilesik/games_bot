@@ -553,7 +553,6 @@ namespace gb {
         throw std::runtime_error("Database Error: Max retries reached. Unable to execute statement.");
     }
 
-
     void Mysql_prepared_statement_params::add_param(const std::string &param) {
         MYSQL_BIND bind{};
         _string_data.push_back(param); // Store the string in the container

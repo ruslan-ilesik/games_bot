@@ -7,11 +7,14 @@
 #include <sstream>
 #include <memory>
 
+
 namespace gb{
 
     struct Color{
-        char r,g,b;
+        unsigned char r,g,b;
         float a; //between 0 and 1;
+
+        Color(const unsigned char r, const unsigned char g, const unsigned char b, const float a = 1): r(r),g(g),b(b),a(a){};
     };
 
     template<typename T>
@@ -121,6 +124,10 @@ namespace gb{
 
         //should return encoding of file like ".jpg" and second is actual data;
         virtual std::pair<std::string,std::string> convert_to_string() = 0;
+
+        virtual void draw_line(const Vector2i& from, const Vector2i& to, const Color& color, int thickness) = 0;
+
+        virtual void draw_text(const std::string& text, const Vector2i& position, double font_scale, const Color& color, int thickness) = 0;
     };
 
     typedef std::shared_ptr<Image> Image_ptr;

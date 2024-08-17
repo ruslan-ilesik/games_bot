@@ -17,7 +17,6 @@ namespace gb {
         this->_command_handler = std::static_pointer_cast<Discord_command_handler>(
             modules.at("discord_command_handler"));
         this->_discord = std::static_pointer_cast<Discord>(modules.at("discord"));
-        this->_button_click_handler = std::static_pointer_cast<Discord_button_click_handler>(modules.at("discord_button_click_handler"));
         _image_processing->cache_create(Discord_tic_tac_toe_game::get_image_generators());
         _bot->add_pre_requirement([this]() {
             dpp::slashcommand command("tic_tac_toe", "Command to start tic tac toe game", _bot->get_bot()->me.id);
@@ -35,9 +34,9 @@ namespace gb {
                         }
                         Lobby_return r = co_await this->lobby(event,players,event.command.usr.id,2);
                         if (!r.is_timeout) {
-                            Game_data_initialization game_data{"tic_tac_toe",_db,_bot,_games_manager,_image_processing};
+                            Game_data_initialization game_data{"tic_tac_toe",_db,_bot,_games_manager,_image_processing,_button_click_handler};
                             auto game = std::make_unique<Discord_tic_tac_toe_game>(game_data,r.players);
-                            game->run(r.event);
+                            co_await game->run(r.event);
                         }
                         this->command_finished();
                         co_return ;

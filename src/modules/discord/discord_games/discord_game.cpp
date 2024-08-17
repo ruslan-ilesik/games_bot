@@ -11,7 +11,7 @@ namespace gb {
     }
 
     std::vector<std::string> Discord_game::get_basic_game_dependencies() {
-        return {"database","discord_bot","discord_games_manager","image_processing"};
+        return {"database","discord_bot","discord_games_manager","image_processing","discord_button_click_handler"};
     }
 
     Discord_game::Discord_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players) {
@@ -34,6 +34,10 @@ namespace gb {
 
     dpp::snowflake Discord_game::get_current_player() {
         return _players.at(_current_player_ind);
+    }
+
+    size_t Discord_game::get_current_player_index() const {
+        return _current_player_ind;
     }
 
     void Discord_game::remove_player(USER_REMOVE_REASON reason, const dpp::snowflake &user) {
