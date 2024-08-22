@@ -19,8 +19,26 @@ namespace gb {
 
 
         void create_image(dpp::message &m, dpp::embed &embed) {
+            _img_cnt++;
+            double size = 256;
             auto base = _data.image_processing->cache_get("tic_tac_toe_base", {256, 256});
-
+            for (int y = 0; y < 3; y++) {
+                for (int x = 0; x < 3; x++) {
+                    base->draw_text(this->board[y][x] == SIGNS::EMPTY
+                                        ? " "
+                                        : (this->board[y][x] == SIGNS::O ? "0" : "X"),
+                                    {
+                                        static_cast<int>(size / 24 + (x * (size / 3))),
+                                        static_cast<int>(size / 3.5 + y * (size / 3))
+                                    },
+                                    size / 85,
+                                    this->board[y][x] == static_cast<SIGNS>(get_current_player_index())
+                                        ? Color{0, 255, 0}
+                                        : Color{255, 0, 0},
+                                    size / 47
+                    );
+                }
+            }
             embed.set_image(add_image(m, base));
         }
 
@@ -70,20 +88,22 @@ namespace gb {
         dpp::task<void> run(const dpp::button_click_t &_event) {
             game_start();
             dpp::button_click_t event = _event;
-            while(1) {
+            while (1) {
                 dpp::message m;
                 dpp::embed embed;
                 embed.set_color(dpp::colors::blue)
                     .set_title("Tic Tac Toe game.")
-                    .set_description(std::format("Timeout: <t:{}:R>\nTurn: {}",
-                                                 std::chrono::duration_cast<std::chrono::seconds>(
-                                                     std::chrono::system_clock::now().time_since_epoch()).count() + 60,
-                                                 dpp::utility::user_mention(get_current_player())
+                    .set_description(std::format(
+                        "Timeout: <t:{}:R>\nTurn: {}\nYour sign: **{}**\nSelect where to place your sign.",
+                        std::chrono::duration_cast<std::chrono::seconds>(
+                            std::chrono::system_clock::now().time_since_epoch()).count() + 60,
+                        dpp::utility::user_mention(get_current_player()),
+                        static_cast<SIGNS>(get_current_player_index()) == SIGNS::O ? "0" : "X"
                     ));
                 create_image(m, embed);
                 create_components(m);
                 m.add_embed(embed);
-                auto button_click_awaiter = _data.button_click_handler->wait_for(m,{get_current_player()},60);
+                auto button_click_awaiter = _data.button_click_handler->wait_for(m, {get_current_player()}, 60);
                 _data.bot->reply(event, m);
                 Button_click_return r = co_await button_click_awaiter;
                 if (r.second) {
@@ -91,9 +111,47 @@ namespace gb {
                 }
                 event = r.first;
 
+                std::string id = event.custom_id;
+                if (!std::isdigit(event.custom_id[0]) || !std::isdigit(event.custom_id[1])) {
+                    id = "00";
+                }
+                board[static_cast<int>(id[0]) - '0'][static_cast<int>(id[1]) - '0'] = static_cast<SIGNS>(
+                    get_current_player_index());
+
+                for (auto i : board){
+                    if (i[0] == i[1] && i[1] == i[2] && i[0] != SIGNS::EMPTY){
+                        //won
+                        break;
+                    }
+                }
+                for (int i =0; i < static_cast<int>(std::size(board)); i++){
+                    if (board[0][i] == board[1][i] && board[1][i] == board[2][i] && board[2][i] != SIGNS::EMPTY){
+                        //won
+                        break;
+                    }
+                }
+
+                if(((board[0][0] == board[1][1] && board[0][0] == board[2][2]) || (board[0][2] == board[1][1] && board[0][2] == board[2][0])) && board[1][1] != SIGNS::EMPTY){
+                    //won
+                    break;
+                }
+
+                bool has_empty = false;
+                for (auto & i : board) {
+                    for (auto & j : i) {
+                        has_empty |= j == SIGNS::EMPTY;
+                    }
+                }
+                if (!has_empty) {
+                    //draw
+                    break;
+                }
+
+                //game has not finished
+                next_player();
             }
-            get_current_player();
             game_stop();
+            co_return;
         }
     };
 } // gb

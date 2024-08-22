@@ -14,7 +14,7 @@ namespace gb {
         return {"database","discord_bot","discord_games_manager","image_processing","discord_button_click_handler"};
     }
 
-    Discord_game::Discord_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players) {
+    Discord_game::Discord_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players): _game_create_req({}) {
         this->_players = players;
         this->_data = _data;
     }
@@ -24,7 +24,6 @@ namespace gb {
     }
 
     dpp::snowflake Discord_game::next_player() {
-        std::format("{}",dpp::snowflake(10));
         _current_player_ind++;
         if (_current_player_ind >= _players.size()) {
             _current_player_ind = 0;
@@ -60,7 +59,8 @@ namespace gb {
     }
 
     void Discord_game::game_start() {
-        _data.games_manager->add_game(this);
+        _game_create_req = _data.games_manager->add_game(this);
+
     }
 
     void Discord_game::game_stop() {
@@ -71,5 +71,9 @@ namespace gb {
         auto str = image->convert_to_string();
         m.set_filename("test"+str.first).set_file_content(str.second);
         return "attachment://test"+str.first;
+    }
+
+    std::string Discord_game::get_name() const {
+        return _data.name;
     }
 } // gb

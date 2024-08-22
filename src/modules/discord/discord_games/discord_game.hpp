@@ -38,8 +38,11 @@ namespace gb {
     private:
         std::vector<dpp::snowflake> _players;
         size_t _current_player_ind = 0;
+        Task<Database_return_t> _game_create_req;
+        uint64_t _unique_game_id = std::numeric_limits<uint64_t>::max(); //placeholder for no value, never should be reached withing database.
     protected:
         Game_data_initialization _data;
+        uint64_t _img_cnt = 0;
     public:
         virtual ~Discord_game();
 
@@ -62,6 +65,8 @@ namespace gb {
         void game_start();
 
         void game_stop();
+
+        std::string get_name() const;
 
         std::string add_image(dpp::message& m, const Image_ptr& image);
 

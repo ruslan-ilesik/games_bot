@@ -4,6 +4,7 @@
 
 #pragma once
 #include "src/module/module.hpp"
+#include "src/modules/database/database.hpp"
 
 namespace gb {
 
@@ -44,8 +45,9 @@ namespace gb {
          * add a game to the collection managed by the manager.
          *
          * @param game Pointer to the Discord game to add.
+         * @returns Awaitable request to database which will return unique id of game.
          */
-        virtual void add_game(Discord_game* game) = 0;
+        virtual Task<Database_return_t> add_game(Discord_game* game) = 0;
 
         /**
          * @brief Removes a game from the manager.

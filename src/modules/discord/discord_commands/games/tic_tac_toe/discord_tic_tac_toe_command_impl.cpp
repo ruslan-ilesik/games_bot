@@ -34,7 +34,7 @@ namespace gb {
                         }
                         Lobby_return r = co_await this->lobby(event,players,event.command.usr.id,2);
                         if (!r.is_timeout) {
-                            Game_data_initialization game_data{"tic_tac_toe",_db,_bot,_games_manager,_image_processing,_button_click_handler};
+                            Game_data_initialization game_data{"tic tac toe",_db,_bot,_games_manager,_image_processing,_button_click_handler};
                             auto game = std::make_unique<Discord_tic_tac_toe_game>(game_data,r.players);
                             co_await game->run(r.event);
                         }

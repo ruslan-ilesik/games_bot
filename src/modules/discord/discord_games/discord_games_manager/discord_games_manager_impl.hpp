@@ -24,20 +24,27 @@ namespace gb {
         /// Vector holding pointers to the Discord games.
         std::vector<Discord_game*> _games;
 
+        /// Pointer to database object.
+        Database_ptr _db;
+
+        /// Prepared statement to create game.
+        Prepared_statement _create_game;
+
     public:
         /**
          * @brief Constructor for Discord_games_manager_impl.
          *
          * Initializes the manager with no dependencies.
          */
-        Discord_games_manager_impl();;
+        Discord_games_manager_impl();
 
         /**
          * @brief Adds a game to the manager.
          *
          * @param game Pointer to the Discord game to add.
+         * @returns Awaitable request to database which will return unique id of game.
          */
-        void add_game(Discord_game* game) override;
+        Task<Database_return_t> add_game(Discord_game* game) override;
 
         /**
          * @brief Removes a game from the manager.
