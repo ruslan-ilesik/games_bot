@@ -8,7 +8,7 @@ namespace gb {
 
     Logging_impl::Logging_impl() : Logging("logging", {}) {}
 
-    void Logging_impl::innit(const Modules& modules) {
+    void Logging_impl::init(const Modules& modules) {
         spdlog::init_thread_pool(8192, 2);
         const std::string log_name = "bot_log.log";
         static std::vector<spdlog::sink_ptr> sinks;

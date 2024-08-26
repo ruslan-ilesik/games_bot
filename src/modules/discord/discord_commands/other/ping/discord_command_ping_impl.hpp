@@ -68,7 +68,7 @@ namespace gb {
          *
          * @param modules A reference to the collection of modules required by this command.
          */
-        void innit(const Modules &modules) override;
+        void init(const Modules &modules) override;
     };
 
     /**

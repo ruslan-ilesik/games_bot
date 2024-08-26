@@ -11,7 +11,7 @@ namespace gb {
         _rng = std::mt19937(_rd());
     }
 
-    std::vector<uint64_t> Id_cache::component_innit(dpp::message &m) {
+    std::vector<uint64_t> Id_cache::component_init(dpp::message &m) {
         std::vector<uint64_t> occupied_ids;
 
         auto manage_id = [this, &occupied_ids](dpp::component &component) {

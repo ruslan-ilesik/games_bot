@@ -76,7 +76,7 @@ namespace gb {
          * @param modules A map of module names to module shared pointers.
          * Initializes the Discord bot and admin terminal, and adds related commands to the admin terminal.
          */
-        void innit(const Modules &modules) override;
+        void init(const Modules &modules) override;
 
         /**
          * @brief Removes a command by name.

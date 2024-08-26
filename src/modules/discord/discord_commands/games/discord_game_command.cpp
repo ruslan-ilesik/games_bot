@@ -16,7 +16,7 @@ namespace gb {
         }
     }
 
-    void Discord_game_command::innit(const Modules &modules) {
+    void Discord_game_command::init(const Modules &modules) {
         _db = std::static_pointer_cast<Database>(modules.at("database"));
         _bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         _games_manager = std::static_pointer_cast<Discord_games_manager>(modules.at("discord_games_manager"));

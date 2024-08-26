@@ -12,8 +12,8 @@ namespace gb {
         lobby_image_url = "https://i.ibb.co/wM7sbC9/tic-tac-toe.webp";
     }
 
-    void Discord_tic_tac_toe_command_impl::innit(const Modules &modules) {
-        Discord_game_command::innit(modules);
+    void Discord_tic_tac_toe_command_impl::init(const Modules &modules) {
+        Discord_game_command::init(modules);
         this->_command_handler = std::static_pointer_cast<Discord_command_handler>(
             modules.at("discord_command_handler"));
         this->_discord = std::static_pointer_cast<Discord>(modules.at("discord"));

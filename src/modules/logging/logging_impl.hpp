@@ -44,7 +44,7 @@ namespace gb {
          *
          * @param modules A reference to a map of modules.
          */
-        virtual void innit(const Modules& modules) override;
+        virtual void init(const Modules& modules) override;
 
         /**
          * @brief Placeholder for run method.

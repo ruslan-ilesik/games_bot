@@ -38,7 +38,7 @@ namespace gb {
 
         Image_ptr cache_get(const std::string& name, const Vector2i& resolution) override;
 
-        void innit(const Modules& modules)override;
+        void init(const Modules& modules)override;
     };
 
     extern "C" Module_ptr create();

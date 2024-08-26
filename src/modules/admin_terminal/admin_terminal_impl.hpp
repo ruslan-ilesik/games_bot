@@ -80,7 +80,7 @@ namespace gb {
          * @brief Initializes the admin terminal with modules.
          * @param modules The map of modules to initialize.
          */
-        virtual void innit(const Modules &modules) override;
+        virtual void init(const Modules &modules) override;
 
         /**
          * @brief Adds a command to the admin terminal.

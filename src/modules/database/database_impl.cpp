@@ -46,7 +46,7 @@ namespace gb {
         });
     }
 
-    void Database_impl::innit(const Modules &modules) {
+    void Database_impl::init(const Modules &modules) {
         this->_log = std::static_pointer_cast<Logging>(modules.at("logging"));
         this->_config = std::static_pointer_cast<Config>(modules.at("config"));
         this->_admin_terminal = std::static_pointer_cast<Admin_terminal>(modules.at("admin_terminal"));

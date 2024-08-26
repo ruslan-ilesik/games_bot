@@ -13,7 +13,7 @@ namespace gb {
 
     void Discord_impl::stop() {}
 
-    void Discord_impl::innit(const Modules &modules) {}
+    void Discord_impl::init(const Modules &modules) {}
 
     Discord_command_ptr
     Discord_impl::create_discord_command(const dpp::slashcommand &command, const slash_command_handler_t &handler,

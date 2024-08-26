@@ -73,7 +73,7 @@ namespace gb {
          * @param modules Map of all modules managed by the application, including the module manager.
          * @note This method sets the config_manager by retrieving it from the provided modules and registers itself in config_manager also loads the JSON configuration. Same way it registers commands in Admin_terminal
          */
-        virtual void innit(const Modules &modules);
+        virtual void init(const Modules &modules);
 
         /**
          * @brief Method to stop the Json_config instance.

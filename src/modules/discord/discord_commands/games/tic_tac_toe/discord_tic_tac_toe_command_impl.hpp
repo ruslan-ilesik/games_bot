@@ -16,7 +16,7 @@ namespace gb {
     public:
         Discord_tic_tac_toe_command_impl();
 
-        void innit(const Modules &modules) override;
+        void init(const Modules &modules) override;
 
         void stop() override;
     };

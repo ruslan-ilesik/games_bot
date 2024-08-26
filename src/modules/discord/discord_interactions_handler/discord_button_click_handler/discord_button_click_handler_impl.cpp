@@ -17,7 +17,7 @@ namespace gb {
 
         std::vector<uint64_t> ids;
         if (generate_ids) {
-            ids = _cache.component_innit(m);
+            ids = _cache.component_init(m);
         } else {
             ids = _cache.get_ids(m);
         }
@@ -59,7 +59,7 @@ namespace gb {
     void Discord_button_click_handler_impl::run() {
     }
 
-    void Discord_button_click_handler_impl::innit(const Modules &modules) {
+    void Discord_button_click_handler_impl::init(const Modules &modules) {
         _bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
     }
 

@@ -10,7 +10,7 @@ namespace gb {
 
     Discord_bot_impl::~Discord_bot_impl() {}
 
-    void Discord_bot_impl::innit(const Modules &modules) {
+    void Discord_bot_impl::init(const Modules &modules) {
         _config = std::static_pointer_cast<Config>(modules.at("config"));
     }
 

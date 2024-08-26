@@ -39,7 +39,7 @@ namespace gb {
         _configs.erase(e.begin(), e.end());
     }
 
-    void Config_manager::innit(const Modules &modules) {
+    void Config_manager::init(const Modules &modules) {
 
     }
 

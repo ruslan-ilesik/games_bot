@@ -20,7 +20,7 @@ namespace gb {
 
     }
 
-    void Discord_command_ping_impl::innit(const Modules &modules) {
+    void Discord_command_ping_impl::init(const Modules &modules) {
         this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         this->_command_handler = std::static_pointer_cast<Discord_command_handler>(
             modules.at("discord_command_handler"));

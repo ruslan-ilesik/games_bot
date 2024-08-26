@@ -248,7 +248,7 @@ namespace gb {
          *
          * @param modules Map of module names to their corresponding instances
          */
-        void innit(const Modules &modules) override;
+        void init(const Modules &modules) override;
 
         /**
          * @brief Starts the database module and establishes MySQL connections.

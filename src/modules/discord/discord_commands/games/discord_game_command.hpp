@@ -41,7 +41,7 @@ namespace gb {
         //true in first argument if fail (timeout or error).
         dpp::task<Lobby_return> lobby(const dpp::slashcommand_t& event, std::vector<dpp::snowflake> players, const dpp::snowflake& host, unsigned int players_amount);
 
-        virtual void innit(const Modules& modules);
+        virtual void init(const Modules& modules);
 
         virtual void stop();
 

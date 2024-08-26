@@ -46,7 +46,7 @@ namespace gb {
          *
          * @param modules A map of module names to module shared pointers.
          */
-        virtual void innit(const Modules &modules) = 0;
+        virtual void init(const Modules &modules) = 0;
 
         /**
          * @brief Stops the Discord_command_handler module.

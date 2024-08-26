@@ -139,11 +139,11 @@ namespace gb {
             bool has_sufficient_dependencies(const Internal_modules &modules);
 
             /**
-             * @brief Innit method to innit the module's functionality.
+             * @brief Innit method to init the module's functionality.
              * @param modules Map of internal modules managed by Modules_manager.
              * @note It copies all of the modules defined as dependencies to new map and pass them to module + modules_manager
              */
-            void innit(const Internal_modules &modules);
+            void init(const Internal_modules &modules);
 
             /**
              * @brief Run method to execute the module's functionality.
@@ -190,7 +190,7 @@ namespace gb {
 
         /**
          * @brief List of modules in orde they should be ran.
-         * @note innit_modules clear it.
+         * @note init_modules clear it.
          */
         std::vector<Module_ptr> _running_order{};
 
@@ -215,15 +215,15 @@ namespace gb {
 
 
         /**
-        * @brief Innit_modules method to innit all loaded modules.
+        * @brief Innit_modules method to init all loaded modules.
         */
-        virtual void innit_modules();
+        virtual void init_modules();
 
         /**
-         * @brief Innit_module method to execute a innit module by name.
-         * @param name Name of the module to innit.
+         * @brief Innit_module method to execute a init module by name.
+         * @param name Name of the module to init.
          */
-        virtual void innit_module(const std::string &name);
+        virtual void init_module(const std::string &name);
 
         /**
          * @brief Stop method to stop all running modules and deallocate them.
@@ -241,7 +241,7 @@ namespace gb {
          *        Any additional dependencies required by the module should also be included in this map.
          * @note This method must be overridden by subclasses to define module behavior.
          */
-        virtual void innit(const Modules &modules);
+        virtual void init(const Modules &modules);
 
         /**
          * @brief Stop method to be overridden by subclasses.
@@ -316,14 +316,14 @@ namespace gb {
         void do_stop_module(const std::string &name);
 
         /**
-         * @brief Internal method to innit a module by name.
-         * @param name Name of the module to innit.
+         * @brief Internal method to init a module by name.
+         * @param name Name of the module to init.
          */
-        void do_innit_module(const std::string &name);
+        void do_init_module(const std::string &name);
 
         /**
          * @brief Internal method to run a module by name.
-         * @param name Name of the module to innit.
+         * @param name Name of the module to init.
          */
         void do_run_module(const std::string &name);
 

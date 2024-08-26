@@ -54,7 +54,7 @@ namespace gb {
          * @param m The DPP message whose components need IDs.
          * @return A vector of generated IDs that were assigned to the components.
          */
-        std::vector<uint64_t> component_innit(dpp::message& m);
+        std::vector<uint64_t> component_init(dpp::message& m);
 
         /**
          * @brief Clears the stored IDs from the map.

@@ -12,7 +12,7 @@ namespace gb {
         return std::dynamic_pointer_cast<Module>(std::make_shared<Json_config>());
     }
 
-    void Json_config::innit(const Modules &modules) {
+    void Json_config::init(const Modules &modules) {
         this->_config_manager = std::static_pointer_cast<Config_manager>(modules.at("config"));
         _config_manager->add_config(this);
         reload_from_file();

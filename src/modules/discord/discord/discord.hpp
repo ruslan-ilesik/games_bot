@@ -23,7 +23,7 @@ namespace gb {
          * @brief Inherited from module method
          * @param modules A map of module names to module shared pointers.
          */
-         void innit(const Modules &modules) override  = 0;
+         void init(const Modules &modules) override  = 0;
 
         /**
          * @brief Stops the Discord module.

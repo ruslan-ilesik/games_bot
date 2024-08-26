@@ -30,7 +30,7 @@ namespace gb {
         std::cout << "Admin_terminal_impl stopped" << std::endl;
     }
 
-    void Admin_terminal_impl::innit(const Modules &modules) {
+    void Admin_terminal_impl::init(const Modules &modules) {
         _modules_manager = std::static_pointer_cast<Modules_manager>(modules.at("module_manager"));
     }
 
@@ -152,15 +152,15 @@ namespace gb {
                         }
                     });
 
-        add_command("module_innit_all",
+        add_command("module_init_all",
                     "Command to initialize all loaded modules.",
                     "Arguments: no arguments.",
                     [this](const std::vector<std::string> &args) {
                         try {
-                            _modules_manager->innit_modules();
+                            _modules_manager->init_modules();
                         }
                         catch (...) {
-                            std::cout << "module_innit_all command error: error initializing modules" << std::endl;
+                            std::cout << "module_init_all command error: error initializing modules" << std::endl;
                         }
                     });
 
@@ -176,19 +176,19 @@ namespace gb {
                         }
                     });
 
-        add_command("module_innit",
+        add_command("module_init",
                     "Command to initialize specified loaded module.",
                     "Arguments: module name to initialize.",
                     [this](const std::vector<std::string> &args) {
                         if (args.empty()) {
-                            std::cout << "module_innit error: No module name provided" << std::endl;
+                            std::cout << "module_init error: No module name provided" << std::endl;
                             return;
                         }
                         try {
-                            _modules_manager->innit_module(args[0]);
+                            _modules_manager->init_module(args[0]);
                         }
                         catch (...) {
-                            std::cout << "module_innit command error: error initializing module " << args[0] << std::endl;
+                            std::cout << "module_init command error: error initializing module " << args[0] << std::endl;
                         }
                     });
 
@@ -220,17 +220,17 @@ namespace gb {
                         std::cout << output;
                     });
 
-        add_command("module_load_innit_run_all",
+        add_command("module_load_init_run_all",
                     "Command to load, initialize, and run all modules.",
                     "Arguments: no arguments.",
                     [this](const std::vector<std::string> &args) {
                         try{
                             _modules_manager->load_modules();
-                            _modules_manager->innit_modules();
+                            _modules_manager->init_modules();
                             _modules_manager->run_modules();
                         }
                         catch (...){
-                            std::cout << "Command module_load_innit_run_all error" << std::endl;
+                            std::cout << "Command module_load_init_run_all error" << std::endl;
                         }
                     });
 

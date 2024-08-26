@@ -71,7 +71,7 @@ namespace gb {
          *
          * @param modules The modules to initialize with.
          */
-        void innit(const Modules &modules) override;
+        void init(const Modules &modules) override;
 
         /**
          * @brief Runs the module.

@@ -62,7 +62,7 @@ namespace gb {
          * @brief Initializes the Discord_bot_impl with the provided modules.
          * @param modules A map of module names to module pointers.
          */
-        void innit(const Modules &modules) override;
+        void init(const Modules &modules) override;
 
         /**
          * @brief Starts the Discord bot.

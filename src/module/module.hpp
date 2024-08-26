@@ -90,7 +90,7 @@ namespace gb {
          *        Any additional dependencies required by the module should also be included in this map.
          * @note This method must be overridden by subclasses to define module behavior.
          */
-        virtual void innit(const Modules& modules) = 0;
+        virtual void init(const Modules& modules) = 0;
 
         /**
          * @brief Stop method to be implemented by subclasses.
@@ -100,7 +100,7 @@ namespace gb {
 
         /**
        * @brief Run method to be implemented by subclasses.
-       * @note This method must be overridden by subclasses to define module stopping behavior. Execution order is the same as innit.
+       * @note This method must be overridden by subclasses to define module stopping behavior. Execution order is the same as init.
        */
         virtual void run() = 0;
     };

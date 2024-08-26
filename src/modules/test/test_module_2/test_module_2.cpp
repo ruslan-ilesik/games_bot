@@ -18,7 +18,7 @@ namespace gb {
     Test_module_2::Test_module_2() : Module("test_module_2",{"database","logging"}){
     }
 
-    void Test_module_2::innit(const Modules &modules) {
+    void Test_module_2::init(const Modules &modules) {
         //std::cout << "run module 2\n";
         std::cout << _TEST_DER << '\n';
         this->db = std::static_pointer_cast<Database>(modules.at("database"));

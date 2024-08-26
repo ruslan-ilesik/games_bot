@@ -79,7 +79,7 @@ namespace gb {
         return image;
     }
 
-    void Image_processing_impl::innit(const Modules &modules) {
+    void Image_processing_impl::init(const Modules &modules) {
     }
 
     Image_ptr Image_processing_impl::create_image(size_t x, size_t y, const Color &color) {

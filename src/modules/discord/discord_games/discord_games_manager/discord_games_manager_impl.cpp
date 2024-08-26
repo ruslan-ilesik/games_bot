@@ -31,7 +31,7 @@ namespace gb {
 
     void Discord_games_manager_impl::run() {}
 
-    void Discord_games_manager_impl::innit(const Modules &modules) {
+    void Discord_games_manager_impl::init(const Modules &modules) {
         _db = std::static_pointer_cast<Database>(modules.at("database"));
         _create_game = _db->create_prepared_statement(
             "CALL create_game(?);"

@@ -77,7 +77,7 @@ namespace gb {
 
     }
 
-    void Discord_command_handler_impl::innit(const Modules &modules) {
+    void Discord_command_handler_impl::init(const Modules &modules) {
         this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         this->_admin_terminal = std::static_pointer_cast<Admin_terminal>(modules.at("admin_terminal"));
         this->_db = std::static_pointer_cast<Database>(modules.at("database"));
