@@ -28,7 +28,10 @@ namespace gb {
         Database_ptr _db;
 
         /// Prepared statement to create game.
-        Prepared_statement _create_game;
+        Prepared_statement _create_game_stmt;
+
+        /// Prepared statement to record user game result.
+        Prepared_statement _user_game_result_stmt;
 
     public:
         /**
@@ -52,6 +55,15 @@ namespace gb {
          * @param game Pointer to the Discord game to remove.
          */
         void remove_game(Discord_game* game) override;
+
+       /**
+        * @brief Records result of specific user to specific game to the database.
+        *
+        * @param game Pointer to the Discord game.
+        * @param player Player id for which we record data.
+        * @param result Result of the game which should be recorded.
+        */
+        void record_user_result(Discord_game* game, const dpp::snowflake& player, const std::string& result) override;
 
         /**
          * @brief Stops the manager's operation.

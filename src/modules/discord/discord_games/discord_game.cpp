@@ -6,7 +6,26 @@
 
 
 namespace gb {
-    Discord_game::~Discord_game() {
+std::string to_string(USER_REMOVE_REASON r) {
+  switch (r) {
+  case USER_REMOVE_REASON::UNKNOWN:
+    return "UNKNOWN";
+  case USER_REMOVE_REASON::TIMEOUT:
+    return "TIMEOUT";
+  case USER_REMOVE_REASON::LOSE:
+    return "LOSE";
+  case USER_REMOVE_REASON::WIN:
+    return "WIN";
+  case USER_REMOVE_REASON::DRAW:
+    return "DRAW";
+  case USER_REMOVE_REASON::SAVED:
+    return "SAVED";
+  default:
+    throw std::runtime_error(
+        "No known way to convert given USER_REMOVE_REASON to string");
+  }
+}
+Discord_game::~Discord_game() {
         game_stop();
     }
 
@@ -50,7 +69,7 @@ namespace gb {
         }
 
         _players.erase(_players.begin() + index);
-
+        _data.games_manager->record_user_result(this,user,to_string(reason));
         // Adjust _current_player_ind after removal
         if (_players.empty()) {
             _current_player_ind = 0;
@@ -78,7 +97,8 @@ namespace gb {
 
     uint64_t Discord_game::get_uid() {
       if (_unique_game_id == std::numeric_limits<uint64_t>::max()) {
-        std::istringstream iss(sync_wait(_game_create_req).at(0)[""]);
+        Database_return_t r = sync_wait(_game_create_req);
+        std::istringstream iss(r.at(0)["id"]);
         iss >> _unique_game_id;
       }
       return _unique_game_id;

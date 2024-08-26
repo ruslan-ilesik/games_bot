@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include <dpp/dpp.h>
 #include "src/module/module.hpp"
 #include "src/modules/database/database.hpp"
 
@@ -58,6 +59,19 @@ namespace gb {
          * @param game Pointer to the Discord game to remove.
          */
         virtual void remove_game(Discord_game* game) = 0;
+
+
+        /**
+         * @brief Records result of specific user to specific game.
+         *
+         * This pure virtual function must be implemented by derived classes to
+         * record a game result of the game.
+         *
+         * @param game Pointer to the Discord game.
+         * @param player Player id for which we record data.
+         * @param result Result of the game which should be recorded.
+         */
+        virtual void record_user_result(Discord_game* game, const dpp::snowflake& player, const std::string& result) = 0;
     };
 
     /**
