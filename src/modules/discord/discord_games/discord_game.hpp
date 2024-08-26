@@ -68,6 +68,8 @@ namespace gb {
 
         std::string get_name() const;
 
+        uint64_t get_uid();
+
         std::string add_image(dpp::message& m, const Image_ptr& image);
 
     };
