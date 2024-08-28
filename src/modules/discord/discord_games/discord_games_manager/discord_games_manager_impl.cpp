@@ -12,10 +12,25 @@ Discord_games_manager_impl::add_game(Discord_game *game) {
   return _db->execute_prepared_statement(_create_game_stmt, game->get_name());
 }
 
-void Discord_games_manager_impl::remove_game(Discord_game *game) {
+void Discord_games_manager_impl::remove_game(Discord_game *game, GAME_END_REASON end_reason) {
   std::unique_lock lock(_mutex);
   auto e = std::ranges::remove(_games, game);
   _games.erase(e.begin(), e.end());
+  std::string end_r_str;
+  switch (end_reason) {
+  case GAME_END_REASON::ERROR:
+    end_r_str = "ERROR";
+    break;
+  case GAME_END_REASON::SAVED:
+    end_r_str = "SAVED";
+    break;
+  case GAME_END_REASON::FINISHED:
+    end_r_str = "FINISHED";
+    break;
+  default:
+      throw std::runtime_error("No known to_string conversion for GAME_END_REASON");
+  }
+  _db->background_execute_prepared_statement(_finish_game_stmt,end_r_str,game->get_uid());
   _cv.notify_all();
 }
 
@@ -34,6 +49,7 @@ void Discord_games_manager_impl::stop() {
   });
   _db->remove_prepared_statement(_create_game_stmt);
   _db->remove_prepared_statement(_user_game_result_stmt);
+  _db->remove_prepared_statement(_finish_game_stmt);
 }
 
 void Discord_games_manager_impl::run() {}
@@ -52,6 +68,8 @@ void Discord_games_manager_impl::init(const Modules &modules) {
       );
       )XXX"
       );
+
+  _finish_game_stmt = _db->create_prepared_statement("UPDATE `games_history` SET `end_time`=UTC_TIMESTAMP(), `game_state`=? WHERE `id`=?");
 }
 
 Discord_games_manager_impl::Discord_games_manager_impl()

@@ -75,9 +75,16 @@ namespace gb {
         event.reply(dpp::ir_update_message, message_preprocessing(message), callback);
     }
 
-    void Discord_bot_impl::reply_new(const dpp::button_click_t &event, const dpp::message &message,
+    void Discord_bot_impl::reply_new(
+        const dpp::button_click_t &event, const dpp::message &message,
         const dpp::command_completion_event_t &callback) {
-        event.reply(message_preprocessing(message), callback);
+      event.reply(message_preprocessing(message), callback);
+    }
+
+    void Discord_bot_impl::message_edit(
+        const dpp::message &message,
+        const dpp::command_completion_event_t &callback) {
+        _bot->message_edit(message_preprocessing(message),callback);
     }
 
     Module_ptr create() {

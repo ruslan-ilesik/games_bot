@@ -84,7 +84,7 @@ Discord_game::~Discord_game() {
     }
 
     void Discord_game::game_stop() {
-        _data.games_manager->remove_game(this);
+        _data.games_manager->remove_game(this,GAME_END_REASON::FINISHED);
     }
 
     std::string Discord_game::add_image(dpp::message &m, const Image_ptr &image) {

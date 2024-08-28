@@ -20,6 +20,8 @@ class Discord_tic_tac_toe_game : public Discord_game {
 
   dpp::message win(bool timeout = false);
 
+  dpp::message draw();
+
 public:
   Discord_tic_tac_toe_game(Game_data_initialization &_data,
                            const std::vector<dpp::snowflake> &players);

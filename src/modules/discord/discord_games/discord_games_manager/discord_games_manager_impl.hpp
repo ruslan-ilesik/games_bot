@@ -30,6 +30,9 @@ namespace gb {
         /// Prepared statement to create game.
         Prepared_statement _create_game_stmt;
 
+        /// Prepared statement to finish the game.
+        Prepared_statement _finish_game_stmt;
+
         /// Prepared statement to record user game result.
         Prepared_statement _user_game_result_stmt;
 
@@ -53,8 +56,9 @@ namespace gb {
          * @brief Removes a game from the manager.
          *
          * @param game Pointer to the Discord game to remove.
+         * @param end_reason Reason why game should be removed from games manager.
          */
-        void remove_game(Discord_game* game) override;
+        void remove_game(Discord_game* game, GAME_END_REASON end_reason) override;
 
        /**
         * @brief Records result of specific user to specific game to the database.

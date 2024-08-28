@@ -66,7 +66,7 @@ dpp::message Discord_tic_tac_toe_game::win(bool timeout) {
     remove_player(USER_REMOVE_REASON::WIN, get_current_player());
   } else {
     embed.set_description(
-        std::format("Player {} won the game!\n{} Will be luckier next time.",
+        std::format("Player {} won the game!\n{} will be luckier next time.",
                     dpp::utility::user_mention(get_current_player()),
                     dpp::utility::user_mention(next_player())));
     next_player();
@@ -76,9 +76,26 @@ dpp::message Discord_tic_tac_toe_game::win(bool timeout) {
   }
   return m.add_embed(embed);
 }
+
+dpp::message Discord_tic_tac_toe_game::draw() {
+  dpp::message m;
+  dpp::embed embed;
+  embed.set_color(dpp::colors::yellow).set_title("Game over!");
+  create_image(m, embed);
+  embed.set_description(
+        std::format("Players {} and {} played a draw!",
+                    dpp::utility::user_mention(get_current_player()),
+                    dpp::utility::user_mention(next_player())));
+
+  remove_player(USER_REMOVE_REASON::DRAW, get_current_player());
+  remove_player(USER_REMOVE_REASON::DRAW, next_player());
+  return m.add_embed(embed);
+}
+
 Discord_tic_tac_toe_game::Discord_tic_tac_toe_game(
     Game_data_initialization &_data, const std::vector<dpp::snowflake> &players)
     : Discord_game(_data, players) {}
+
 std::vector<std::pair<std::string, image_generator_t>>
 Discord_tic_tac_toe_game::get_image_generators() {
   image_generator_t base = [](const Image_processing_ptr &image_processing,
@@ -130,7 +147,8 @@ Discord_tic_tac_toe_game::run(const dpp::button_click_t &_event) {
     if (r.second) {
       dpp::message m = win(true);
       m.id = event.command.message_id;
-      //_data.bot->reply(m);
+      m.channel_id = event.command.channel_id;
+      _data.bot->message_edit(m);
       break;
     }
     event = r.first;
@@ -180,6 +198,7 @@ Discord_tic_tac_toe_game::run(const dpp::button_click_t &_event) {
       }
       if (!has_empty) {
         // draw
+        _data.bot->reply(event,draw());
         ended = true;
         break;
       }
