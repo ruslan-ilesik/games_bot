@@ -7,11 +7,12 @@
 namespace gb {
     std::map<std::string, std::string> category_emojis = {
         {"Other", "🔄"},
-        {"Game",  "🎮"}
+        {"Game",  "🎮"},
+        {"Multiplayer", "🌐"}
     };
 
 
-    void Discord_command_help_impl::innit(const Modules &modules) {
+    void Discord_command_help_impl::init(const Modules &modules) {
         this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         this->_command_handler = std::static_pointer_cast<Discord_command_handler>(
             modules.at("discord_command_handler"));
@@ -24,10 +25,9 @@ namespace gb {
             _command_handler->register_command(discord->create_discord_command(
                 command,
                 [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                    _running_cnt++;
+                    this->command_start();
                     co_await help_command(event);
-                    _running_cnt--;
-                    _cv.notify_all();
+                    this->command_end();
                     co_return;
                 },
                 {
@@ -36,14 +36,6 @@ namespace gb {
                 }
             ));
         });
-    }
-
-    void Discord_command_help_impl::stop() {
-        _command_handler->remove_command("help");
-        //wait until all running executions of command will stop;
-        std::mutex m;
-        std::unique_lock lk (m);
-        _cv.wait(lk,[this](){return _running_cnt == 0;});
     }
 
     Discord_command_help_impl::Discord_command_help_impl() : Discord_command_help("discord_command_help",
@@ -140,7 +132,7 @@ namespace gb {
                                         cat[0], // start with first element
                                         coma_sep);
         command_embed.add_field(select_cat.values[0],
-                                std::format("Description: {}\n\nDetailed: {}\n\nCategories: **{}**",
+                                std::format("Description: {}\n\nDetailed: \n{}\n\nCategories: **{}**",
                                             command->get_command().description, command->get_command_data().help_text,
                                             s));
         if (!command->get_command().options.empty()) {

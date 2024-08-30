@@ -11,8 +11,9 @@ namespace gb {
         _rng = std::mt19937(_rd());
     }
 
-    std::vector<uint64_t> Id_cache::component_innit(dpp::message &m) {
+    std::vector<uint64_t> Id_cache::component_init(dpp::message &m) {
         std::vector<uint64_t> occupied_ids;
+
         auto manage_id = [this, &occupied_ids](dpp::component &component) {
             std::unique_lock lk(_mutex);
             uint64_t id;
@@ -75,4 +76,41 @@ namespace gb {
         return _ids_map.at(key);
     }
 
+    std::vector<uint64_t> Id_cache::get_ids(const dpp::message &m) {
+        std::vector<uint64_t> occupied_ids;
+
+        auto to_uint64 = [](const std::string& s) {
+            uint64_t value;
+            std::istringstream iss(s);
+            iss >> value;
+            return value;
+        };
+
+
+        auto manage_id = [this, &occupied_ids,&to_uint64](const dpp::component &component) {
+            occupied_ids.push_back(to_uint64(component.custom_id));
+        };
+
+        auto selectmenu = [this, &occupied_ids,&to_uint64](const dpp::component &component) {
+            for (auto &i: component.options) {
+                occupied_ids.push_back(to_uint64(i.value));
+            }
+        };
+        for (auto &cmp: m.components) {
+            if (cmp.type == dpp::cot_action_row) {
+                for (auto &cmp2: cmp.components) {
+                    if (cmp2.type == dpp::cot_selectmenu) {
+                        selectmenu(cmp2);
+                    }
+                    manage_id(cmp2);
+                }
+            } else {
+                if (cmp.type == dpp::cot_selectmenu) {
+                    selectmenu(cmp);
+                }
+                manage_id(cmp);
+            }
+        }
+        return occupied_ids;
+    }
 } //gb

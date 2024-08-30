@@ -24,27 +24,50 @@ namespace gb {
         /// Vector holding pointers to the Discord games.
         std::vector<Discord_game*> _games;
 
+        /// Pointer to database object.
+        Database_ptr _db;
+
+        /// Prepared statement to create game.
+        Prepared_statement _create_game_stmt;
+
+        /// Prepared statement to finish the game.
+        Prepared_statement _finish_game_stmt;
+
+        /// Prepared statement to record user game result.
+        Prepared_statement _user_game_result_stmt;
+
     public:
         /**
          * @brief Constructor for Discord_games_manager_impl.
          *
          * Initializes the manager with no dependencies.
          */
-        Discord_games_manager_impl() : Discord_games_manager("discord_games_manager", {}) {};
+        Discord_games_manager_impl();
 
         /**
          * @brief Adds a game to the manager.
          *
          * @param game Pointer to the Discord game to add.
+         * @returns Awaitable request to database which will return unique id of game.
          */
-        void add_game(Discord_game* game) override;
+        Task<Database_return_t> add_game(Discord_game* game) override;
 
         /**
          * @brief Removes a game from the manager.
          *
          * @param game Pointer to the Discord game to remove.
+         * @param end_reason Reason why game should be removed from games manager.
          */
-        void remove_game(Discord_game* game) override;
+        void remove_game(Discord_game* game, GAME_END_REASON end_reason) override;
+
+       /**
+        * @brief Records result of specific user to specific game to the database.
+        *
+        * @param game Pointer to the Discord game.
+        * @param player Player id for which we record data.
+        * @param result Result of the game which should be recorded.
+        */
+        void record_user_result(Discord_game* game, const dpp::snowflake& player, const std::string& result) override;
 
         /**
          * @brief Stops the manager's operation.
@@ -63,7 +86,7 @@ namespace gb {
          *
          * @param modules A map of module names to their shared pointers.
          */
-        void innit(const Modules& modules) override;
+        void init(const Modules& modules) override;
     };
 
     /**

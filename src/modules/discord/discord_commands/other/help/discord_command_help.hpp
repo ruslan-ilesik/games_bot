@@ -6,6 +6,8 @@
 
 #include "src/module/module.hpp"
 
+#include <src/modules/discord/discord_commands/discord_general_command.hpp>
+
 namespace gb {
 
     /**
@@ -16,7 +18,7 @@ namespace gb {
      * help commands that can be used in a Discord bot to assist users in getting information
      * about available commands.
      */
-    class Discord_command_help : public Module {
+    class Discord_command_help : public Discord_general_command {
     public:
         /**
          * @brief Constructor for Discord_command_help.
@@ -27,7 +29,7 @@ namespace gb {
          * @param dependencies A vector of module names that this module depends on.
          */
         Discord_command_help(const std::string& name, const std::vector<std::string>& dependencies)
-            : Module(name, dependencies) {};
+            : Discord_general_command(name, dependencies) {};
 
     };
 

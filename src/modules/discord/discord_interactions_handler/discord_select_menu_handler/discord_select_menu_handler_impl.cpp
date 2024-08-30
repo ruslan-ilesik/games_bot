@@ -18,7 +18,7 @@ namespace gb {
             return value;
         };
 
-        auto ids = _cache.component_innit(m);
+        auto ids = _cache.component_init(m);
         auto result = co_await dpp::when_any{
             _bot->get_bot()->on_select_click.when([this,&ids,&to_uint64,users](const dpp::select_click_t &b){
                 return std::ranges::find(ids,to_uint64(b.values[0])) != ids.end() &&
@@ -43,7 +43,7 @@ namespace gb {
 
     void Discord_select_menu_handler_impl::run() {}
 
-    void Discord_select_menu_handler_impl::innit(const Modules &modules) {
+    void Discord_select_menu_handler_impl::init(const Modules &modules) {
         _bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
     }
 

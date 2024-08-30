@@ -41,7 +41,13 @@ namespace gb {
         if (!_commands.contains(name)) {
             throw std::runtime_error("Discord_command_handler error: command " + name + " cannot be removed as it does not exist");
         }
-        _discord_bot->get_bot()->global_command_delete(_commands.at(name)->get_command().id);
+        try {
+            _discord_bot->get_bot()->global_command_delete_sync(_commands.at(name)->get_command().id);
+        }
+        catch (const dpp::rest_exception& e) {
+
+        }
+        _commands.erase(name);
     }
 
     Discord_command_handler_impl::Discord_command_handler_impl()
@@ -55,7 +61,12 @@ namespace gb {
         _discord_bot->get_bot()->on_ready.detach(_on_ready_handler);
         //remove handler before locking, so new command calls will not appear
         _discord_bot->get_bot()->on_slashcommand.detach(_on_slashcommand_handler);
-        _discord_bot->get_bot()->global_bulk_command_delete();
+        try {
+            _discord_bot->get_bot()->global_bulk_command_delete_sync();
+        }
+        catch (const dpp::rest_exception& e) {
+
+        }
         //this will ensure all commands currently running will finish their job
         std::unique_lock<std::shared_mutex> lock (_mutex);
         _admin_terminal->remove_command("discord_command_handler_bulk_disable");
@@ -66,7 +77,7 @@ namespace gb {
 
     }
 
-    void Discord_command_handler_impl::innit(const Modules &modules) {
+    void Discord_command_handler_impl::init(const Modules &modules) {
         this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         this->_admin_terminal = std::static_pointer_cast<Admin_terminal>(modules.at("admin_terminal"));
         this->_db = std::static_pointer_cast<Database>(modules.at("database"));
@@ -185,13 +196,23 @@ namespace gb {
         if (_bulk) {
             _command_register_queue.push_back(command->get_name());
         } else {
-            _discord_bot->get_bot()->global_command_create(command->get_command());
+            _discord_bot->get_bot()->global_command_create(command->get_command(),[this](const dpp::confirmation_callback_t & event) {
+                if (event.is_error()) {
+                    _discord_bot->get_bot()->log(dpp::ll_error, "Command create failed");
+                    return;
+                }
+                for (auto& [k, v] : event.get<dpp::slashcommand_map>()) {
+                    _commands.at(v.name)->get_command().id = k;
+                }
+            });
         }
         _commands.insert({command->get_name(), command});
     }
 
     void Discord_command_handler_impl::remove_commands() {
-        _discord_bot->get_bot()->global_bulk_command_delete();
+        _discord_bot->get_bot()->global_bulk_command_delete_sync();
+        std::unique_lock<std::shared_mutex> lock(_mutex);
+        _commands.clear();
     }
 
     void Discord_command_handler_impl::register_commands() {

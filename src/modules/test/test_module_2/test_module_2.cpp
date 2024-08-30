@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <thread>
 
 #include "test_module_2.hpp"
 #include "../test_module_1/test_module_1.hpp"
@@ -17,7 +18,7 @@ namespace gb {
     Test_module_2::Test_module_2() : Module("test_module_2",{"database","logging"}){
     }
 
-    void Test_module_2::innit(const Modules &modules) {
+    void Test_module_2::init(const Modules &modules) {
         //std::cout << "run module 2\n";
         std::cout << _TEST_DER << '\n';
         this->db = std::static_pointer_cast<Database>(modules.at("database"));
@@ -61,23 +62,23 @@ namespace gb {
             });
         }
 
-        auto cc2 = [this](int id)-> Task<void> {
+        auto cc2 = [this](int id){
             auto i = db->create_prepared_statement("SELECT id FROM commands_use where id=?");
-            co_await db->execute_prepared_statement(i, id);
-            /*for (const auto &row : r) {
+            Database_return_t r = sync_wait(db->execute_prepared_statement(i, id));
+            for (const auto &row : r) {
                 for (const auto &col : row) {
                     std::cout << col.first << ": " << col.second << " | ";
                 }
                 std::cout << "\n";
             }
-            std::cout << std::endl;*/
-            co_return;
+            std::cout << std::endl;
+            //co_return;
         };
 
         for(int i = 80; i < 100; i++){
             //cc2(i);
         }
-        cc2(10);
+        cc2(1);
         /*for (int i = 0; i < 10; ++i) {
             int start = i * requests_per_thread;
             prepared_threads.emplace_back([start,requests_per_thread,cc2] {

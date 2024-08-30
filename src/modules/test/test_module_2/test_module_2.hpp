@@ -16,7 +16,7 @@ namespace gb {
         Test_module_2();;
         virtual ~Test_module_2() = default;
 
-        virtual void innit(const Modules& modules);
+        virtual void init(const Modules& modules);
 
         virtual void stop();
 

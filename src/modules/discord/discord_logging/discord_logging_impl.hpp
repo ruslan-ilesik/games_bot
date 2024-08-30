@@ -56,7 +56,7 @@ namespace gb {
          *
          * @param modules A map of module names to module shared pointers.
          */
-        void innit(const Modules &modules) override;
+        void init(const Modules &modules) override;
 
     };
 

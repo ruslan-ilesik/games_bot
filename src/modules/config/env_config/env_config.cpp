@@ -12,7 +12,7 @@ namespace gb {
 
     Env_config::Env_config() : Config("env_config",{"config"}){}
 
-    void Env_config::innit(const Modules &modules) {
+    void Env_config::init(const Modules &modules) {
         this->_config_manager = std::static_pointer_cast<Config_manager>(modules.at("config"));
         _config_manager->add_config(this);
     }

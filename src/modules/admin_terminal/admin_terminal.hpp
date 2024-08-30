@@ -69,7 +69,7 @@ namespace gb {
          * @param modules Map of all modules managed by the application, including the module manager.
          * @note This method sets the modules_manager by retrieving it from the provided modules.
          */
-        virtual void innit(const Modules &modules) = 0;
+        virtual void init(const Modules &modules) = 0;
 
         /**
          * @brief Method to stop the Admin_terminal instance.

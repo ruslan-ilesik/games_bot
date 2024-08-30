@@ -46,7 +46,7 @@ namespace gb {
         });
     }
 
-    void Database_impl::innit(const Modules &modules) {
+    void Database_impl::init(const Modules &modules) {
         this->_log = std::static_pointer_cast<Logging>(modules.at("logging"));
         this->_config = std::static_pointer_cast<Config>(modules.at("config"));
         this->_admin_terminal = std::static_pointer_cast<Admin_terminal>(modules.at("admin_terminal"));
@@ -453,50 +453,54 @@ namespace gb {
         _prepared_statements.erase(st);
     }
 
-    Database_return_t Mysql_connection::execute_prepared_statement(const Prepared_statement &st, std::unique_ptr<Prepared_statement_params> params) {
-        int max_retries = 2;
-        int attempts = 0;
+   Database_return_t Mysql_connection::execute_prepared_statement(const Prepared_statement &st, std::unique_ptr<Prepared_statement_params> params) {
+    int max_retries = 2;
+    int attempts = 0;
 
-        while (attempts < max_retries) {
-            try {
-                if (_conn == nullptr) {
-                    connect();
-                }
-                auto args = dynamic_cast<Mysql_prepared_statement_params*>(params.get())->get_binds();
+    while (attempts < max_retries) {
+        try {
+            if (_conn == nullptr) {
+                connect();
+            }
+            auto args = dynamic_cast<Mysql_prepared_statement_params*>(params.get())->get_binds();
 
-                if (!_prepared_statements.contains(st)) {
-                    _log->critical("Database Error: Unknown prepared statement");
-                    throw std::runtime_error("Database Error: Unknown prepared statement");
+            if (!_prepared_statements.contains(st)) {
+                _log->critical("Database Error: Unknown prepared statement");
+                throw std::runtime_error("Database Error: Unknown prepared statement");
+            }
+            auto* stmt = _prepared_statements[st];
+            if (!args.empty()) {
+                if (mysql_stmt_bind_param(stmt, &args[0])) {
+                    _log->critical("Database Error: mysql_stmt_bind_param failed");
+                    throw std::runtime_error("Database Error: mysql_stmt_bind_param failed");
                 }
-                auto* stmt = _prepared_statements[st];
-                if (!args.empty()) {
-                    if (mysql_stmt_bind_param(stmt, &args[0])) {
-                        _log->critical("Database Error: mysql_stmt_bind_param failed");
-                        throw std::runtime_error("Database Error: mysql_stmt_bind_param failed");
-                    }
-                }
+            }
 
-                if (mysql_stmt_execute(stmt)) {
-                    _log->critical("Database Error: mysql_stmt_execute(), failed. Error: " + std::string(mysql_stmt_error(stmt)));
-                    throw std::runtime_error("Database Error: mysql_stmt_execute(), failed. Error: " + std::string(mysql_stmt_error(stmt)));
-                }
+            if (mysql_stmt_execute(stmt)) {
+                _log->critical("Database Error: mysql_stmt_execute(), failed. Error: " + std::string(mysql_stmt_error(stmt)));
+                throw std::runtime_error("Database Error: mysql_stmt_execute(), failed. Error: " + std::string(mysql_stmt_error(stmt)));
+            }
+
+            Database_return_t storage{};
+
+            do {
                 MYSQL_RES* confres = mysql_stmt_result_metadata(stmt);
                 if (!confres) {
-                    return {};
+                    continue;
                 }
+
                 unsigned long num_fields = mysql_stmt_field_count(stmt);
-                MYSQL_FIELD *fields = mysql_fetch_fields(confres);
+                MYSQL_FIELD* fields = mysql_fetch_fields(confres);
                 auto bindings = std::make_unique<MYSQL_BIND[]>(num_fields);
                 auto string_buffers = std::make_unique<std::unique_ptr<char[]>[]>(num_fields);
                 auto lengths = std::make_unique<unsigned long[]>(num_fields);
-                auto is_null = std::make_unique<bool []>(num_fields);
+                auto is_null = std::make_unique<bool[]>(num_fields);
 
-                std::memset(bindings.get(),0,sizeof(MYSQL_BIND)*num_fields);
-                std::memset(is_null.get(), 0, sizeof(bool)*num_fields);
-                std::memset(lengths.get(), 0, sizeof(unsigned long)*num_fields);
+                std::memset(bindings.get(), 0, sizeof(MYSQL_BIND) * num_fields);
+                std::memset(is_null.get(), 0, sizeof(bool) * num_fields);
+                std::memset(lengths.get(), 0, sizeof(unsigned long) * num_fields);
 
-                for (size_t i =0; i < num_fields; i++){
-                    //limit output length to 2048 bytes, otherwise fields like TEXT may ask to allocate 4gb buffer when it is not needed
+                for (size_t i = 0; i < num_fields; i++) {
                     fields[i].length = std::min(fields[i].length, 2048UL);
                     string_buffers[i] = std::make_unique<char[]>(fields[i].length);
                     std::memset(string_buffers[i].get(), 0, fields[i].length);
@@ -506,28 +510,25 @@ namespace gb {
                     bindings[i].is_null = &is_null[i];
                     bindings[i].length = &lengths[i];
                 }
-                int result = mysql_stmt_bind_result(stmt, (MYSQL_BIND*)bindings.get());
+
+                int result = mysql_stmt_bind_result(stmt, bindings.get());
                 if (result) {
-                    _log->critical("Database ERROR: mysql_stmt_bind_result failed: "+ std::string(mysql_stmt_error(stmt)));
-                    throw std::runtime_error("Database ERROR: mysql_stmt_bind_result failed: "+ std::string(mysql_stmt_error(stmt)));
+                    _log->critical("Database ERROR: mysql_stmt_bind_result failed: " + std::string(mysql_stmt_error(stmt)));
+                    throw std::runtime_error("Database ERROR: mysql_stmt_bind_result failed: " + std::string(mysql_stmt_error(stmt)));
                 }
-                result = mysql_stmt_execute(stmt);
-                /* Build resultset */
-                Database_return_t storage{};
+
                 while (true) {
-                    int result = mysql_stmt_fetch(stmt);
-                    if (result == MYSQL_NO_DATA) {
-                        /* End of resultset */
+                    int fetch_result = mysql_stmt_fetch(stmt);
+                    if (fetch_result == MYSQL_NO_DATA) {
                         break;
-                    } else if (result != 0) {
-                        /* Error retrieving resultset, e.g. disconnected */
-                        _log->critical("Database ERROR:" + std::string(mysql_stmt_error(stmt)));
-                        throw std::runtime_error("Database ERROR:" + std::string(mysql_stmt_error(stmt)));
-                        break;
+                    } else if (fetch_result != 0) {
+                        _log->critical("Database ERROR: " + std::string(mysql_stmt_error(stmt)));
+                        throw std::runtime_error("Database ERROR: " + std::string(mysql_stmt_error(stmt)));
                     }
+
                     if (mysql_num_fields(confres)) {
                         long s_field_count = 0;
-                        std::map<std::string,std::string> row;
+                        std::map<std::string, std::string> row;
                         while (s_field_count < mysql_num_fields(confres)) {
                             std::string a = (fields[s_field_count].name ? fields[s_field_count].name : "");
                             std::string b = is_null[s_field_count] ? "" : std::string(string_buffers[s_field_count].get(), lengths[s_field_count]);
@@ -537,21 +538,27 @@ namespace gb {
                         storage.push_back(row);
                     }
                 }
+
                 mysql_free_result(confres);
-                return storage;
-            } catch (const std::runtime_error& e) {
-                // Check if the error is due to connection lost
-                if (std::string(e.what()).find("Lost connection") != std::string::npos) {
-                    _log->warn("Connection lost, attempting to reconnect...");
-                    connect(); // Attempt to reconnect
-                    attempts++;
-                } else {
-                    throw; // Rethrow the exception if it's not related to connection lost
-                }
+
+                // Proceed to the next result set if available
+            } while (mysql_stmt_next_result(stmt) == 0);
+
+            return storage;
+
+        } catch (const std::runtime_error& e) {
+            // Check if the error is due to connection lost
+            if (std::string(e.what()).find("Lost connection") != std::string::npos) {
+                _log->warn("Connection lost, attempting to reconnect...");
+                connect(); // Attempt to reconnect
+                attempts++;
+            } else {
+                throw; // Rethrow the exception if it's not related to connection lost
             }
         }
-        throw std::runtime_error("Database Error: Max retries reached. Unable to execute statement.");
     }
+    throw std::runtime_error("Database Error: Max retries reached. Unable to execute statement.");
+}
 
 
     void Mysql_prepared_statement_params::add_param(const std::string &param) {

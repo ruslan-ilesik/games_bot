@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <sstream>
 
 #include "../../module/module.hpp"
 #include "src/utils/coro/coro.hpp"

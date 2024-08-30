@@ -4,8 +4,10 @@
 
 #pragma once
 #include "../../../module/module.hpp"
-#include "../../logging/logging.hpp"
 #include "../../config/config.hpp"
+#include "../../logging/logging.hpp"
+
+#include <src/modules/achievements_processing/achievements_processing.hpp>
 #define _TEST_DER (__FILE__ "123")
 namespace gb {
 
@@ -13,11 +15,12 @@ namespace gb {
     private:
         Logging_ptr  log;
         Config_ptr config;
+        Achievements_processing_ptr achievements;
     public:
         Test_module_1();;
         virtual ~Test_module_1() = default;
 
-        virtual void innit(const Modules& modules);
+        virtual void init(const Modules& modules);
 
         virtual void stop();
 

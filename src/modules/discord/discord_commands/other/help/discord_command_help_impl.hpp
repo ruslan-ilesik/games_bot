@@ -33,16 +33,6 @@ namespace gb {
         Discord_select_menu_handler_ptr _select_menu_handler;
 
         /**
-         * @brief Counter for amount of currently running commands.
-         */
-        std::atomic_uint64_t _running_cnt;
-
-        /**
-         * @brief Condition variable for proper work of stop.
-         */
-        std::condition_variable _cv;
-
-        /**
          * @brief Handles the help command.
          *
          * This function sends an embedded message with available command categories and waits for the user to select one.
@@ -60,18 +50,11 @@ namespace gb {
         Discord_command_help_impl();
 
         /**
-         * @brief Stops the help command module.
-         *
-         * This function removes the "help" command and waits until all running executions of the command are stopped.
-         */
-        void stop() override;
-
-        /**
          * @brief Initializes the module with the provided modules.
          *
          * @param modules The modules to initialize with.
          */
-        void innit(const Modules &modules) override;
+        void init(const Modules &modules) override;
 
         /**
          * @brief Runs the module.

@@ -9,7 +9,7 @@ namespace gb {
 
     void Crypto_impl::stop() {}
 
-    void Crypto_impl::innit(const Modules &modules) {}
+    void Crypto_impl::init(const Modules &modules) {}
 
     Crypto_impl::Crypto_impl() : Crypto("crypto",{}){
         if (!RAND_bytes(key, sizeof(key)) || !RAND_bytes(iv, sizeof(iv))) {

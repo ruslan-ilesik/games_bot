@@ -29,29 +29,11 @@ namespace gb {
          */
         Discord_bot_ptr _discord_bot;
 
-        /**
-        * @brief Counter for amount of currently running commands.
-        */
-        std::atomic_uint64_t _running_cnt;
-
-        /**
-        * @brief Condition variable for proper work of stop.
-        */
-        std::condition_variable _cv;
-
     public:
         /**
          * @brief Constructor for Discord_command_ping_impl.
          */
         Discord_command_ping_impl();
-
-        /**
-         * @brief Stops the ping command.
-         *
-         * This method removes the ping command from the command handler and waits until all
-         * running executions of the command have stopped.
-         */
-        void stop() override;
 
         /**
          * @brief Runs the ping command.
@@ -68,7 +50,7 @@ namespace gb {
          *
          * @param modules A reference to the collection of modules required by this command.
          */
-        void innit(const Modules &modules) override;
+        void init(const Modules &modules) override;
     };
 
     /**

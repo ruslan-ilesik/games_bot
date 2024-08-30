@@ -59,7 +59,7 @@ namespace gb {
          *
          * @param modules The modules required by the handler.
          */
-        void innit(const Modules& modules) override;
+        void init(const Modules& modules) override;
 
         /**
          * @brief Stops the select menu handler.

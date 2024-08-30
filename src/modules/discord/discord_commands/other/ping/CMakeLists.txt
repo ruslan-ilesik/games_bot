@@ -1,6 +1,7 @@
 add_library(discord_command_ping SHARED
-    ./discord_command_ping_impl.cpp
-    ../../../../../module/module.cpp
+        ./discord_command_ping_impl.cpp
+        ../../discord_general_command.cpp
+        ../../../../../module/module.cpp
 )
 
 find_package(dpp REQUIRED CONFIG)

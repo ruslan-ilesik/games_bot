@@ -37,7 +37,7 @@ namespace gb {
          * @brief Initializes the module with the provided modules.
          * @param modules Reference to the modules.
          */
-        void innit(const Modules &modules) override;
+        void init(const Modules &modules) override;
 
         /**
          * @brief Starts the Crypto_impl module.

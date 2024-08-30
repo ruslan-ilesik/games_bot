@@ -40,7 +40,7 @@ namespace gb {
          * @brief Method to initialize the Config_manager and its configurations.
          * @param modules Map of all modules managed by the application, including the module manager.
          */
-        virtual void innit(const Modules& modules);
+        virtual void init(const Modules& modules);
 
         /**
          * @brief Method to stop the Config_manager and its configurations.

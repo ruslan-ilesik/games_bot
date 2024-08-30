@@ -8,12 +8,9 @@ namespace gb {
 
     Discord_bot_impl::Discord_bot_impl() : Discord_bot("discord_bot", {"config"}) {}
 
-    Discord_bot_impl::~Discord_bot_impl() {
-        // Memory cleanup to prevent memory leak, originally created in init method.
-        delete _bot;
-    }
+    Discord_bot_impl::~Discord_bot_impl() {}
 
-    void Discord_bot_impl::innit(const Modules &modules) {
+    void Discord_bot_impl::init(const Modules &modules) {
         _config = std::static_pointer_cast<Config>(modules.at("config"));
     }
 
@@ -21,7 +18,7 @@ namespace gb {
         if (_bot != nullptr) {
             throw std::runtime_error("Bot variable is not nullptr, memory leak possible");
         }
-        _bot = new Discord_cluster(_config->get_value("discord_bot_token"));
+        _bot =  std::make_unique<Discord_cluster>(_config->get_value("discord_bot_token"));
 
         // Run all pre-requirements.
         {
@@ -29,7 +26,9 @@ namespace gb {
             for (auto &i: _pre_requirements) {
                 i();
             }
+            _pre_requirements.clear();
         }
+
         _bot->start(dpp::st_return);
     }
 
@@ -41,12 +40,12 @@ namespace gb {
     }
 
     Discord_cluster *Discord_bot_impl::get_bot() {
-        return _bot;
+        return _bot.get();
     }
 
     void Discord_bot_impl::add_pre_requirement(const std::function<void()> &func) {
         std::unique_lock<std::mutex> lock(_mutex);
-        if (_bot == nullptr) {
+        if (!_bot) {
             _pre_requirements.push_back(func);
         } else {
             func();
@@ -69,6 +68,26 @@ namespace gb {
     void Discord_bot_impl::reply(const dpp::select_click_t &event, const dpp::message &message,
                                  const dpp::command_completion_event_t &callback) {
         event.reply(dpp::ir_update_message, message_preprocessing(message), callback);
+    }
+
+    void Discord_bot_impl::reply(const dpp::button_click_t &event, const dpp::message &message,
+        const dpp::command_completion_event_t &callback) {
+        event.reply(dpp::ir_update_message, message_preprocessing(message), callback);
+    }
+
+    void Discord_bot_impl::reply_new(
+        const dpp::button_click_t &event, const dpp::message &message,
+        const dpp::command_completion_event_t &callback) {
+      event.reply(message_preprocessing(message), callback);
+    }
+
+    void Discord_bot_impl::message_edit(const dpp::message &message, const dpp::command_completion_event_t &callback) {
+        _bot->message_edit(message_preprocessing(message), callback);
+    }
+
+    void Discord_bot_impl::message_create(const dpp::message &message,
+                                          const dpp::command_completion_event_t &callback) {
+        _bot->message_create(message_preprocessing(message),callback);
     }
 
     Module_ptr create() {

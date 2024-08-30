@@ -18,7 +18,7 @@ namespace gb {
         // No operation needed in run() for this implementation
     }
 
-    void Discord_logging_impl::innit(const Modules &modules) {
+    void Discord_logging_impl::init(const Modules &modules) {
         this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         this->_log = std::static_pointer_cast<Logging>(modules.at("logging"));
 
