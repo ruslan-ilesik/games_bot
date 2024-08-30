@@ -6,7 +6,7 @@
 
 namespace gb {
     Discord_game_command::Discord_game_command(const std::string &name,
-                                               const std::vector<std::string> &dependencies) : Module(
+                                               const std::vector<std::string> &dependencies) : Discord_general_command(
         name, dependencies) {
         // insert basic game dependencies if they are not there
         for (auto &i: Discord_game::get_basic_game_dependencies()) {
@@ -22,23 +22,17 @@ namespace gb {
         _games_manager = std::static_pointer_cast<Discord_games_manager>(modules.at("discord_games_manager"));
         _image_processing = std::static_pointer_cast<Image_processing>(modules.at("image_processing"));
         _button_click_handler = std::static_pointer_cast<Discord_button_click_handler>(modules.at("discord_button_click_handler"));
-    }
-
-    void Discord_game_command::stop() {
-        std::mutex m;
-        std::unique_lock lk(m);
-        _cv.wait(lk, [this]() { return _games_cnt == 0; });
+        _achievements_processing = std::static_pointer_cast<Discord_achievements_processing>(modules.at("discord_achievements_processing"));
     }
 
     void Discord_game_command::run() {
 
     }
 
-    void Discord_game_command::command_finished() {
-        _games_cnt--;
-        _cv.notify_all();
+    Game_data_initialization Discord_game_command::get_game_data_initialization(const std::string &game_name) const {
+        return {
+            game_name, _db, _bot, _games_manager, _image_processing, _button_click_handler, _achievements_processing};
     }
-
 
 
     dpp::task<Discord_game_command::Lobby_return> Discord_game_command::lobby(const dpp::slashcommand_t &event,
@@ -183,9 +177,5 @@ namespace gb {
             }
         }
         co_return {true, {},{}};
-    }
-
-    void Discord_game_command::command_run() {
-        _games_cnt++;
     }
 } // gb

@@ -26,7 +26,7 @@ namespace gb {
             _command_handler->register_command(_discord->create_discord_command(
                     command,
                     [this](const dpp::slashcommand_t& event)-> dpp::task<void>{
-                        this->command_run();
+                        this->command_start();
                         std::vector<dpp::snowflake> players = {};
                         auto parameter = event.get_parameter("player");
                         if (std::holds_alternative<dpp::snowflake>(parameter)) {
@@ -34,11 +34,11 @@ namespace gb {
                         }
                         Lobby_return r = co_await this->lobby(event,players,event.command.usr.id,2);
                         if (!r.is_timeout) {
-                            Game_data_initialization game_data{"tic tac toe",_db,_bot,_games_manager,_image_processing,_button_click_handler};
-                            auto game = std::make_unique<Discord_tic_tac_toe_game>(game_data,r.players);
+                            auto d = get_game_data_initialization("tic tac toe");
+                            auto game = std::make_unique<Discord_tic_tac_toe_game>(d,r.players);
                             co_await game->run(r.event);
                         }
-                        this->command_finished();
+                        this->command_end();
                         co_return ;
                     },
                     {

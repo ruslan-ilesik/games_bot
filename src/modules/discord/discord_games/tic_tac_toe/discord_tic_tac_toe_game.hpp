@@ -9,6 +9,8 @@ namespace gb {
 class Discord_tic_tac_toe_game : public Discord_game {
   enum class SIGNS { X = 0, O = 1, EMPTY };
 
+  dpp::button_click_t _event;
+
   std::array<std::array<SIGNS, 3>, 3> board = {
       {{SIGNS::EMPTY, SIGNS::EMPTY, SIGNS::EMPTY},
        {SIGNS::EMPTY, SIGNS::EMPTY, SIGNS::EMPTY},

@@ -196,7 +196,15 @@ namespace gb {
         if (_bulk) {
             _command_register_queue.push_back(command->get_name());
         } else {
-            _discord_bot->get_bot()->global_command_create(command->get_command());
+            _discord_bot->get_bot()->global_command_create(command->get_command(),[this](const dpp::confirmation_callback_t & event) {
+                if (event.is_error()) {
+                    _discord_bot->get_bot()->log(dpp::ll_error, "Command create failed");
+                    return;
+                }
+                for (auto& [k, v] : event.get<dpp::slashcommand_map>()) {
+                    _commands.at(v.name)->get_command().id = k;
+                }
+            });
         }
         _commands.insert({command->get_name(), command});
     }

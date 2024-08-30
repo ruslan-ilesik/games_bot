@@ -25,10 +25,9 @@ namespace gb {
             _command_handler->register_command(discord->create_discord_command(
                 command,
                 [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                    _running_cnt++;
+                    this->command_start();
                     co_await help_command(event);
-                    _running_cnt--;
-                    _cv.notify_all();
+                    this->command_end();
                     co_return;
                 },
                 {
@@ -37,14 +36,6 @@ namespace gb {
                 }
             ));
         });
-    }
-
-    void Discord_command_help_impl::stop() {
-        _command_handler->remove_command("help");
-        //wait until all running executions of command will stop;
-        std::mutex m;
-        std::unique_lock lk (m);
-        _cv.wait(lk,[this](){return _running_cnt == 0;});
     }
 
     Discord_command_help_impl::Discord_command_help_impl() : Discord_command_help("discord_command_help",

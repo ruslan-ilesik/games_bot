@@ -181,6 +181,22 @@ public:
   void message_edit(const dpp::message &message,
                     const dpp::command_completion_event_t &callback =
                         dpp::utility::log_error()) override;
+
+ /**
+  * @brief Sends given message.
+  *
+  * This function is used to send given message to channel id specified in it.
+  * It allows you to provide a custom message and optionally
+  * handle the completion of the command with a callback function.
+  *
+  * @param message The message to be sent.
+  * @param callback Optional. The callback function to handle the completion of
+  * the command. By default, it uses `dpp::utility::log_error` to log any
+  * errors that occur during the execution of the function. You can provide a
+  * custom callback function to handle the completion event as needed.
+  */
+  void message_create(const dpp::message& message, const dpp::command_completion_event_t &callback =
+                              dpp::utility::log_error()) override;
 };
 
 /**

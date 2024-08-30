@@ -81,10 +81,13 @@ namespace gb {
       event.reply(message_preprocessing(message), callback);
     }
 
-    void Discord_bot_impl::message_edit(
-        const dpp::message &message,
-        const dpp::command_completion_event_t &callback) {
-        _bot->message_edit(message_preprocessing(message),callback);
+    void Discord_bot_impl::message_edit(const dpp::message &message, const dpp::command_completion_event_t &callback) {
+        _bot->message_edit(message_preprocessing(message), callback);
+    }
+
+    void Discord_bot_impl::message_create(const dpp::message &message,
+                                          const dpp::command_completion_event_t &callback) {
+        _bot->message_create(message_preprocessing(message),callback);
     }
 
     Module_ptr create() {

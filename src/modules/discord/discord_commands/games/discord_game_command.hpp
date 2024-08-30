@@ -3,21 +3,23 @@
 //
 
 #pragma once
-#include "src/modules/discord/discord_games/discord_game.hpp"
 #include "src/module/module.hpp"
+#include "src/modules/discord/discord_games/discord_game.hpp"
 #include "src/modules/discord/discord_interactions_handler/discord_button_click_handler/discord_button_click_handler.hpp"
+
+#include <src/modules/discord/discord_commands/discord_general_command.hpp>
+
 
 namespace gb {
 
-    class Discord_game_command : public  Module {
+    class Discord_game_command : public  Discord_general_command {
     protected:
         Database_ptr _db;
         Discord_bot_ptr _bot;
         Discord_games_manager_ptr _games_manager;
         Image_processing_ptr _image_processing;
         Discord_button_click_handler_ptr _button_click_handler;
-        std::atomic_uint64_t _games_cnt;
-        std::condition_variable _cv;
+        Discord_achievements_processing_ptr _achievements_processing;
 
         std::string lobby_title;
         std::string lobby_description;
@@ -32,18 +34,12 @@ namespace gb {
 
         Discord_game_command(const std::string& name, const std::vector<std::string>& dependencies);
 
-        void command_run();
+        Game_data_initialization get_game_data_initialization(const std::string &game_name) const;
 
-        void command_finished();
-
-
-
-        //true in first argument if fail (timeout or error).
+        // true in first argument if fail (timeout or error).
         dpp::task<Lobby_return> lobby(const dpp::slashcommand_t& event, std::vector<dpp::snowflake> players, const dpp::snowflake& host, unsigned int players_amount);
 
         virtual void init(const Modules& modules);
-
-        virtual void stop();
 
         virtual void run();
     };

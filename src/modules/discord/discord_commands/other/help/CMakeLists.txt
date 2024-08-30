@@ -1,5 +1,6 @@
 add_library(discord_command_help SHARED
         ./discord_command_help_impl.cpp
+        ../../discord_general_command.cpp
         ../../../../../module/module.cpp
 )
 

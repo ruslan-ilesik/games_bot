@@ -8,13 +8,6 @@
 namespace gb {
     Discord_command_ping_impl::Discord_command_ping_impl() : Discord_command_ping("discord_command_ping",{"discord_command_handler","discord_bot","discord"}){}
 
-    void Discord_command_ping_impl::stop() {
-        _command_handler->remove_command("ping");
-        //wait until all running executions of command will stop;
-        std::mutex m;
-        std::unique_lock lk (m);
-        _cv.wait(lk,[this](){return _running_cnt == 0;});
-    }
 
     void Discord_command_ping_impl::run() {
 
@@ -32,14 +25,13 @@ namespace gb {
             _command_handler->register_command(discord->create_discord_command(
                 command,
                 [this](const dpp::slashcommand_t &event) -> dpp::task<void>{
-                    _running_cnt++;
+                    command_start();
                     double discord_api_ping = _discord_bot->get_bot()->rest_ping * 1000;
                     dpp::embed embed = dpp::embed().
                         set_color(dpp::colors::green).
                         set_description(std::format(":ping_pong:| Pong! -> {:.02f} ms",discord_api_ping));
                     _discord_bot->reply(event,dpp::message().add_embed(embed));
-                    _running_cnt--;
-                    _cv.notify_all();
+                    command_end();
                     co_return;
                 },
                 {

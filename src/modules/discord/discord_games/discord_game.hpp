@@ -12,6 +12,7 @@
 #include "src/modules/database/database.hpp"
 #include "src/modules/discord/discord_bot/discord_bot.hpp"
 #include "src/modules/image_processing/image_processing.hpp"
+#include <src/modules/discord/discord_achievements_processing/discord_achievements_processing.hpp>
 
 namespace gb {
 
@@ -26,6 +27,7 @@ struct Game_data_initialization {
   Discord_games_manager_ptr games_manager;
   Image_processing_ptr image_processing;
   Discord_button_click_handler_ptr button_click_handler;
+  Discord_achievements_processing_ptr achievements_processing;
 };
 
 class Discord_game {
@@ -69,6 +71,8 @@ public:
   std::string get_name() const;
 
   uint64_t get_uid();
+
+  uint64_t get_image_cnt() const;
 
   std::string add_image(dpp::message &m, const Image_ptr &image);
 };
