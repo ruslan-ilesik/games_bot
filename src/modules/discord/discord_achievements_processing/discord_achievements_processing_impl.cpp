@@ -46,5 +46,9 @@ namespace gb {
         _bot->message_create(m.add_embed(embed));
     }
 
+    Module_ptr create() {
+        return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_achievements_processing_impl>());
+    }
+
 
 } // namespace gb
