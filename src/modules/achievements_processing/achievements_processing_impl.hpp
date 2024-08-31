@@ -23,6 +23,7 @@ namespace gb {
         Database_ptr _db; ///< Pointer to the database module.
         Prepared_statement _activate_achievement_stmt; ///< Prepared statement for activating an achievement.
         Prepared_statement _check_achievement_stmt; ///< Prepared statement for checking if a user has an achievement.
+        Prepared_statement _get_user_achievements; ///< Prepared statement to get achievements unlocked by specific user.
         std::shared_mutex _mutex; ///< Mutex for thread-safe access to the achievements map.
         std::map<std::string, Achievement> _achievements; ///< Map of achievement names to Achievement objects.
 
@@ -82,6 +83,29 @@ namespace gb {
          * @return True if the user has the achievement, false otherwise.
          */
         bool is_have_achievement(const std::string &name, const std::string &user_id) override;
+
+        /**
+         * @brief Retrieves an achievements report for a specific user.
+         *
+         * This method generates an `Achievements_report` that categorizes the achievements
+         * of a user based on whether they have been unlocked or remain locked. It differentiates
+         * between usual (non-secret) and secret achievements, returning both the unlocked achievements
+         * along with the time they were unlocked and the locked achievements that the user has yet to achieve.
+         *
+         * @param user_id The ID of the user for whom the achievements report is being generated.
+         * @return Achievements_report A report detailing the user's unlocked and locked achievements.
+         *
+         * @throws std::runtime_error if the `time_opened` string cannot be parsed.
+         *
+         * The report contains:
+         * - `unlocked_usual`: Usual achievements that the user has unlocked, along with the UTC timestamp of when they
+         * were unlocked.
+         * - `unlocked_secret`: Secret achievements that the user has unlocked, along with the UTC timestamp of when
+         * they were unlocked.
+         * - `locked_usual`: Usual achievements that the user has not yet unlocked.
+         * - `locked_secret`: Secret achievements that the user has not yet unlocked.
+         */
+        Achievements_report get_achievements_report(const std::string &user_id) override;
     };
 
     /**

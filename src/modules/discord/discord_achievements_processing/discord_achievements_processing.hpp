@@ -5,8 +5,10 @@
 #pragma once
 #include <dpp/dpp.h>
 #include <src/module/module.hpp>
+#include <src/modules/achievements_processing/achievements_processing.hpp>
 
 namespace gb {
+
 
   /**
    * @class Discord_achievements_processing
@@ -44,6 +46,18 @@ namespace gb {
      * @return True if the user has the achievement, false otherwise.
      */
     virtual bool is_have_achievement(const std::string& name, const dpp::snowflake& user_id) = 0;
+
+
+    /**
+     * @brief Retrieves an achievements report for a specific Discord user.
+     *
+     * This method calls the underlying achievements processing system (look into Achievements_processing class for more
+     * details) to generate an `Achievements_report` for the given Discord `snowflake` ID.
+     *
+     * @param user_id The Discord `snowflake` ID of the user.
+     * @return Achievements_report The achievements report for the specified user.
+     */
+    virtual Achievements_report get_achievements_report(const dpp::snowflake &user_id) = 0;
   };
 
   /**
