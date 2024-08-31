@@ -6,7 +6,8 @@
 
 namespace gb {
     Discord_achievements_processing_impl::Discord_achievements_processing_impl() :
-        Discord_achievements_processing("discord_achievements_processing", {"achievements_processing","discord_bot"}) {}
+        Discord_achievements_processing("discord_achievements_processing", {"achievements_processing", "discord_bot"}) {
+    }
 
     void Discord_achievements_processing_impl::stop() {}
 
@@ -16,7 +17,7 @@ namespace gb {
         _achievements_processing =
             std::static_pointer_cast<Achievements_processing>(modules.at("achievements_processing"));
 
-        _bot =  std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
+        _bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
     }
 
     bool Discord_achievements_processing_impl::is_have_achievement(const std::string &name,
@@ -44,6 +45,10 @@ namespace gb {
             .set_thumbnail(a.image_url);
 
         _bot->message_create(m.add_embed(embed));
+    }
+
+    Achievements_report Discord_achievements_processing_impl::get_achievements_report(const dpp::snowflake &user_id) {
+        return _achievements_processing->get_achievements_report(user_id.str());
     }
 
     Module_ptr create() {

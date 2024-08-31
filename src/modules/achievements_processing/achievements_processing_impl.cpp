@@ -14,6 +14,7 @@ namespace gb {
         _admin_terminal->remove_command("achievements_list");
         _db->remove_prepared_statement(_activate_achievement_stmt);
         _db->remove_prepared_statement(_check_achievement_stmt);
+        _db->remove_prepared_statement(_get_user_achievements);
     }
 
     void Achievements_processing_impl::run() {}
@@ -22,8 +23,11 @@ namespace gb {
         _admin_terminal = std::static_pointer_cast<Admin_terminal>(modules.at("admin_terminal"));
         _db = std::static_pointer_cast<Database>(modules.at("database"));
 
-        _activate_achievement_stmt = _db->create_prepared_statement("INSERT IGNORE INTO `achievements` (`name`,`user_id`,`time_opened`) VALUES (?,?,UTC_TIMESTAMP())");
-        _check_achievement_stmt = _db->create_prepared_statement("SELECT EXISTS(SELECT `name` from `achievements` where `name`=? and `user_id`=?) as does_have");
+        _activate_achievement_stmt = _db->create_prepared_statement(
+            "INSERT IGNORE INTO `achievements` (`name`,`user_id`,`time_opened`) VALUES (?,?,UTC_TIMESTAMP())");
+        _check_achievement_stmt = _db->create_prepared_statement(
+            "SELECT EXISTS(SELECT `name` from `achievements` where `name`=? and `user_id`=?) as does_have");
+        _get_user_achievements = _db->create_prepared_statement("CALL get_achievements(?)");
 
         _admin_terminal->add_command(
             "achievements_reload", "Reloads achievements from a file.", "Arguments: no arguments",
@@ -72,7 +76,8 @@ namespace gb {
     }
 
     bool Achievements_processing_impl::is_have_achievement(const std::string &name, const std::string &user_id) {
-        std::string r = sync_wait(_db->execute_prepared_statement(_check_achievement_stmt,name,user_id)).at(0)["does_have"];
+        std::string r =
+            sync_wait(_db->execute_prepared_statement(_check_achievement_stmt, name, user_id)).at(0)["does_have"];
         return r == "1";
     }
 
@@ -101,6 +106,54 @@ namespace gb {
             }
             _achievements.insert({name, Achievement(name, description, image_url, is_secret, discord_emoji)});
         }
+    }
+
+    Achievements_report Achievements_processing_impl::get_achievements_report(const std::string &user_id) {
+        Database_return_t r = sync_wait(_db->execute_prepared_statement(_get_user_achievements, user_id));
+        Achievements_report report{};
+
+        // read thread safety required
+        std::shared_lock lk(_mutex);
+
+        for (auto &i: r) {
+            const auto &achievement = _achievements.at(i.at("name"));
+            std::tm tm = {};
+            std::istringstream ss(i.at("time_opened"));
+            ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+
+            if (ss.fail()) {
+                throw std::runtime_error("Failed to parse time_opened string");
+            }
+
+// Convert to time_t assuming the time is in UTC (without timezone adjustment)
+#ifdef _WIN32
+            std::time_t unix_timestamp = _mkgmtime(&tm); // Windows
+#else
+            std::time_t unix_timestamp = timegm(&tm); // POSIX systems
+#endif
+
+            if (!achievement.is_secret) {
+                report.unlocked_usual.emplace_back(achievement, unix_timestamp);
+            } else {
+                report.unlocked_secret.emplace_back(achievement, unix_timestamp);
+            }
+        }
+
+        for (const auto &achievement_pair: _achievements) {
+            const auto &achievement = achievement_pair.second;
+
+            bool opened =
+                std::ranges::any_of(r, [&achievement](const auto &i) { return i.at("name") == achievement.name; });
+
+            if (!opened) {
+                if (!achievement.is_secret) {
+                    report.locked_usual.emplace_back(achievement);
+                } else {
+                    report.locked_secret.emplace_back(achievement);
+                }
+            }
+        }
+        return report;
     }
 
     Module_ptr create() { return std::dynamic_pointer_cast<Module>(std::make_shared<Achievements_processing_impl>()); }

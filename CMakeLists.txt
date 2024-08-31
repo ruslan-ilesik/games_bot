@@ -11,6 +11,7 @@ add_link_options(
         -stdlib=libc++
         -L/usr/lib/llvm-19/lib
         -Wl,-rpath,/usr/lib/llvm-19/lib
+
 )
 
 
@@ -23,6 +24,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang
             -Wno-unused-value
             -DDPP_CORO
             -DDPP_FORMATTERS
+            -gdwarf-4
     )
 endif ()
 
