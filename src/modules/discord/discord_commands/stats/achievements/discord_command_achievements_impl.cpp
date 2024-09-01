@@ -8,22 +8,19 @@
 
 namespace gb {
     void Discord_command_achievements_impl::init(const Modules &modules) {
+        Discord_command_achievements::init(modules);
         _achievements_processing =
             std::static_pointer_cast<Discord_achievements_processing>(modules.at("discord_achievements_processing"));
-        this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
-        this->_command_handler =
-            std::static_pointer_cast<Discord_command_handler>(modules.at("discord_command_handler"));
-        auto discord = std::static_pointer_cast<Discord>(modules.at("discord"));
 
-        _discord_bot->add_pre_requirement([this, discord]() {
+        _bot->add_pre_requirement([this]() {
             dpp::slashcommand command("achievements", "Command to get information about user achievements.",
-                                      _discord_bot->get_bot()->me.id);
+                                      _bot->get_bot()->me.id);
             command.add_option(dpp::command_option(dpp::co_string, "filter", "What achievements to show", false)
                                    .add_choice(dpp::command_option_choice("All", std::string("all")))
                                    .add_choice(dpp::command_option_choice("Unlocked only", std::string("unlocked")))
                                    .add_choice(dpp::command_option_choice("Locked only", std::string("locked"))));
 
-            _command_handler->register_command(discord->create_discord_command(
+            _command_handler->register_command(_discord->create_discord_command(
                 command,
                 [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
                     command_start();
@@ -82,13 +79,13 @@ namespace gb {
                         m.add_embed(e);
                     }
                     m.set_flags(dpp::m_ephemeral);
-                    _discord_bot->reply(event,m);
+                    _bot->reply(event,m);
                     command_end();
                     co_return;
                 },
                 {"Gives detailed information about user achievements, sorted by category (secret / not secret) and "
                  "allows to filter achievements which will be shown (unlocked, not unlocked).",
-                 {"other"}}));
+                 {"statistics"}}));
         });
     }
 

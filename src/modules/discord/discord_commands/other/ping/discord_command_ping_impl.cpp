@@ -14,23 +14,20 @@ namespace gb {
     }
 
     void Discord_command_ping_impl::init(const Modules &modules) {
-        this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
-        this->_command_handler = std::static_pointer_cast<Discord_command_handler>(
-            modules.at("discord_command_handler"));
-        auto discord = std::static_pointer_cast<Discord>(modules.at("discord"));
+        Discord_command_ping::init(modules);
 
-        _discord_bot->add_pre_requirement([this,discord](){
-            dpp::slashcommand command("ping","Command to get latency between bot and different components",_discord_bot->get_bot()->me.id);
+        _bot->add_pre_requirement([this](){
+            dpp::slashcommand command("ping","Command to get latency between bot and different components",_bot->get_bot()->me.id);
 
-            _command_handler->register_command(discord->create_discord_command(
+            _command_handler->register_command(_discord->create_discord_command(
                 command,
                 [this](const dpp::slashcommand_t &event) -> dpp::task<void>{
                     command_start();
-                    double discord_api_ping = _discord_bot->get_bot()->rest_ping * 1000;
+                    double discord_api_ping = _bot->get_bot()->rest_ping * 1000;
                     dpp::embed embed = dpp::embed().
                         set_color(dpp::colors::green).
                         set_description(std::format(":ping_pong:| Pong! -> {:.02f} ms",discord_api_ping));
-                    _discord_bot->reply(event,dpp::message().add_embed(embed));
+                    _bot->reply(event,dpp::message().add_embed(embed));
                     command_end();
                     co_return;
                 },

@@ -8,21 +8,19 @@ namespace gb {
     std::map<std::string, std::string> category_emojis = {
         {"Other", "🔄"},
         {"Game",  "🎮"},
-        {"Multiplayer", "🌐"}
+        {"Multiplayer", "🌐"},
+        {"Statistics","📊"}
     };
 
 
     void Discord_command_help_impl::init(const Modules &modules) {
-        this->_discord_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
-        this->_command_handler = std::static_pointer_cast<Discord_command_handler>(
-            modules.at("discord_command_handler"));
-        auto discord = std::static_pointer_cast<Discord>(modules.at("discord"));
+        Discord_command_help::init(modules);
         _select_menu_handler = std::static_pointer_cast<Discord_select_menu_handler>(
             modules.at("discord_select_menu_handler"));
-        _discord_bot->add_pre_requirement([this, discord]() {
-            dpp::slashcommand command("help", "Command to get help about commands", _discord_bot->get_bot()->me.id);
+        _bot->add_pre_requirement([this]() {
+            dpp::slashcommand command("help", "Command to get help about commands", _bot->get_bot()->me.id);
 
-            _command_handler->register_command(discord->create_discord_command(
+            _command_handler->register_command(_discord->create_discord_command(
                 command,
                 [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
                     this->command_start();
@@ -87,7 +85,7 @@ namespace gb {
         m.add_embed(embed).add_component(dpp::component().add_component(comp));
 
         auto task = _select_menu_handler->wait_for(m, {event.command.usr.id}, 600);
-        _discord_bot->reply(event, m);
+        _bot->reply(event, m);
         Select_menu_return select = co_await task;
         if (select.second) {
             co_return;
@@ -112,7 +110,7 @@ namespace gb {
         m2.add_embed(commands_embed).add_component(dpp::component().add_component(commands_comp));
         categorised.clear(); // no more need for all commands
         task = _select_menu_handler->wait_for(m2, {event.command.usr.id}, 600);
-        _discord_bot->reply(select_cat, m2);
+        _bot->reply(select_cat, m2);
         select = co_await task;
         if (select.second) {
             co_return;
@@ -147,7 +145,7 @@ namespace gb {
             }
         }
         m3.add_embed(command_embed);
-        _discord_bot->reply(select_cat, m3);
+        _bot->reply(select_cat, m3);
         co_return;
     }
 

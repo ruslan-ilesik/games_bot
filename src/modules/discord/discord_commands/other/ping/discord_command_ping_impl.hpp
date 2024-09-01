@@ -18,17 +18,6 @@ namespace gb {
      * the bot and various components, and provides a response with the latency information.
      */
     class Discord_command_ping_impl : public Discord_command_ping {
-    private:
-        /**
-         * @brief Shared pointer to the Discord command handler.
-         */
-        Discord_command_handler_ptr _command_handler;
-
-        /**
-         * @brief Shared pointer to the Discord bot.
-         */
-        Discord_bot_ptr _discord_bot;
-
     public:
         /**
          * @brief Constructor for Discord_command_ping_impl.
