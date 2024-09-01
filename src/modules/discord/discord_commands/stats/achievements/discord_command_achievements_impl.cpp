@@ -95,5 +95,5 @@ namespace gb {
             std::make_shared<Discord_command_achievements_impl>());
     }
 
-    Discord_command_achievements_impl::Discord_command_achievements_impl():Discord_command_achievements("discord_command_achievements",{"discord_achievements_processing","discord_command_handler","discord_bot","discord"}){}
+    Discord_command_achievements_impl::Discord_command_achievements_impl():Discord_command_achievements("discord_command_achievements",{"discord_achievements_processing"}){}
 } // namespace gb

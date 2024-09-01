@@ -6,7 +6,7 @@
 #include "../../../discord/discord.hpp"
 
 namespace gb {
-    Discord_command_ping_impl::Discord_command_ping_impl() : Discord_command_ping("discord_command_ping",{"discord_command_handler","discord_bot","discord"}){}
+    Discord_command_ping_impl::Discord_command_ping_impl() : Discord_command_ping("discord_command_ping",{}){}
 
 
     void Discord_command_ping_impl::run() {

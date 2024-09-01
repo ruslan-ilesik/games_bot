@@ -17,8 +17,6 @@ namespace gb {
      * It inherits from the Discord_tic_tac_toe_command base class and overrides the init and stop methods.
      */
     class Discord_tic_tac_toe_command_impl : public Discord_tic_tac_toe_command {
-        Discord_command_handler_ptr _command_handler; ///< Pointer to the command handler module.
-        Discord_ptr _discord; ///< Pointer to the Discord module.
 
     public:
         /**

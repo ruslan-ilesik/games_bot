@@ -6,47 +6,37 @@
 
 namespace gb {
     std::map<std::string, std::string> category_emojis = {
-        {"Other", "🔄"},
-        {"Game",  "🎮"},
-        {"Multiplayer", "🌐"},
-        {"Statistics","📊"}
-    };
+        {"Other", "🔄"}, {"Game", "🎮"}, {"Multiplayer", "🌐"}, {"Statistics", "📊"}};
 
 
     void Discord_command_help_impl::init(const Modules &modules) {
         Discord_command_help::init(modules);
-        _select_menu_handler = std::static_pointer_cast<Discord_select_menu_handler>(
-            modules.at("discord_select_menu_handler"));
+        _select_menu_handler =
+            std::static_pointer_cast<Discord_select_menu_handler>(modules.at("discord_select_menu_handler"));
         _bot->add_pre_requirement([this]() {
             dpp::slashcommand command("help", "Command to get help about commands", _bot->get_bot()->me.id);
 
-            _command_handler->register_command(_discord->create_discord_command(
-                command,
-                [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                    this->command_start();
-                    co_await help_command(event);
-                    this->command_end();
-                    co_return;
-                },
-                {
-                    "Help command provides you ability to get information about every command in bot sorted by categories.",
-                    {"other"}
-                }
-            ));
+            _command_handler->register_command(
+                _discord->create_discord_command(command,
+                                                 [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
+                                                     this->command_start();
+                                                     co_await help_command(event);
+                                                     this->command_end();
+                                                     co_return;
+                                                 },
+                                                 {"Help command provides you ability to get information about every "
+                                                  "command in bot sorted by categories.",
+                                                  {"other"}}));
         });
     }
 
-    Discord_command_help_impl::Discord_command_help_impl() : Discord_command_help("discord_command_help",
-                                                                                  {"discord_command_handler",
-                                                                                   "discord_bot", "discord",
-                                                                                   "discord_select_menu_handler"}) {}
+    Discord_command_help_impl::Discord_command_help_impl() :
+        Discord_command_help("discord_command_help", {"discord_select_menu_handler"}) {}
 
     void Discord_command_help_impl::run() {}
 
     dpp::task<void> Discord_command_help_impl::help_command(const dpp::slashcommand_t &event) {
-        auto coma_sep = [](std::string a, std::string b) {
-            return std::move(a) + ", " + std::move(b);
-        };
+        auto coma_sep = [](std::string a, std::string b) { return std::move(a) + ", " + std::move(b); };
 
         auto commands = _command_handler->get_commands();
         std::map<std::string, std::vector<Discord_command_ptr>> categorised;
@@ -66,8 +56,8 @@ namespace gb {
         for (auto &[k, v]: categorised) {
 
 
-            auto tmp = std::ranges::transform_view(v,
-                                                   [](const Discord_command_ptr &command) { return command->get_name(); });
+            auto tmp =
+                std::ranges::transform_view(v, [](const Discord_command_ptr &command) { return command->get_name(); });
             std::string s = std::accumulate(std::next(tmp.begin()), tmp.end(),
                                             tmp[0], // start with first element
                                             coma_sep);
@@ -79,7 +69,6 @@ namespace gb {
                 option.set_emoji(emoji);
             }
             comp.add_select_option(option);
-
         }
         dpp::message m;
         m.add_embed(embed).add_component(dpp::component().add_component(comp));
@@ -92,16 +81,17 @@ namespace gb {
         }
         auto select_cat = select.first;
 
-        //select command
+        // select command
         dpp::message m2;
         dpp::embed commands_embed;
-        commands_embed.set_title("HELP").set_description(
-            std::format("Category: {}\nChoose command below.", select_cat.values[0])).set_color(dpp::colours::blue);
+        commands_embed.set_title("HELP")
+            .set_description(std::format("Category: {}\nChoose command below.", select_cat.values[0]))
+            .set_color(dpp::colours::blue);
         dpp::component commands_comp;
         commands_comp.set_type(dpp::cot_selectmenu).set_placeholder("Choose command").set_id("help_command");
 
         std::map<std::string, Discord_command_ptr> commands_of_selected_category;
-        //show specific category
+        // show specific category
         for (auto &i: categorised[select_cat.values[0]]) {
             commands_embed.add_field(i->get_name(), i->get_command().description);
             commands_comp.add_select_option({i->get_name(), i->get_name()});
@@ -120,8 +110,9 @@ namespace gb {
 
         dpp::message m3;
         dpp::embed command_embed;
-        command_embed.set_title("HELP").set_description(
-            std::format("Command information.", select_cat.values[0])).set_color(dpp::colours::blue);
+        command_embed.set_title("HELP")
+            .set_description(std::format("Command information.", select_cat.values[0]))
+            .set_color(dpp::colours::blue);
         auto &command = commands_of_selected_category[select_cat.values[0]];
 
 
@@ -149,7 +140,5 @@ namespace gb {
         co_return;
     }
 
-    Module_ptr create() {
-        return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_command_help_impl>());
-    }
+    Module_ptr create() { return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_command_help_impl>()); }
 } // gb
