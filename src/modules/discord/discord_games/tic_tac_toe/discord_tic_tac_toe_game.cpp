@@ -110,7 +110,7 @@ namespace gb {
         return {{"tic_tac_toe_base", base}};
     }
     dpp::task<void> Discord_tic_tac_toe_game::run(const dpp::button_click_t &event) {
-        game_start();
+        game_start(event.command.channel_id,event.command.guild_id);
         _event = event;
         while (1) {
             dpp::message m;

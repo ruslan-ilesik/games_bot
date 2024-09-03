@@ -78,9 +78,8 @@ Discord_game::~Discord_game() {
         }
     }
 
-    void Discord_game::game_start() {
-        _game_create_req = _data.games_manager->add_game(this);
-
+    void Discord_game::game_start(const dpp::snowflake& channel_id,const dpp::snowflake& guild_id) {
+        _game_create_req = _data.games_manager->add_game(this,channel_id,guild_id);
     }
 
     void Discord_game::game_stop() {

@@ -7,7 +7,13 @@
 namespace gb {
     Discord_general_command::Discord_general_command(const std::string &name,
                                                      const std::vector<std::string> &dependencies) :
-        Module(name, dependencies) {}
+        Module(name, dependencies) {
+        for (auto &i: std::vector<std::string>({"discord_bot","discord_command_handler","discord"})) {
+            if (std::find(_dependencies.begin(), _dependencies.end(), i) == _dependencies.end()) {
+                _dependencies.push_back(i);
+            }
+        }
+    }
 
     void Discord_general_command::command_start() { ++_cnt; }
 
@@ -20,5 +26,11 @@ namespace gb {
         std::mutex m;
         std::unique_lock lk(m);
         _cv.wait(lk, [this]() { return _cnt == 0; });
+    }
+    void Discord_general_command::init(const Modules &modules) {
+        this->_bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
+        this->_command_handler = std::static_pointer_cast<Discord_command_handler>(
+            modules.at("discord_command_handler"));
+        this-> _discord = std::static_pointer_cast<Discord>(modules.at("discord"));
     }
 } // gb

@@ -6,7 +6,7 @@
 #include "src/modules/discord/discord_games/tic_tac_toe/discord_tic_tac_toe_game.hpp"
 
 namespace gb {
-    Discord_tic_tac_toe_command_impl::Discord_tic_tac_toe_command_impl() : Discord_tic_tac_toe_command("discord_game_tic_tac_toe",{"image_processing","discord_button_click_handler","discord_command_handler","discord"}) {
+    Discord_tic_tac_toe_command_impl::Discord_tic_tac_toe_command_impl() : Discord_tic_tac_toe_command("discord_game_tic_tac_toe",{"image_processing","discord_button_click_handler"}) {
         lobby_title = "Tic Tac Toe";
         lobby_description = "Simple Tic Tac Toe game everyone know (I believe)";
         lobby_image_url = "https://i.ibb.co/wM7sbC9/tic-tac-toe.webp";
@@ -14,9 +14,6 @@ namespace gb {
 
     void Discord_tic_tac_toe_command_impl::init(const Modules &modules) {
         Discord_game_command::init(modules);
-        this->_command_handler = std::static_pointer_cast<Discord_command_handler>(
-            modules.at("discord_command_handler"));
-        this->_discord = std::static_pointer_cast<Discord>(modules.at("discord"));
         _image_processing->cache_create(Discord_tic_tac_toe_game::get_image_generators());
         _bot->add_pre_requirement([this]() {
             dpp::slashcommand command("tic_tac_toe", "Command to start tic tac toe game", _bot->get_bot()->me.id);

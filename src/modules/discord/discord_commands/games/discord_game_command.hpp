@@ -25,11 +25,6 @@ protected:
     Database_ptr _db;
 
     /**
-     * @brief Pointer to the Discord bot module.
-     */
-    Discord_bot_ptr _bot;
-
-    /**
      * @brief Pointer to the games manager module.
      */
     Discord_games_manager_ptr _games_manager;

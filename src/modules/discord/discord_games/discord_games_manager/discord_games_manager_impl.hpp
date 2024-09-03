@@ -48,9 +48,11 @@ namespace gb {
          * @brief Adds a game to the manager.
          *
          * @param game Pointer to the Discord game to add.
+         * @param channel_id Channel id where game is happening.
+         * @param guild_id Guild id where game is happening.
          * @returns Awaitable request to database which will return unique id of game.
          */
-        Task<Database_return_t> add_game(Discord_game* game) override;
+        Task<Database_return_t> add_game(Discord_game *game, const dpp::snowflake& channel_id, const dpp::snowflake& guild_id) override;
 
         /**
          * @brief Removes a game from the manager.

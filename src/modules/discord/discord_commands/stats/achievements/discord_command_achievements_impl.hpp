@@ -19,8 +19,6 @@ namespace gb {
    */
   class Discord_command_achievements_impl : public Discord_command_achievements {
     Discord_achievements_processing_ptr _achievements_processing; ///< Pointer to achievements processing module.
-    Discord_command_handler_ptr _command_handler; ///< Pointer to the Discord command handler.
-    Discord_bot_ptr _discord_bot; ///< Pointer to the Discord bot.
 
   public:
     /**

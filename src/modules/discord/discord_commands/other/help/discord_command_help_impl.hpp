@@ -18,16 +18,6 @@ namespace gb {
     class Discord_command_help_impl: public Discord_command_help {
     private:
         /**
-         * @brief Shared pointer to the Discord command handler.
-         */
-        Discord_command_handler_ptr _command_handler;
-
-        /**
-         * @brief Shared pointer to the Discord bot.
-         */
-        Discord_bot_ptr _discord_bot;
-
-        /**
          * @brief Shared pointer to the Discord select menu handler.
          */
         Discord_select_menu_handler_ptr _select_menu_handler;

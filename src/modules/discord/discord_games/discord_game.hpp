@@ -139,8 +139,11 @@ namespace gb {
 
         /**
          * @brief Starts the game and registers it with the game manager.
+         *
+         * @param channel_id Channel id where game is played.
+         * @param guild_id Guild id where game is played.
          */
-        void game_start();
+        void game_start(const dpp::snowflake& channel_id,const dpp::snowflake& guild_id);
 
         /**
          * @brief Stops the game and deregisters it from the game manager.

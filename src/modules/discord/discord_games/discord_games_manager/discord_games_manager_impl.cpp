@@ -6,10 +6,10 @@
 
 namespace gb {
 Task<Database_return_t>
-Discord_games_manager_impl::add_game(Discord_game *game) {
+Discord_games_manager_impl::add_game(Discord_game *game, const dpp::snowflake& channel_id, const dpp::snowflake& guild_id) {
   std::unique_lock lock(_mutex);
   _games.push_back(game);
-  return _db->execute_prepared_statement(_create_game_stmt, game->get_name());
+  return _db->execute_prepared_statement(_create_game_stmt, game->get_name(),channel_id,guild_id);
 }
 
 void Discord_games_manager_impl::remove_game(Discord_game *game, GAME_END_REASON end_reason) {
@@ -56,7 +56,7 @@ void Discord_games_manager_impl::run() {}
 
 void Discord_games_manager_impl::init(const Modules &modules) {
   _db = std::static_pointer_cast<Database>(modules.at("database"));
-  _create_game_stmt = _db->create_prepared_statement("CALL create_game(?);");
+  _create_game_stmt = _db->create_prepared_statement("CALL create_game(?,?,?);");
 
   _user_game_result_stmt = _db->create_prepared_statement(
       R"XXX(INSERT INTO `user_game_results` (`result`, `game`, `user`, `time_played`)
