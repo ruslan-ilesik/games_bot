@@ -120,20 +120,81 @@ namespace gb {
         std::string s = std::accumulate(std::next(cat.begin()), cat.end(),
                                         cat[0], // start with first element
                                         coma_sep);
-        command_embed.add_field(select_cat.values[0],
+
+        if (command->get_command().options.empty()) {
+            command_embed.add_field(select_cat.values[0],
+                        std::format("Description: {}\n\nDetailed: \n{}\n\nCategories: **{}**",
+                                    command->get_command().description, command->get_command_data().help_text,
+                                    s));
+            command_embed.add_field("This command has no arguments:", "");
+            m3.add_embed(command_embed);
+            _bot->reply(select_cat, m3);
+            co_return;
+        }
+
+        auto options = command->get_command().options;
+        std::vector<std::array<std::string,3>> subcommands;
+        size_t ind1 = 0;
+        for (auto& option : options) {
+            size_t ind2 = 0;
+            if (option.type ==  dpp::co_sub_command_group || option.type == dpp::co_sub_command) {
+                std::string base = option.name+" ";
+                bool is_inserted = false;
+                for(auto& option2 : option.options) {
+                    if (option2.type == dpp::co_sub_command) {
+                        is_inserted = true;
+                        subcommands.push_back({base+option2.name,std::to_string(ind1) + std::to_string(ind2),option2.description});
+                    }
+                    ind2++;
+                }
+                if (!is_inserted) {
+                    subcommands.push_back({base,std::to_string(ind1),option.description});
+                }
+                ind1++;
+            }
+        }
+        std::string additional_command_name;
+        std::vector<dpp::command_option> final_opts;
+        if (!subcommands.empty()) {
+            dpp::message m4;
+            dpp::embed emb4;
+            emb4.set_title("HELP")
+            .set_description(std::format("Category: {}\nCommand: {}\nChoose subcommand below.", select_cat.values[0],command->get_command().name))
+            .set_color(dpp::colours::blue);
+            dpp::component subcommands_comps;
+            subcommands_comps.set_type(dpp::cot_selectmenu).set_placeholder("Choose subcommand").set_id("help_command");
+            for (auto& i : subcommands) {
+                subcommands_comps.add_select_option({i[0], i[1]});
+                emb4.add_field(i[0],i[2]);
+            }
+
+            m4.add_embed(emb4).add_component(dpp::component().add_component(subcommands_comps));
+            task = _select_menu_handler->wait_for(m4, {event.command.usr.id}, 600);
+            _bot->reply(select_cat, m4);
+            select = co_await task;
+            if (select.second) {
+                co_return;
+            }
+            select_cat = select.first;
+            std::string val = select_cat.values[0];
+            additional_command_name += " " + command->get_command().options[val[0] - '0'].name;
+            final_opts = command->get_command().options[val[0] - '0'].options;
+            if (val.size() >=2) {
+                additional_command_name += " " + final_opts[val[1] - '0'].name;
+                final_opts = command->get_command().options[val[0] - '0'].options[val[1] - '0'].options; //getting it from relative final_opts cause UB when strings get corrupted. (Incorrect copy constructor in dpp?)
+            }
+        }
+        else {
+            final_opts = command->get_command().options;
+        }
+
+        command_embed.add_field(command->get_command().name + additional_command_name,
                                 std::format("Description: {}\n\nDetailed: \n{}\n\nCategories: **{}**",
                                             command->get_command().description, command->get_command_data().help_text,
                                             s));
-        if (!command->get_command().options.empty()) {
-            command_embed.add_field("Arguments:", "");
-        } else {
-            command_embed.add_field("This command has no arguments:", "");
-        }
-
-        for (auto &i: command->get_command().options) {
-            if (i.options.empty()) {
+        command_embed.add_field("Arguments:", "");
+        for (dpp::command_option& i: final_opts) {
                 command_embed.add_field(i.name, std::format("{}\n Mandatory: {}", i.description, i.required));
-            }
         }
         m3.add_embed(command_embed);
         _bot->reply(select_cat, m3);
