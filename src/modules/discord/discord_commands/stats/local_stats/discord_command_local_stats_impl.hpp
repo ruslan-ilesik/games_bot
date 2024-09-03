@@ -4,50 +4,50 @@
 
 #pragma once
 
-#include "./discord_command_global_stats.hpp"
+#include "./discord_command_local_stats.hpp"
 #include <src/modules/database/database.hpp>
 
 namespace gb {
 
 /**
- * @class Discord_command_global_stats_impl
- * @brief Implementation of the Discord command for retrieving global statistics.
+ * @class Discord_command_local_stats_impl
+ * @brief Implementation of the Discord command for retrieving local statistics.
  *
  * This class provides the implementation for the Discord command that allows users
- * to retrieve global statistics such as bot command usage and game statistics across all servers.
+ * to retrieve local statistics such as bot command usage and game statistics.
  */
-class Discord_command_global_stats_impl : public Discord_command_global_stats {
+class Discord_command_local_stats_impl : public Discord_command_local_stats {
 private:
     /// Pointer to the database instance.
     Database_ptr _db;
 
-    /// Prepared statement for querying bot commands statistics globally.
+    /// Prepared statement for querying bot commands statistics.
     Prepared_statement _bot_commands_stmt;
 
-    /// Prepared statement for querying bot games statistics globally.
+    /// Prepared statement for querying bot games statistics.
     Prepared_statement _bot_games_stmt;
 
-    /// Prepared statement for querying the user's commands statistics globally.
+    /// Prepared statement for querying the user's commands statistics.
     Prepared_statement _me_commands_stmt;
 
-    /// Prepared statement for querying the user's games statistics globally.
+    /// Prepared statement for querying the user's games statistics.
     Prepared_statement _me_games_stmt;
 
     /**
-     * @brief Retrieves and sends the global bot statistics to the user.
+     * @brief Retrieves and sends the bot statistics to the user.
      *
      * This function handles the 'bot' subcommand, executing the appropriate queries
-     * to retrieve global bot command and game statistics, and sending the results to the user via Discord.
+     * to retrieve bot command and game statistics, and sending the results to the user via Discord.
      *
      * @param event The event triggered by the slash command.
      */
     dpp::task<void> select_bot(const dpp::slashcommand_t& event);
 
     /**
-     * @brief Retrieves and sends the global user's statistics to the user.
+     * @brief Retrieves and sends the user's statistics to the user.
      *
-     * This function handles the 'me' subcommand, executing the appropriate queries
-     * to retrieve the user's global command and game statistics, and sending the results to the user via Discord.
+     * This function handles the 'me' command, subcommand the appropriate queries
+     * to retrieve the user's command and game statistics, and sending the results to the user via Discord.
      *
      * @param event The event triggered by the slash command.
      */
@@ -55,11 +55,11 @@ private:
 
 public:
     /**
-     * @brief Constructor for Discord_command_global_stats_impl.
+     * @brief Constructor for Discord_command_local_stats_impl.
      *
      * Initializes the class and prepares the necessary database statements.
      */
-    Discord_command_global_stats_impl();
+    Discord_command_local_stats_impl();
 
     /**
      * @brief Initializes the command with necessary modules.
@@ -88,7 +88,7 @@ public:
 /**
  * @brief Factory function for creating an instance of the module.
  *
- * This function is used to create a new instance of the Discord_command_global_stats_impl class.
+ * This function is used to create a new instance of the Discord_command_local_stats_impl class.
  *
  * @return Module_ptr A pointer to the newly created module instance.
  */

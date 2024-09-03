@@ -2,14 +2,14 @@
 // Created by ilesik on 9/1/24.
 //
 
-#include "discord_command_global_stats_impl.hpp"
-
+#include "discord_command_local_stats_impl.hpp"
 
 namespace gb {
-    dpp::task<void> Discord_command_global_stats_impl::select_bot(const dpp::slashcommand_t &event) {
+    dpp::task<void> Discord_command_local_stats_impl::select_bot(const dpp::slashcommand_t &event) {
         auto command = event.command;
         auto cmd_data = command.get_command_interaction().options[0];
         if (cmd_data.options[0].name == "commands") {
+            std::string channel = "%";
             // limits from https://dev.mysql.com/doc/refman/8.4/en/datetime.html
             std::string time_from = "1000-01-01 00:00:00";
             std::string time_to = "9999-12-31 23:59:59";
@@ -41,11 +41,13 @@ namespace gb {
                     }
                 } else if (parameter.name == "command_name" && std::holds_alternative<std::string>(parameter.value)) {
                     command_name = std::get<std::string>(parameter.value);
+                } else if (parameter.name == "channel" && std::holds_alternative<dpp::snowflake>(parameter.value)) {
+                    channel = std::get<dpp::snowflake>(parameter.value).str();
                 }
             }
 
-            Database_return_t r =
-                co_await _db->execute_prepared_statement(_bot_commands_stmt, time_from, time_to, command_name);
+            Database_return_t r = co_await _db->execute_prepared_statement(_bot_commands_stmt, event.command.guild_id,
+                                                                           channel, time_from, time_to, command_name);
             if (r.empty()) {
                 dpp::message m = dpp::message().add_embed(
                     dpp::embed().set_title("No data was found by your parameters").set_color(dpp::colors::blue));
@@ -78,6 +80,7 @@ namespace gb {
             std::string time_from_end = "1000-01-01 00:00:00";
             std::string time_to_end = "9999-12-31 23:59:59";
             std::string game_name = "%"; // MYSQL Like will match any string
+            std::string channel = "%";
 
             for (auto &parameter: cmd_data.options[0].options) {
                 if (parameter.name == "time_from_start" && std::holds_alternative<std::string>(parameter.value)) {
@@ -130,11 +133,14 @@ namespace gb {
                     }
                 } else if (parameter.name == "game_name" && std::holds_alternative<std::string>(parameter.value)) {
                     game_name = std::get<std::string>(parameter.value);
+                } else if (parameter.name == "channel" && std::holds_alternative<dpp::snowflake>(parameter.value)) {
+                    channel = std::get<dpp::snowflake>(parameter.value).str();
                 }
             }
 
-            Database_return_t r = co_await _db->execute_prepared_statement(
-                _bot_games_stmt, time_from_start, time_to_start, time_from_end, time_to_end, game_name);
+            Database_return_t r = co_await _db->execute_prepared_statement(_bot_games_stmt, event.command.guild_id,
+                                                                           channel, time_from_start, time_to_start,
+                                                                           time_from_end, time_to_end, game_name);
             if (r.empty()) {
                 dpp::message m = dpp::message().add_embed(
                     dpp::embed().set_title("No data was found by your parameters").set_color(dpp::colors::blue));
@@ -172,9 +178,10 @@ namespace gb {
             _bot->reply(event, dpp::message().add_embed(emb));
             co_return;
         }
+        co_return;
     }
 
-    dpp::task<void> Discord_command_global_stats_impl::select_me(const dpp::slashcommand_t &event) {
+    dpp::task<void> Discord_command_local_stats_impl::select_me(const dpp::slashcommand_t &event) {
         auto command = event.command;
         auto cmd_data = command.get_command_interaction().options[0];
         if (cmd_data.options[0].name == "commands") {
@@ -182,6 +189,7 @@ namespace gb {
             std::string time_from = "1000-01-01 00:00:00";
             std::string time_to = "9999-12-31 23:59:59";
             std::string command_name = "%"; // MYSQL Like will match any string
+            std::string channel = "%";
             for (auto &parameter: cmd_data.options[0].options) {
                 if (parameter.name == "time_from" && std::holds_alternative<std::string>(parameter.value)) {
                     struct tm tm {};
@@ -209,10 +217,13 @@ namespace gb {
                     }
                 } else if (parameter.name == "command_name" && std::holds_alternative<std::string>(parameter.value)) {
                     command_name = std::get<std::string>(parameter.value);
+                } else if (parameter.name == "channel" && std::holds_alternative<dpp::snowflake>(parameter.value)) {
+                    channel = std::get<dpp::snowflake>(parameter.value).str();
                 }
             }
-            Database_return_t r = co_await _db->execute_prepared_statement(_me_commands_stmt, event.command.usr.id,
-                                                                           time_from, time_to, command_name);
+            Database_return_t r =
+                co_await _db->execute_prepared_statement(_me_commands_stmt, event.command.guild_id, channel,
+                                                         event.command.usr.id, time_from, time_to, command_name);
             if (r.empty()) {
                 dpp::message m = dpp::message().add_embed(
                     dpp::embed().set_title("No data was found by your parameters").set_color(dpp::colors::blue));
@@ -249,6 +260,7 @@ namespace gb {
             std::string time_from_end = "1000-01-01 00:00:00";
             std::string time_to_end = "9999-12-31 23:59:59";
             std::string game_name = "%"; // MYSQL Like will match any string
+            std::string channel = "%";
 
             for (auto parameter: cmd_data.options[0].options) {
                 if (parameter.name == "time_from_start" && std::holds_alternative<std::string>(parameter.value)) {
@@ -317,10 +329,12 @@ namespace gb {
                     user2 = value;
                 } else if ((parameter.name == "user") && std::holds_alternative<dpp::snowflake>(parameter.value)) {
                     user2 = std::get<dpp::snowflake>(parameter.value);
+                } else if (parameter.name == "channel" && std::holds_alternative<dpp::snowflake>(parameter.value)) {
+                    channel = std::get<dpp::snowflake>(parameter.value).str();
                 }
             }
             Database_return_t r = co_await _db->execute_prepared_statement(
-                _me_games_stmt, user2, user, time_from_start, time_to_start, time_from_end, time_to_end, game_name);
+                _me_games_stmt, user2, user, event.command.guild_id,channel,time_from_start, time_to_start, time_from_end, time_to_end, game_name);
             if (r.empty()) {
                 dpp::message m = dpp::message().add_embed(
                     dpp::embed().set_title("No data was found by your parameters").set_color(dpp::colors::blue));
@@ -364,7 +378,7 @@ namespace gb {
                 total_calls += amount;
 
                 // calculate win percentage using formula https://en.wikipedia.org/wiki/Winning_percentage
-                double percentage = ((draw * 0.5 + win) / amount)*100;
+                double percentage = ((draw * 0.5 + win) / amount) * 100;
 
                 emb.add_field(
                     std::format("{}) {}", total_cmd, game_row.at("game_name")),
@@ -377,24 +391,24 @@ namespace gb {
             }
 
             // calculate win percentage using formula https://en.wikipedia.org/wiki/Winning_percentage
-            double percentage = ((draw_cnt * 0.5 + win_cnt) / total_calls)*100;
+            double percentage = ((draw_cnt * 0.5 + win_cnt) / total_calls) * 100;
             emb.set_title(
                 std::format("There is {} different games. They were played {} time(s). There is {} game(s) active.\n"
                             "You won {} time(s). You played in draw {} time(s). You lost {} time(s).\n"
                             "Win rate: {:.2f}%",
                             total_cmd, total_calls, active_games, win_cnt, draw_cnt, lose_cnt, percentage));
-            _bot->reply(event,dpp::message().add_embed(emb));
+            _bot->reply(event, dpp::message().add_embed(emb));
         }
         co_return;
     }
 
-    Discord_command_global_stats_impl::Discord_command_global_stats_impl() :
-        Discord_command_global_stats("discord_command_global_stats", {"database"}) {}
+    Discord_command_local_stats_impl::Discord_command_local_stats_impl() :
+        Discord_command_local_stats("discord_command_local_stats", {"database"}) {}
 
-    void Discord_command_global_stats_impl::init(const Modules &modules) {
-        Discord_command_global_stats::init(modules);
+    void Discord_command_local_stats_impl::init(const Modules &modules) {
+        Discord_command_local_stats::init(modules);
+
         _db = std::static_pointer_cast<Database>(modules.at("database"));
-
         _bot_commands_stmt = _db->create_prepared_statement(
             R"XXX(
 SELECT
@@ -403,7 +417,9 @@ SELECT
      UNIX_TIMESTAMP(MAX(`time`)) - (UNIX_TIMESTAMP(UTC_TIMESTAMP()) - unix_timestamp()) as 'last_use'
 FROM commands_use
 WHERE
-    `time` >= ?
+    `guild_id` = ?
+    AND `channel_id` LIKE ?
+    AND `time` >= ?
     AND `time` <= ?
     AND `command` LIKE ?
 GROUP BY `command`
@@ -417,7 +433,9 @@ SELECT
     sum(`game_state` = 'ACTIVE') as `active_games`
 FROM `games_history`
 where
-	`start_time` >= ?
+    `guild_id` = ?
+    AND `channel_id` LIKE ?
+	AND `start_time` >= ?
     and `start_time` <= ?
     and `end_time` >= ?
     and `end_time` <= ?
@@ -434,7 +452,9 @@ SELECT
      UNIX_TIMESTAMP(MAX(`time`)) - (UNIX_TIMESTAMP(UTC_TIMESTAMP()) - unix_timestamp()) as 'last_use'
 FROM commands_use
 WHERE
-    `user_id` = ?
+    `guild_id` = ?
+    AND `channel_id` LIKE ?
+    AND `user_id` = ?
     AND `time` >= ?
     AND `time` <= ?
     AND `command` LIKE ?
@@ -470,6 +490,8 @@ INNER JOIN
     AND (`ugr2`.`user` = ?)
 WHERE
     `ugr1`.`user` = ?
+    AND `gh`.`guild_id` = ?
+    AND `gh`.`channel_id` LIKE ?
     AND `gh`.`start_time` >= ?
     AND `gh`.`start_time` <= ?
     AND `gh`.`end_time` >= ?
@@ -483,14 +505,16 @@ ORDER BY
 
 
         _bot->add_pre_requirement([this]() {
-            dpp::slashcommand command(
-                "global_stats", "Command to get global statistics for user/bot games/commands across all servers.",
-                _bot->get_bot()->me.id);
+            dpp::slashcommand command("local_stats",
+                                      "Command to get local statistics for user/bot games/commands on this server.",
+                                      _bot->get_bot()->me.id);
             command.add_option(
                 dpp::command_option(dpp::co_sub_command_group, "bot", "Statistics about whole bot.")
                     .add_option(
                         dpp::command_option(dpp::co_sub_command, "commands",
                                             "Statistics about bot commands usage on this guild.")
+                            .add_option(dpp::command_option(dpp::co_channel, "channel",
+                                                            "Channel in which command(s) was used.", false))
                             .add_option(dpp::command_option(dpp::co_string, "time_from",
                                                             "Start of period in format \"YYYY-MM-DD hh:mm:ss\" in UTC "
                                                             "time, example: 2022-02-24 03:00:00.",
@@ -502,6 +526,8 @@ ORDER BY
                             .add_option(dpp::command_option(dpp::co_string, "command_name", "Command name.", false)))
                     .add_option(dpp::command_option(dpp::co_sub_command, "games",
                                                     "Statistics about played games on this guild.")
+                                    .add_option(dpp::command_option(dpp::co_channel, "channel",
+                                                                    "channel in which command(s) was used.", false))
                                     .add_option(dpp::command_option(dpp::co_string, "time_from_start",
                                                                     "Start of period in format \"YYYY-MM-DD hh:mm:ss\" "
                                                                     "in UTC time, example: 2022-02-24 03:00:00.",
@@ -526,6 +552,8 @@ ORDER BY
                     .add_option(
                         dpp::command_option(dpp::co_sub_command, "commands",
                                             "Statistics about commands you used on this guild.")
+                            .add_option(dpp::command_option(dpp::co_channel, "channel",
+                                                            "Channel in which command(s) was used.", false))
                             .add_option(dpp::command_option(dpp::co_string, "time_from",
                                                             "Start of period in format \"YYYY-MM-DD hh:mm:ss\" in UTC "
                                                             "time, example: 2022-02-24 03:00:00.",
@@ -538,6 +566,8 @@ ORDER BY
                     .add_option(
                         dpp::command_option(dpp::co_sub_command, "games",
                                             "Statistics about your games played by you on this guild.")
+                            .add_option(dpp::command_option(dpp::co_channel, "channel",
+                                                            "channel in which command(s) was used.", false))
                             .add_option(dpp::command_option(dpp::co_string, "time_from_start",
                                                             "Start of period in format \"YYYY-MM-DD hh:mm:ss\" in UTC "
                                                             "time, example: 2022-02-24 03:00:00.",
@@ -576,16 +606,16 @@ ORDER BY
                     command_end();
                     co_return;
                 },
-                {"Shows global statistics for user/bot games/commands across all "
-                 "servers providing a lot filtering abilities",
+                {"Shows local statistics for user/bot games/at this specific"
+                 "server providing a lot filtering abilities",
                  {"statistics"}}));
         });
     }
 
-    void Discord_command_global_stats_impl::run() {}
+    void Discord_command_local_stats_impl::run() {}
 
-    void Discord_command_global_stats_impl::stop() {
-        Discord_command_global_stats::stop();
+    void Discord_command_local_stats_impl::stop() {
+        Discord_command_local_stats::stop();
         _db->remove_prepared_statement(_bot_commands_stmt);
         _db->remove_prepared_statement(_bot_games_stmt);
         _db->remove_prepared_statement(_me_commands_stmt);
@@ -593,6 +623,6 @@ ORDER BY
     }
 
     Module_ptr create() {
-        return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_command_global_stats_impl>());
+        return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_command_local_stats_impl>());
     }
 } // namespace gb

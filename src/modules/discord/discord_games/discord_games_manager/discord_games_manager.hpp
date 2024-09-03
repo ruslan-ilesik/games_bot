@@ -76,9 +76,11 @@ public:
    * add a game to the collection managed by the manager.
    *
    * @param game Pointer to the Discord game to add.
+   * @param channel_id Channel id where game is happening.
+   * @param guild_id Guild id where game is happening.
    * @returns Awaitable request to database which will return unique id of game.
    */
-  virtual Task<Database_return_t> add_game(Discord_game *game) = 0;
+  virtual Task<Database_return_t> add_game(Discord_game *game, const dpp::snowflake& channel_id, const dpp::snowflake& guild_id) = 0;
 
   /**
    * @brief Removes a game from the manager.
