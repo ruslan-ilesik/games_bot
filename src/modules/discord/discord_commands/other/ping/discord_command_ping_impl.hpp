@@ -40,6 +40,11 @@ namespace gb {
          * @param modules A reference to the collection of modules required by this command.
          */
         void init(const Modules &modules) override;
+
+        /**
+        * @brief Stops the ping module.
+        */
+        void stop() override;
     };
 
     /**

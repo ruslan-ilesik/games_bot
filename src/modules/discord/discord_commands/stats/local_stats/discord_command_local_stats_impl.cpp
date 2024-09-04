@@ -615,6 +615,7 @@ ORDER BY
     void Discord_command_local_stats_impl::run() {}
 
     void Discord_command_local_stats_impl::stop() {
+        _command_handler->remove_command("local_stats");
         Discord_command_local_stats::stop();
         _db->remove_prepared_statement(_bot_commands_stmt);
         _db->remove_prepared_statement(_bot_games_stmt);
