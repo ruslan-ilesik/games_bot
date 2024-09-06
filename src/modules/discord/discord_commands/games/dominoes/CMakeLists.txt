@@ -4,6 +4,7 @@ add_library(discord_game_dominoes SHARED
         ../../discord_general_command.cpp
         ../../../discord_games/discord_game.cpp
         ../../../../../module/module.cpp
+        ../../../discord_games/dominoes/discord_dominoes_game.cpp
 )
 
 

@@ -36,7 +36,7 @@ namespace gb {
     }
 
     Image_impl::Image_impl(size_t x, size_t y, const Color &color) {
-        _image = {static_cast<int>(x), static_cast<int>(y),CV_8UC4, color_to_cv_scalar(color)};
+        _image = {static_cast<int>(y), static_cast<int>(x),CV_8UC4, color_to_cv_scalar(color)};
     }
 
     std::pair<std::string, std::string> Image_impl::convert_to_string() {
@@ -55,6 +55,10 @@ namespace gb {
                                int thickness) {
         cv::putText(_image, text, vector_to_cv_point(position), cv::FONT_HERSHEY_DUPLEX, font_scale,
                     color_to_cv_scalar(color), thickness);
+    }
+
+    void Image_impl::draw_circle(const Vector2i &position, const int radius, const Color &color, const int thickness) {
+        cv::circle(_image,vector_to_cv_point(position),radius, color_to_cv_scalar(color),thickness);
     }
 
     cv::Mat &Image_impl::get_image() {

@@ -55,8 +55,8 @@ namespace gb {
 
     void Discord_tic_tac_toe_command_impl::stop() {
         _command_handler->remove_command("tic_tac_toe");
-        _image_processing->cache_remove(Discord_tic_tac_toe_game::get_image_generators());
         Discord_tic_tac_toe_command::stop();
+        _image_processing->cache_remove(Discord_tic_tac_toe_game::get_image_generators());
     }
 
     Module_ptr create() {

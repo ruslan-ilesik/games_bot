@@ -155,6 +155,23 @@ public:
   virtual void message_create(const dpp::message& message, const dpp::command_completion_event_t &callback =
                                dpp::utility::log_error()) = 0;
 
+ /**
+  * @brief Sends a direct message to a specified user asynchronously.
+  *
+  * This coroutine function is used to send a direct message to a specified user
+  * (identified by their user ID). It handles the message processing internally
+  * before dispatching the message.
+  *
+  * @param user_id The Discord snowflake (unique identifier) of the user to whom
+  * the direct message will be sent.
+  * @param message The message object to be sent.
+  *
+  * @return dpp::task<dpp::confirmation_callback_t> This asynchronous task returns
+  * a confirmation callback when the message has been sent. The confirmation
+  * callback contains information about the success or failure of the message delivery.
+  */
+  virtual dpp::task<dpp::confirmation_callback_t> co_direct_message_create(const dpp::snowflake& user_id, dpp::message& message) = 0;
+
 };
 
 /**

@@ -26,7 +26,10 @@ std::string to_string(USER_REMOVE_REASON r) {
   }
 }
 Discord_game::~Discord_game() {
+    if (_is_game_started) {
         game_stop();
+    }
+
     }
 
     std::vector<std::string> Discord_game::get_basic_game_dependencies() {
@@ -79,6 +82,7 @@ Discord_game::~Discord_game() {
     }
 
     void Discord_game::game_start(const dpp::snowflake& channel_id,const dpp::snowflake& guild_id) {
+        _is_game_started = true;
         _game_create_req = _data.games_manager->add_game(this,channel_id,guild_id);
     }
 
@@ -103,5 +107,35 @@ Discord_game::~Discord_game() {
         return _unique_game_id;
     }
 
+    void Discord_game::set_current_player_index(size_t index) {
+        if (index >= this->_players.size()) {
+            throw std::runtime_error("index of player is out of range.");
+        }
+        this->_current_player_ind = index;
+    }
+
     uint64_t Discord_game::get_image_cnt() const { return _img_cnt; }
+
+    dpp::task<Discord_game::Direct_messages_return>
+    Discord_game::get_private_messages(const std::vector<dpp::snowflake> &ids) {
+        std::vector<std::tuple<dpp::task<dpp::confirmation_callback_t>, dpp::snowflake>> awaitable;
+        for (const dpp::snowflake &i: ids) {
+            awaitable.emplace_back(_data.bot->co_direct_message_create(
+                                       i, dpp::message().add_embed(dpp::embed().set_color(dpp::colors::blue).set_title("Game is starting..."))),
+                                   i);
+        }
+        std::map<dpp::snowflake, dpp::message> r;
+        bool fail = false;
+        for (auto &[i, user_id]: awaitable) {
+            dpp::confirmation_callback_t e = co_await i;
+            if (e.is_error()) {
+                fail = true;
+                continue;
+            }
+            r.insert({user_id, std::get<dpp::message>(e.value)});
+        }
+
+
+        co_return {fail, r};
+    }
 } // gb
