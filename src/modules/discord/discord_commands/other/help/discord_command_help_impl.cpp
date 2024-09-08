@@ -33,7 +33,13 @@ namespace gb {
     Discord_command_help_impl::Discord_command_help_impl() :
         Discord_command_help("discord_command_help", {"discord_select_menu_handler"}) {}
 
-    void Discord_command_help_impl::run() {}
+    void Discord_command_help_impl::run() {
+
+    }
+    void Discord_command_help_impl::stop() {
+        _command_handler->remove_command("help");
+        Discord_command_help::stop();
+    }
 
     dpp::task<void> Discord_command_help_impl::help_command(const dpp::slashcommand_t &event) {
         auto coma_sep = [](std::string a, std::string b) { return std::move(a) + ", " + std::move(b); };

@@ -87,7 +87,12 @@ namespace gb {
 
     void Discord_bot_impl::message_create(const dpp::message &message,
                                           const dpp::command_completion_event_t &callback) {
-        _bot->message_create(message_preprocessing(message),callback);
+        _bot->message_create(message_preprocessing(message), callback);
+    }
+
+    dpp::task<dpp::confirmation_callback_t> Discord_bot_impl::co_direct_message_create(const dpp::snowflake &user_id,
+                                                                                       dpp::message &message) {
+        co_return co_await _bot->co_direct_message_create(user_id,message_preprocessing(message));
     }
 
     Module_ptr create() {

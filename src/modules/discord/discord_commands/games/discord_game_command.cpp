@@ -47,8 +47,8 @@ namespace gb {
         dpp::button_click_t click;
         bool is_click = false;
         while(true){
-            unsigned int waiting_for_amount = players_amount - joined_players.size() - players.size();
-            if (players_amount ==  joined_players.size()) {
+            unsigned int waiting_for_amount = joined_players.size() + players.size() <= players_amount ? players_amount - (joined_players.size() + players.size()): 0;
+            if (players_amount <=  joined_players.size() && players.empty()) {
                 co_return {false,click,joined_players};
             }
             dpp::message m;
@@ -160,7 +160,9 @@ namespace gb {
                     auto e = std::ranges::find(required_players, click.command.usr.id);
                     if (e == required_players.end()) {
                         e = std::ranges::find(joined_players, click.command.usr.id);
-                        joined_players.erase(e);
+                        if (e != joined_players.end()) {
+                            joined_players.erase(e);
+                        }
                         _button_click_handler->clear_ids(m);
                         break;
                     }
@@ -168,7 +170,7 @@ namespace gb {
                     dpp::embed error_embed {};
                     error_embed.set_color(dpp::colors::red)
                                 .set_title(lobby_title+" lobby closed!")
-                                .set_description("Player " + dpp::utility::user_mention(click.command.usr.id)+ "left the game while they were required for game to start.")
+                                .set_description("Player " + dpp::utility::user_mention(click.command.usr.id)+ " left the game while they were required for game to start.")
                                 .set_thumbnail(lobby_image_url);
                     _bot->reply(click,dpp::message().add_embed(error_embed));
                     _button_click_handler->clear_ids(m);

@@ -3,252 +3,286 @@
 //
 
 #pragma once
-#include <string>
-#include <sstream>
 #include <memory>
+#include <sstream>
+#include <string>
 
 namespace gb {
 
-/**
- * @brief Represents a color with RGBA components.
- *
- * The Color class holds the color information using red, green, and blue components
- * (each as an unsigned char) and an alpha channel (as a float) representing opacity.
- */
-struct Color {
-    unsigned char r; ///< Red component (0 to 255).
-    unsigned char g; ///< Green component (0 to 255).
-    unsigned char b; ///< Blue component (0 to 255).
-    float a;         ///< Alpha component (opacity) ranging from 0.0 to 1.0.
+    /**
+     * @brief Represents a color with RGBA components.
+     *
+     * The Color class holds the color information using red, green, and blue components
+     * (each as an unsigned char) and an alpha channel (as a float) representing opacity.
+     */
+    struct Color {
+        unsigned char r; ///< Red component (0 to 255).
+        unsigned char g; ///< Green component (0 to 255).
+        unsigned char b; ///< Blue component (0 to 255).
+        float a; ///< Alpha component (opacity) ranging from 0.0 to 1.0.
+
+        /**
+         * @brief Constructs a Color with specified RGB and alpha values.
+         *
+         * @param r Red component (0 to 255).
+         * @param g Green component (0 to 255).
+         * @param b Blue component (0 to 255).
+         * @param a Alpha component (opacity) ranging from 0.0 to 1.0. Default is 1.0.
+         */
+        Color(const unsigned char r, const unsigned char g, const unsigned char b, const float a = 1) :
+            r(r), g(g), b(b), a(a) {}
+    };
 
     /**
-     * @brief Constructs a Color with specified RGB and alpha values.
+     * @brief A 2D vector class template.
      *
-     * @param r Red component (0 to 255).
-     * @param g Green component (0 to 255).
-     * @param b Blue component (0 to 255).
-     * @param a Alpha component (opacity) ranging from 0.0 to 1.0. Default is 1.0.
+     * The Vector2 class represents a 2D vector with generic coordinate type T. It supports
+     * various vector operations including addition, subtraction, and scaling.
+     *
+     * @tparam T The type of the coordinates (must support arithmetic operations and string conversion).
      */
-    Color(const unsigned char r, const unsigned char g, const unsigned char b, const float a = 1)
-        : r(r), g(g), b(b), a(a) {}
-};
+    template<typename T>
+        requires std::three_way_comparable_with<T, T> && requires(T a) {
+            { a + a } -> std::same_as<T>;
+            { a - a } -> std::same_as<T>;
+            { std::to_string(a) } -> std::same_as<std::string>;
+        }
+    class Vector2 {
+    public:
+        T x; ///< The x-coordinate of the vector.
+        T y; ///< The y-coordinate of the vector.
 
-/**
- * @brief A 2D vector class template.
- *
- * The Vector2 class represents a 2D vector with generic coordinate type T. It supports
- * various vector operations including addition, subtraction, and scaling.
- *
- * @tparam T The type of the coordinates (must support arithmetic operations and string conversion).
- */
-template<typename T>
-requires std::three_way_comparable_with<T, T> &&
-         requires (T a) {
-             { a + a } -> std::same_as<T>;
-             { a - a } -> std::same_as<T>;
-             { std::to_string(a) } -> std::same_as<std::string>;
-         }
-class Vector2 {
-public:
-    T x; ///< The x-coordinate of the vector.
-    T y; ///< The y-coordinate of the vector.
+        /**
+         * @brief Constructs a Vector2 with specified x and y values.
+         *
+         * @param x_val The x-coordinate value.
+         * @param y_val The y-coordinate value.
+         */
+        Vector2(const T &x_val, const T &y_val) : x(x_val), y(y_val) {}
+
+        /**
+         * @brief Compares this vector with another Vector2 using the spaceship operator.
+         *
+         * @param other The vector to compare with.
+         * @return auto The result of the comparison.
+         */
+        template<typename U>
+            requires std::three_way_comparable_with<T, U>
+        auto operator<=>(const Vector2<U> &other) const {
+            if (auto cmp = x <=> other.x; cmp != 0)
+                return cmp;
+            return y <=> other.y;
+        }
+
+        /**
+         * @brief Adds another Vector2 to this vector.
+         *
+         * @param other The vector to add.
+         * @return Vector2 The resulting vector after addition.
+         */
+        template<typename U>
+            requires requires(T a, U b) { a + b; }
+        auto operator+(const Vector2<U> &other) const {
+            using Result_type = decltype(T{} + U{});
+            return Vector2<Result_type>{x + other.x, y + other.y};
+        }
+
+        /**
+         * @brief Subtracts another Vector2 from this vector.
+         *
+         * @param other The vector to subtract.
+         * @return Vector2 The resulting vector after subtraction.
+         */
+        template<typename U>
+            requires requires(T a, U b) { a - b; }
+        auto operator-(const Vector2<U> &other) const {
+            using Result_type = decltype(T{} - U{});
+            return Vector2<Result_type>{x - other.x, y - other.y};
+        }
+
+        /**
+         * @brief Performs compound assignment addition with another Vector2.
+         *
+         * @param other The vector to add.
+         * @return Vector2& Reference to this vector after addition.
+         */
+        template<typename U>
+            requires requires(T &a, U b) { a += b; }
+        Vector2 &operator+=(const Vector2<U> &other) {
+            x += other.x;
+            y += other.y;
+            return *this;
+        }
+
+        /**
+         * @brief Performs compound assignment subtraction with another Vector2.
+         *
+         * @param other The vector to subtract.
+         * @return Vector2& Reference to this vector after subtraction.
+         */
+        template<typename U>
+            requires requires(T &a, U b) { a -= b; }
+        Vector2 &operator-=(const Vector2<U> &other) {
+            x -= other.x;
+            y -= other.y;
+            return *this;
+        }
+
+        /**
+         * @brief Multiplies this vector by a scalar value.
+         *
+         * @param scalar The scalar value to multiply by.
+         * @return Vector2 The resulting vector after multiplication.
+         */
+        template<typename Scalar>
+            requires requires(T a, Scalar s) { a *s; }
+        auto operator*(const Scalar &scalar) const {
+            using Result_type = decltype(T{} * scalar);
+            return Vector2<Result_type>{x * scalar, y * scalar};
+        }
+
+        /**
+         * @brief Divides this vector by a scalar value.
+         *
+         * @param scalar The scalar value to divide by.
+         * @return Vector2 The resulting vector after division.
+         */
+        template<typename Scalar>
+            requires requires(T a, Scalar s) { a / s; }
+        auto operator/(const Scalar &scalar) const {
+            using Result_type = decltype(T{} / scalar);
+            return Vector2<Result_type>{x / scalar, y / scalar};
+        }
+
+        /**
+         * @brief Performs compound assignment multiplication by a scalar value.
+         *
+         * @param scalar The scalar value to multiply by.
+         * @return Vector2& Reference to this vector after multiplication.
+         */
+        template<typename Scalar>
+            requires requires(T &a, Scalar s) { a *= s; }
+        Vector2 &operator*=(const Scalar &scalar) {
+            x *= scalar;
+            y *= scalar;
+            return *this;
+        }
+
+        /**
+         * @brief Performs compound assignment division by a scalar value.
+         *
+         * @param scalar The scalar value to divide by.
+         * @return Vector2& Reference to this vector after division.
+         */
+        template<typename Scalar>
+            requires requires(T &a, Scalar s) { a /= s; }
+        Vector2 &operator/=(const Scalar &scalar) {
+            x /= scalar;
+            y /= scalar;
+            return *this;
+        }
+    };
 
     /**
-     * @brief Constructs a Vector2 with specified x and y values.
+     * @brief Converts a Vector2 to a string representation.
      *
-     * @param x_val The x-coordinate value.
-     * @param y_val The y-coordinate value.
+     * @param vec The Vector2 to convert.
+     * @return std::string The string representation of the Vector2.
      */
-    Vector2(const T& x_val, const T& y_val) : x(x_val), y(y_val) {}
-
-    /**
-     * @brief Compares this vector with another Vector2 using the spaceship operator.
-     *
-     * @param other The vector to compare with.
-     * @return auto The result of the comparison.
-     */
-    template<typename U>
-    requires std::three_way_comparable_with<T, U>
-    auto operator<=>(const Vector2<U>& other) const {
-        if (auto cmp = x <=> other.x; cmp != 0) return cmp;
-        return y <=> other.y;
+    template<typename T>
+        requires requires(T a) { std::to_string(a); }
+    std::string to_string(const gb::Vector2<T> &vec) {
+        return "Vector2(" + std::to_string(vec.x) + ", " + std::to_string(vec.y) + ")";
     }
 
     /**
-     * @brief Adds another Vector2 to this vector.
-     *
-     * @param other The vector to add.
-     * @return Vector2 The resulting vector after addition.
+     * @brief Defines a 2D vector with integer coordinates.
      */
-    template<typename U>
-    requires requires (T a, U b) { a + b; }
-    auto operator+(const Vector2<U>& other) const {
-        using Result_type = decltype(T{} + U{});
-        return Vector2<Result_type>{x + other.x, y + other.y};
-    }
+    typedef Vector2<int> Vector2i;
 
     /**
-     * @brief Subtracts another Vector2 from this vector.
-     *
-     * @param other The vector to subtract.
-     * @return Vector2 The resulting vector after subtraction.
+     * @brief Defines a 2D vector with double coordinates.
      */
-    template<typename U>
-    requires requires (T a, U b) { a - b; }
-    auto operator-(const Vector2<U>& other) const {
-        using Result_type = decltype(T{} - U{});
-        return Vector2<Result_type>{x - other.x, y - other.y};
-    }
+    typedef Vector2<double> Vector2d;
 
     /**
-     * @brief Performs compound assignment addition with another Vector2.
-     *
-     * @param other The vector to add.
-     * @return Vector2& Reference to this vector after addition.
+     * @brief Definition of Image class to define custom type.
      */
-    template<typename U>
-    requires requires (T& a, U b) { a += b; }
-    Vector2& operator+=(const Vector2<U>& other) {
-        x += other.x;
-        y += other.y;
-        return *this;
-    }
+    class Image;
 
     /**
-     * @brief Performs compound assignment subtraction with another Vector2.
-     *
-     * @param other The vector to subtract.
-     * @return Vector2& Reference to this vector after subtraction.
+     * @brief Defines a shared pointer type for the Image class.
      */
-    template<typename U>
-    requires requires (T& a, U b) { a -= b; }
-    Vector2& operator-=(const Vector2<U>& other) {
-        x -= other.x;
-        y -= other.y;
-        return *this;
-    }
-
+    typedef std::shared_ptr<Image> Image_ptr;
     /**
-     * @brief Multiplies this vector by a scalar value.
+     * @brief Abstract base class representing an image.
      *
-     * @param scalar The scalar value to multiply by.
-     * @return Vector2 The resulting vector after multiplication.
+     * The Image class provides methods for converting the image to a string format,
+     * drawing lines, text, ect onto the image, and is intended to be extended by
+     * concrete image classes that implement these methods.
      */
-    template<typename Scalar>
-    requires requires (T a, Scalar s) { a * s; }
-    auto operator*(const Scalar& scalar) const {
-        using Result_type = decltype(T{} * scalar);
-        return Vector2<Result_type>{x * scalar, y * scalar};
-    }
+    class Image {
+    public:
+        virtual ~Image() = default;
 
-    /**
-     * @brief Divides this vector by a scalar value.
-     *
-     * @param scalar The scalar value to divide by.
-     * @return Vector2 The resulting vector after division.
-     */
-    template<typename Scalar>
-    requires requires (T a, Scalar s) { a / s; }
-    auto operator/(const Scalar& scalar) const {
-        using Result_type = decltype(T{} / scalar);
-        return Vector2<Result_type>{x / scalar, y / scalar};
-    }
+        /**
+         * @brief Converts the image to a string representation.
+         *
+         * @return std::pair<std::string, std::string> A pair where the first element is
+         *         the file encoding (e.g., ".jpg") and the second element is the actual image data.
+         */
+        virtual std::pair<std::string, std::string> convert_to_string() = 0;
 
-    /**
-     * @brief Performs compound assignment multiplication by a scalar value.
-     *
-     * @param scalar The scalar value to multiply by.
-     * @return Vector2& Reference to this vector after multiplication.
-     */
-    template<typename Scalar>
-    requires requires (T& a, Scalar s) { a *= s; }
-    Vector2& operator*=(const Scalar& scalar) {
-        x *= scalar;
-        y *= scalar;
-        return *this;
-    }
+        /**
+         * @brief Draws a line on the image.
+         *
+         * @param from The starting point of the line.
+         * @param to The ending point of the line.
+         * @param color The color of the line.
+         * @param thickness The thickness of the line.
+         */
+        virtual void draw_line(const Vector2i &from, const Vector2i &to, const Color &color, int thickness) = 0;
 
-    /**
-     * @brief Performs compound assignment division by a scalar value.
-     *
-     * @param scalar The scalar value to divide by.
-     * @return Vector2& Reference to this vector after division.
-     */
-    template<typename Scalar>
-    requires requires (T& a, Scalar s) { a /= s; }
-    Vector2& operator/=(const Scalar& scalar) {
-        x /= scalar;
-        y /= scalar;
-        return *this;
-    }
-};
+        /**
+         * @brief Draws text on the image.
+         *
+         * @param text The text to draw.
+         * @param position The position where the text will be drawn.
+         * @param font_scale The scale of the font.
+         * @param color The color of the text.
+         * @param thickness The thickness of the text.
+         */
+        virtual void draw_text(const std::string &text, const Vector2i &position, double font_scale, const Color &color,
+                               int thickness) = 0;
 
-/**
- * @brief Converts a Vector2 to a string representation.
- *
- * @param vec The Vector2 to convert.
- * @return std::string The string representation of the Vector2.
- */
-template<typename T>
-requires requires (T a) { std::to_string(a); }
-std::string to_string(const gb::Vector2<T>& vec) {
-    return "Vector2(" + std::to_string(vec.x) + ", " + std::to_string(vec.y) + ")";
-}
 
-/**
- * @brief Defines a 2D vector with integer coordinates.
- */
-typedef Vector2<int> Vector2i;
+        /**
+         * @brief Draws circle on the image.
+         *
+         * @param position Center position of circle on image.
+         * @param radius Radius of circle.
+         * @param color Color of the circle.
+         * @param thickness thickness of circle line. -1 - fill circle.
+         */
+        virtual void draw_circle(const Vector2i &position, int radius, const Color &color, int thickness) = 0;
 
-/**
- * @brief Defines a 2D vector with double coordinates.
- */
-typedef Vector2<double> Vector2d;
+        /**
+         * @brief Rotates image by given angle in clockwise direction.
+         *
+         * @note Image size can change after rotation.
+         *
+         * @param angle Angle in degrees to rotate image on.
+         */
+        virtual void rotate(double angle) = 0;
 
-/**
- * @brief Abstract base class representing an image.
- *
- * The Image class provides methods for converting the image to a string format,
- * drawing lines, text, ect onto the image, and is intended to be extended by
- * concrete image classes that implement these methods.
- */
-class Image {
-public:
-    virtual ~Image() = default;
+        /**
+         * @breif Overlays given image with current on provided position.
+         *
+         * @param image Image to overlay with.
+         * @param position Top left corner of overlay.
+         */
+        virtual void overlay_image(Image_ptr &image, const Vector2i &position = {0,0}) = 0;
+    };
 
-    /**
-     * @brief Converts the image to a string representation.
-     *
-     * @return std::pair<std::string, std::string> A pair where the first element is
-     *         the file encoding (e.g., ".jpg") and the second element is the actual image data.
-     */
-    virtual std::pair<std::string, std::string> convert_to_string() = 0;
-
-    /**
-     * @brief Draws a line on the image.
-     *
-     * @param from The starting point of the line.
-     * @param to The ending point of the line.
-     * @param color The color of the line.
-     * @param thickness The thickness of the line.
-     */
-    virtual void draw_line(const Vector2i& from, const Vector2i& to, const Color& color, int thickness) = 0;
-
-    /**
-     * @brief Draws text on the image.
-     *
-     * @param text The text to draw.
-     * @param position The position where the text will be drawn.
-     * @param font_scale The scale of the font.
-     * @param color The color of the text.
-     * @param thickness The thickness of the text.
-     */
-    virtual void draw_text(const std::string& text, const Vector2i& position, double font_scale, const Color& color, int thickness) = 0;
-};
-
-/**
- * @brief Defines a shared pointer type for the Image class.
- */
-typedef std::shared_ptr<Image> Image_ptr;
 
 } // namespace gb

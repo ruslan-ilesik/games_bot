@@ -90,6 +90,11 @@ namespace gb {
     }
 
     void Discord_command_achievements_impl::run() {}
+
+    void Discord_command_achievements_impl::stop() {
+        _command_handler->remove_command("achievements");
+        Discord_command_achievements::stop();
+    }
     Module_ptr create() {
         return std::dynamic_pointer_cast<Discord_command_achievements>(
             std::make_shared<Discord_command_achievements_impl>());

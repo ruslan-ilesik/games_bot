@@ -66,12 +66,24 @@ namespace gb {
         Task<Database_return_t> _game_create_req; ///< Request to create a game in the database.
         uint64_t _unique_game_id =
             std::numeric_limits<uint64_t>::max(); ///< Unique ID for the game, initialized as max.
+        bool _is_game_started = false; ///< Flag which checks if game was started.
 
     protected:
         Game_data_initialization _data; ///< Initialization data for the game.
         uint64_t _img_cnt = 0; ///< Counter for the number of images generated.
 
     public:
+        /**
+         * @brief Defines a return type for operations involving creating of private messages.
+         *
+         * This type alias represents a pair where:
+         * - The first element is a boolean flag indicating the success or failure of the operation.
+         *   `true` means the operation failed, and `false` means it succeeded.
+         * - The second element is a map that associates user IDs (`dpp::snowflake`) with the corresponding
+         *   `dpp::message` objects. It stores the private messages sent to or received from users.
+         */
+        typedef std::pair<bool, std::map<dpp::snowflake, dpp::message>> Direct_messages_return;
+
         /**
          * @brief Destructor for Discord_game.
          *
@@ -143,7 +155,7 @@ namespace gb {
          * @param channel_id Channel id where game is played.
          * @param guild_id Guild id where game is played.
          */
-        void game_start(const dpp::snowflake& channel_id,const dpp::snowflake& guild_id);
+        void game_start(const dpp::snowflake &channel_id, const dpp::snowflake &guild_id);
 
         /**
          * @brief Stops the game and deregisters it from the game manager.
@@ -167,11 +179,22 @@ namespace gb {
         uint64_t get_uid();
 
         /**
+         * @brief Changes current player index.
+         *
+         * @param index Index of player to make current.
+         *
+         * @throw std::runtime_error if index is out of range of players amount.
+         */
+        void set_current_player_index(size_t index);
+
+        /**
          * @brief Gets the current count of images generated in the game.
          *
          * @return The number of images generated.
          */
         uint64_t get_image_cnt() const;
+
+        dpp::task<Direct_messages_return> get_private_messages(const std::vector<dpp::snowflake> &ids);
 
         /**
          * @brief Adds an image to a Discord message.
