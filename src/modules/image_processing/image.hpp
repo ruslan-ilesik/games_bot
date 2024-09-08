@@ -206,6 +206,15 @@ namespace gb {
     typedef Vector2<double> Vector2d;
 
     /**
+     * @brief Definition of Image class to define custom type.
+     */
+    class Image;
+
+    /**
+     * @brief Defines a shared pointer type for the Image class.
+     */
+    typedef std::shared_ptr<Image> Image_ptr;
+    /**
      * @brief Abstract base class representing an image.
      *
      * The Image class provides methods for converting the image to a string format,
@@ -256,11 +265,24 @@ namespace gb {
          * @param thickness thickness of circle line. -1 - fill circle.
          */
         virtual void draw_circle(const Vector2i &position, int radius, const Color &color, int thickness) = 0;
+
+        /**
+         * @brief Rotates image by given angle in clockwise direction.
+         *
+         * @note Image size can change after rotation.
+         *
+         * @param angle Angle in degrees to rotate image on.
+         */
+        virtual void rotate(double angle) = 0;
+
+        /**
+         * @breif Overlays given image with current on provided position.
+         *
+         * @param image Image to overlay with.
+         * @param position Top left corner of overlay.
+         */
+        virtual void overlay_image(Image_ptr &image, const Vector2i &position = {0,0}) = 0;
     };
 
-    /**
-     * @brief Defines a shared pointer type for the Image class.
-     */
-    typedef std::shared_ptr<Image> Image_ptr;
 
 } // namespace gb

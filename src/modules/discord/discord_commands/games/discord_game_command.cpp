@@ -47,7 +47,7 @@ namespace gb {
         dpp::button_click_t click;
         bool is_click = false;
         while(true){
-            unsigned int waiting_for_amount = players_amount - joined_players.size() - players.size();
+            unsigned int waiting_for_amount = joined_players.size() + players.size() <= players_amount ? players_amount - (joined_players.size() + players.size()): 0;
             if (players_amount <=  joined_players.size() && players.empty()) {
                 co_return {false,click,joined_players};
             }
@@ -160,7 +160,9 @@ namespace gb {
                     auto e = std::ranges::find(required_players, click.command.usr.id);
                     if (e == required_players.end()) {
                         e = std::ranges::find(joined_players, click.command.usr.id);
-                        joined_players.erase(e);
+                        if (e != joined_players.end()) {
+                            joined_players.erase(e);
+                        }
                         _button_click_handler->clear_ids(m);
                         break;
                     }

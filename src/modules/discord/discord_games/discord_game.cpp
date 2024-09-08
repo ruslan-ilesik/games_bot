@@ -121,7 +121,7 @@ Discord_game::~Discord_game() {
         std::vector<std::tuple<dpp::task<dpp::confirmation_callback_t>, dpp::snowflake>> awaitable;
         for (const dpp::snowflake &i: ids) {
             awaitable.emplace_back(_data.bot->co_direct_message_create(
-                                       i, dpp::message().add_embed(dpp::embed().set_color(dpp::colors::blue).set_title("Game is starting..."))),
+                                       i, dpp::message().add_embed(dpp::embed().set_color(dpp::colors::blue).set_title("Game is starting...").set_description("You should wait for other users to make their moves."))),
                                    i);
         }
         std::map<dpp::snowflake, dpp::message> r;
@@ -134,8 +134,6 @@ Discord_game::~Discord_game() {
             }
             r.insert({user_id, std::get<dpp::message>(e.value)});
         }
-
-
         co_return {fail, r};
     }
 } // gb

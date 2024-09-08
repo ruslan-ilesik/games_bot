@@ -110,6 +110,23 @@ namespace gb {
         void draw_circle(const Vector2i &position, int radius, const Color &color, int thickness) override;
 
         /**
+         * @brief Rotates image by given angle in clockwise direction.
+         *
+         * @note Image size can change after rotation.
+         *
+         * @param angle Angle in degrees to rotate image on.
+         */
+        void rotate(double angle) override;
+
+        /**
+         * @breif Overlays given image with current on provided position.
+         *
+         * @param image Image to overlay with.
+         * @param position Top left corner of overlay.
+         */
+        void overlay_image(Image_ptr &image, const Vector2i &position) override;
+
+        /**
          * @brief Gets a reference to the internal OpenCV image matrix.
          *
          * @return cv::Mat& Reference to the internal image matrix.
