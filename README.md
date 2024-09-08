@@ -23,14 +23,14 @@ and full redesign of architecture.
 - [X] global_stats
 - [ ] hangman
 - [X] help
-- [ ] local_stats
+- [X] local_stats
 - [ ] minesweeper
 - [X] ping
 - [ ] premium
 - [ ] puzzle_15
 - [ ] rubicks_cube
 - [ ] sudocku
-- [ ] tic_tac_toe
+- [X] tic_tac_toe
 - [ ] website
 
 # Implementation details
