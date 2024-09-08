@@ -12,6 +12,27 @@ I do not provide any support regarding it.
 this repository is not direct open sourcing of games bot, it is full remake of it using coroutines
 and full redesign of architecture.  
 
+## TO DO
+- [ ] 2048
+- [ ] about
+- [X] achivements
+- [ ] battleships
+- [ ] chess
+- [ ] connect_four
+- [X] dominoes
+- [X] global_stats
+- [ ] hangman
+- [X] help
+- [ ] local_stats
+- [ ] minesweeper
+- [X] ping
+- [ ] premium
+- [ ] puzzle_15
+- [ ] rubicks_cube
+- [ ] sudocku
+- [ ] tic_tac_toe
+- [ ] website
+
 # Implementation details
 
 ## Modules
