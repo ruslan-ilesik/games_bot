@@ -70,10 +70,13 @@ namespace gb {
         Direct_messages_return messages = co_await get_private_messages(get_players());
         if (messages.first) {
 
-
             std::vector<dpp::snowflake> missing_players;
             auto users_valid = std::views::keys(messages.second);
-            std::ranges::set_difference(this->get_players(), users_valid, std::back_inserter(missing_players));
+            std::vector<dpp::snowflake> set_tmp1 = this->get_players();
+            std::vector<dpp::snowflake> set_tmp2 = {users_valid.begin(),users_valid.end()};
+            std::sort(set_tmp1.begin(),set_tmp1.end());
+            std::sort(set_tmp2.begin(),set_tmp2.end());
+            std::ranges::set_difference(set_tmp1, set_tmp2, std::back_inserter(missing_players));
 
             std::string players_text;
             if (!missing_players.empty()) {
@@ -246,7 +249,6 @@ namespace gb {
                                                                        _decks[get_current_player()].end(), _to_place),
                                                            _decks[get_current_player()].end());
                     } else {
-                        std::cout << click_event.custom_id << std::endl;
                         dominoes::piece piece = {std::stoi(click_event.custom_id.substr(0, 1)),
                                                  std::stoi(click_event.custom_id.substr(2, 1))};
                         _decks[get_current_player()].erase(std::remove(_decks[get_current_player()].begin(),
@@ -501,7 +503,11 @@ namespace gb {
 
         std::string players_text;
         std::vector<dpp::snowflake> temp;
-        std::ranges::set_difference(_original_players_list, winners,
+        std::vector<dpp::snowflake> set_tmp1 = _original_players_list;
+        std::vector<dpp::snowflake> set_tmp2 = winners;
+        std::sort(set_tmp1.begin(),set_tmp1.end());
+        std::sort(set_tmp2.begin(),set_tmp2.end());
+        std::ranges::set_difference(set_tmp1, set_tmp2,
                                     std::back_inserter(temp));
         if (!temp.empty()) {
             players_text += dpp::utility::user_mention(temp[0]);
@@ -592,7 +598,12 @@ namespace gb {
 
 
         std::vector<dpp::snowflake> diff;
-        std::ranges::set_difference(get_players(), std::views::keys(_hidden_deck_images), std::back_inserter(diff));
+        auto view_keys = std::views::keys(_hidden_deck_images);
+        std::vector<dpp::snowflake> set_tmp1 = get_players();
+        std::vector<dpp::snowflake> set_tmp2{view_keys.begin(),view_keys.end()};
+        std::sort(set_tmp1.begin(),set_tmp1.end());
+        std::sort(set_tmp2.begin(),set_tmp2.end());
+        std::ranges::set_difference(set_tmp1,set_tmp2 , std::back_inserter(diff));
         for (auto &i: diff) {
             generate_hidden_deck_image(i, {size_for_field - size_for_deck * 2, size_for_deck});
         }
@@ -648,7 +659,11 @@ namespace gb {
         img->overlay_image(deck_img, {size_for_deck * 2, size - size_for_deck});
         if (get_players().size() == 2) {
             std::vector<dpp::snowflake> diff;
-            std::ranges::set_difference(get_players(), std::vector<dpp::snowflake>{get_current_player()},
+            std::vector<dpp::snowflake>set_tmp1 = get_players();
+            std::vector<dpp::snowflake> set_tmp2 = {get_current_player()};
+            std::sort(set_tmp1.begin(),set_tmp1.end());
+            std::sort(set_tmp2.begin(),set_tmp2.end());
+            std::ranges::set_difference(set_tmp1, set_tmp2,
                                         std::back_inserter(diff));
             img->overlay_image(this->_hidden_deck_images[diff[0]], {size_for_deck * 2, 0});
         }
@@ -688,7 +703,11 @@ namespace gb {
 
         std::string players_text;
         std::vector<dpp::snowflake> losers;
-        std::ranges::set_difference(_original_players_list, std::vector<dpp::snowflake>{get_current_player()},
+        std::vector<dpp::snowflake> set_tmp1 = _original_players_list;
+        std::vector<dpp::snowflake> set_tmp2 = {get_current_player()};
+        std::sort(set_tmp1.begin(),set_tmp1.end());
+        std::sort(set_tmp2.begin(),set_tmp2.end());
+        std::ranges::set_difference(set_tmp1, set_tmp2,
                                     std::back_inserter(losers));
         if (!losers.empty()) {
             players_text += dpp::utility::user_mention(losers[0]);
