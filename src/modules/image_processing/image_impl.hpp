@@ -119,6 +119,16 @@ namespace gb {
         void rotate(double angle) override;
 
         /**
+         * @brief Calculates and returns size of rendered text in pixels.
+         *
+         * @param text Text which render size should be calculated.
+         * @param font_scale The scale of the font.
+         * @param thickness The thickness of the text.
+         * @return Size which rendered text would take on screen.
+         */
+        Vector2i get_text_size(const std::string &text, double font_scale, int thickness) override;
+
+        /**
          * @breif Overlays given image with current on provided position.
          *
          * @param image Image to overlay with.

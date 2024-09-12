@@ -86,6 +86,11 @@ namespace gb {
         _image = dst;
     }
 
+    Vector2i Image_impl::get_text_size(const std::string &text, double font_scale, int thickness) {
+        cv::Size2i t_size = cv::getTextSize(text,cv::FONT_HERSHEY_DUPLEX,font_scale,thickness,0);
+        return {t_size.width,t_size.height};
+    }
+
     void Image_impl::overlay_image(Image_ptr &image, const Vector2i &position) {
         int x = position.x;
         int y = position.y;

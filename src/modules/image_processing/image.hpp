@@ -257,6 +257,16 @@ namespace gb {
 
 
         /**
+         * @brief Calculates and returns size of rendered text in pixels.
+         *
+         * @param text Text which render size should be calculated.
+         * @param font_scale The scale of the font.
+         * @param thickness The thickness of the text.
+         * @return Size which rendered text would take on screen.
+         */
+        virtual Vector2i get_text_size(const std::string &text, double font_scale, int thickness) = 0;
+
+        /**
          * @brief Draws circle on the image.
          *
          * @param position Center position of circle on image.
@@ -281,7 +291,7 @@ namespace gb {
          * @param image Image to overlay with.
          * @param position Top left corner of overlay.
          */
-        virtual void overlay_image(Image_ptr &image, const Vector2i &position = {0,0}) = 0;
+        virtual void overlay_image(Image_ptr &image, const Vector2i &position = {0, 0}) = 0;
     };
 
 
