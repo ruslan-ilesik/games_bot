@@ -60,6 +60,11 @@ namespace gb {
 
         Image_ptr generate_view_field(int state = 0);
 
+        void draw_private_field(Image_ptr& image, const std::array<int,2>& position, const battleships_engine::Field& field,
+                                const battleships_engine::Ships_container& ships, battleships_engine::Ship* to_not_draw = nullptr);
+
+        void draw_ship(Image_ptr& image, const std::array<int,2>& position, battleships_engine::Ship* ship);
+
         dpp::task<void> run(const dpp::button_click_t &event);
 
         dpp::task<void> player_place_ships(const dpp::snowflake& player);

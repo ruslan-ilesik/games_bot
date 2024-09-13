@@ -24,20 +24,22 @@ namespace gb {
             Image_ptr img = image_processing->create_image(resolution, _default_background);
             int field_size = resolution.x;
             int line_width = std::max(field_size / 256, 1);
-            double sector_size = ((field_size- line_width * 11.0) / 10.0 );
+            double sector_size = ((field_size - line_width * 11.0) / 10.0);
 
             // horizontal lines
             for (int i = 0; i < 11; i++) {
                 img->draw_line({0, static_cast<int>(i * sector_size + i * line_width)},
-                               {static_cast<int>(10.0 * sector_size + 10.0 * line_width), static_cast<int>(i * sector_size + i * line_width)}, _line_color,
-                               line_width);
+                               {static_cast<int>(10.0 * sector_size + 10.0 * line_width),
+                                static_cast<int>(i * sector_size + i * line_width)},
+                               _line_color, line_width);
             }
 
             // vertical
             for (int i = 0; i < 11; i++) {
                 img->draw_line({static_cast<int>(i * sector_size + i * line_width), 0},
-                               {static_cast<int>(i * sector_size + i * line_width), static_cast<int>(10.0 * sector_size + 10.0 * line_width)}, _line_color,
-                               line_width);
+                               {static_cast<int>(i * sector_size + i * line_width),
+                                static_cast<int>(10.0 * sector_size + 10.0 * line_width)},
+                               _line_color, line_width);
             }
             return img;
         };
@@ -63,12 +65,39 @@ namespace gb {
         }
         position = {0, static_cast<int>(_sector_size * 1.75)};
         for (int i = 0; i < 10; i++) {
-            img->draw_text(
-                std::to_string(i + 1),
-                {static_cast<int>(position[0] + (i == 9 ? 0 : _sector_size / 4)), static_cast<int>(position[1] + i * _sector_size + i * _line_width)},
-                _text_scale, state == 2 ? _text_active : _text_standard, _text_thickness);
+            img->draw_text(std::to_string(i + 1),
+                           {static_cast<int>(position[0] + (i == 9 ? 0 : _sector_size / 4)),
+                            static_cast<int>(position[1] + i * _sector_size + i * _line_width)},
+                           _text_scale, state == 2 ? _text_active : _text_standard, _text_thickness);
         }
         return img;
+    }
+    void Discord_battleships_game::draw_private_field(Image_ptr &image, const std::array<int, 2> &position,
+                                                      const battleships_engine::Field &field,
+                                                      const battleships_engine::Ships_container &ships,
+                                                      battleships_engine::Ship *to_not_draw) {
+        for (auto &ship: ships) {
+            if (!ship->is_dead() && to_not_draw != ship.get()) {
+                draw_ship(image, position, ship.get());
+            }
+        }
+        // this->draw_public_field(image,position,field,ships);
+    }
+
+    void Discord_battleships_game::draw_ship(Image_ptr &image, const std::array<int, 2> &position,
+                                             battleships_engine::Ship *ship) {
+        // we do not draw not placed ships.
+        if (!ship->is_placed()) {
+            return;
+        }
+
+        const auto draw_cell = [&](const Vector2i &local_pos) {
+            if (local_pos.x < 0 || local_pos.y < 0 || local_pos.x > 9 || local_pos.y > 9) {
+                return;
+            }
+            Vector2i p1 = {static_cast<int>(position[0]+local_pos.x * _sector_size + local_pos.x*_line_width),static_cast<int>(position[1]+local_pos.y * _sector_size + local_pos.y*_line_width)};
+            image->draw_rectangle(p1,{static_cast<int>(p1.x+_sector_size),static_cast<int>(p1.y+_sector_size)},_occupied_cell_color,-1);
+        };
     }
 
     dpp::task<void> Discord_battleships_game::run(const dpp::button_click_t &event) {
@@ -200,8 +229,10 @@ namespace gb {
                                .set_style(dpp::cos_success)
                                .set_disabled(!p.can_be_ready()));
         m.add_component(row);
-        Image_ptr img = generate_view_field();
 
+        Image_ptr img = generate_view_field();
+        draw_private_field(img, {static_cast<int>(_sector_size), static_cast<int>(_sector_size)}, p.get_field(),
+                           p.get_ships());
 
         co_return;
     }

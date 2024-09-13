@@ -267,12 +267,23 @@ namespace gb {
         virtual Vector2i get_text_size(const std::string &text, double font_scale, int thickness) = 0;
 
         /**
+         * @brief Draws rectangle on the image.
+         *
+         * @param position_start Starting left top position of rectangle
+         * @param position_end Ending right bottom position of rectangle
+         * @param color Color of rectangle
+         * @param thickness Thickness of rectangle line. -1 - fill circle.
+         */
+        virtual void draw_rectangle(const Vector2i &position_start, const Vector2i &position_end, const Color &color,
+                                    int thickness) = 0;
+
+        /**
          * @brief Draws circle on the image.
          *
          * @param position Center position of circle on image.
          * @param radius Radius of circle.
          * @param color Color of the circle.
-         * @param thickness thickness of circle line. -1 - fill circle.
+         * @param thickness Thickness of circle line. -1 - fill circle.
          */
         virtual void draw_circle(const Vector2i &position, int radius, const Color &color, int thickness) = 0;
 
