@@ -15,12 +15,12 @@ namespace gb {
         constexpr static int _field_size = 512;
         constexpr static int _distance_between_fields = _field_size/10;
         constexpr static int _line_width = 2;
-        constexpr static float _sector_size = (_field_size/11.0 - _line_width*11.0)*1.8;
+        constexpr static double _sector_size = (_field_size - ((_field_size - _line_width * 11.0) / 10.0)- _line_width * 11.0) / 10.0;
         constexpr static int _line_length = _sector_size*10 + _line_width*10;
-        constexpr static float _text_scale = _sector_size/45;
-        constexpr static float _text_thickness = _sector_size / 25;
+        constexpr static double _text_scale = _sector_size/45;
+        constexpr static double _text_thickness = _sector_size / 25;
 
-        constexpr static const std::array<int,2> _image_size = {_field_size,_field_size*2+_distance_between_fields};
+        constexpr static const Vector2i _image_size = {_field_size*2+_distance_between_fields,_field_size};
         inline static const Color _default_background{32,42,68};
         inline static const Color _line_color{255,255,255};
         inline static const Color _text_active{251,192,45};
@@ -50,7 +50,8 @@ namespace gb {
 
         std::array<bool,2> _last_was_back = {false,false};
         time_t _move_start;
-
+        bool _is_timeout = false;
+        dpp::message _message;
         std::mutex _mutex;
 
     public:
@@ -65,8 +66,13 @@ namespace gb {
 
         void draw_ship(Image_ptr& image, const std::array<int,2>& position, battleships_engine::Ship* ship);
 
-        dpp::task<void> run(const dpp::button_click_t &event);
+        void draw_public_field(Image_ptr &image, const std::array<int, 2> &position,
+                                    const battleships_engine::Field &field,const battleships_engine::Ships_container& ships);
 
-        dpp::task<void> player_place_ships(const dpp::snowflake& player);
+        dpp::task<void> run(dpp::button_click_t event);
+
+        void end_of_game_timeout();
+
+        dpp::task<void> player_place_ships(const dpp::snowflake player); //need an explicit copy because data gets corrupted on awaits.
     };
 }; // namespace gb

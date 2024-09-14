@@ -28,6 +28,7 @@ namespace gb {
     }
 
     void Discord_battleships_command_impl::init(const Modules &modules) {
+        srand(time(nullptr));
         Discord_battleships_command::init(modules);
         _image_processing->cache_create(Discord_battleships_game::get_image_generators());
         _bot->add_pre_requirement([this](){
