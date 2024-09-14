@@ -33,6 +33,7 @@ and full redesign of architecture.
 - [X] tic_tac_toe
 - [ ] website
 - [ ] reports to websites like top.gg
+- [ ] statistics collection
 
 
 # Implementation details
