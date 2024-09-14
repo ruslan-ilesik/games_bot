@@ -32,6 +32,8 @@ and full redesign of architecture.
 - [ ] sudocku
 - [X] tic_tac_toe
 - [ ] website
+- [ ] reports to websites like top.gg
+
 
 # Implementation details
 
