@@ -23,25 +23,23 @@ namespace gb {
 
     class Discord_chess_game : public Discord_game {
     private:
-        chess::Board board;
+        chess::Board _board;
         bool _choose_figure = true;
         std::string _selected_figure = "";
         std::vector<std::string> _possible_places_to_go;
         bool _next = false;
-        int _timeout = 60; // seconds
         int _moves_amount = 0;
         bool is_view = false;
-        std::chrono::steady_clock::time_point _clock;
-        unsigned int _moves_cnt = 0;
 
     public:
         static Vector2i chess_board_cords_to_numbers(std::string to_convert);
 
         Image_ptr generate_image();
 
+
         Discord_chess_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players);
 
-        dpp::task<void> run(dpp::button_click_t event);
+        dpp::task<void> run(dpp::button_click_t event, int timeout = 60);
 
         static std::vector<std::pair<std::string, image_generator_t>> get_image_generators();
     };

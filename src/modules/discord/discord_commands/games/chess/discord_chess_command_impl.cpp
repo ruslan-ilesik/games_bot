@@ -34,7 +34,7 @@ namespace gb {
             dpp::slashcommand command("chess", "Command to start chess game", _bot->get_bot()->me.id);
             command.add_option(dpp::command_option(dpp::co_user, "player", "Player to play with.", false));
             command.add_option(dpp::command_option(dpp::co_integer, "move_timeout",
-                                                   "Time for move in seconds 60 < time < 600 (default 60).", false));
+                                                   "Time for move in seconds 120 < time < 600 (default 60).", false));
 
             _command_handler->register_command(_discord->create_discord_command(
                 command,
@@ -46,21 +46,21 @@ namespace gb {
                         players.push_back(std::get<dpp::snowflake>(parameter));
                     }
                     parameter = event.get_parameter("move_timeout");
-                    long timeout = 60;
+                    long timeout = 120;
                     if (std::holds_alternative<long>(parameter)) {
                         timeout = std::get<long>(parameter);
                     }
 
-                    if (timeout < 60 || timeout > 600) {
+                    if (timeout < 120 || timeout > 600) {
                         dpp::message m;
-                        m.add_embed(dpp::embed().set_color(dpp::colors::red).set_title("Error!").set_description("move_timeout should be between 60 and 600"));
+                        m.add_embed(dpp::embed().set_color(dpp::colors::red).set_title("Error!").set_description("move_timeout should be between 120 and 600"));
                         _bot->reply(event,m);
                     } else {
                         Lobby_return r = co_await this->lobby(event, players, event.command.usr.id, 2);
                         if (!r.is_timeout) {
                             auto d = get_game_data_initialization("chess");
                             auto game = std::make_unique<Discord_chess_game>(d, r.players);
-                            co_await game->run(r.event);
+                            co_await game->run(r.event,timeout);
                         }
                     }
 

@@ -8,7 +8,7 @@
 
 namespace gb {
     Image_impl::Image_impl(const std::string &file) {
-        _image = cv::imread(file, cv::IMREAD_COLOR);
+        _image = cv::imread(file, cv::IMREAD_UNCHANGED);
         if (_image.empty()) {
             throw std::runtime_error("error loading image " + file);
         }

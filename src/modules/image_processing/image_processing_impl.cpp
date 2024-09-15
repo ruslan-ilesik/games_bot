@@ -62,7 +62,7 @@ namespace gb {
     }
 
     Image_ptr Image_processing_impl::cache_get(const std::string &name, const Vector2i &resolution) {
-        auto filename = base_dir_path+name+"/"+to_string(resolution)+".jpg";
+        auto filename = base_dir_path+name+"/"+to_string(resolution)+".png";
         if (!_image_cache.contains(name)) {
             throw std::runtime_error("Image cache does not contain image generator "+ name);
         }
