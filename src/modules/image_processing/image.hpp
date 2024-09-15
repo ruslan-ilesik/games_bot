@@ -61,6 +61,16 @@ namespace gb {
         constexpr Vector2(const T &x_val = 0, const T &y_val = 0) : x(x_val), y(y_val) {}
 
         /**
+         * @brief Conversion constructor to allow implicit casting between Vector2 types.
+         *
+         * @tparam U The other vector's coordinate type.
+         * @param other The other vector to convert from.
+         */
+        template<typename U>
+            requires std::convertible_to<U, T>
+        constexpr Vector2(const Vector2<U> &other) : x(static_cast<T>(other.x)), y(static_cast<T>(other.y)) {}
+
+        /**
          * @brief Compares this vector with another Vector2 using the spaceship operator.
          *
          * @param other The vector to compare with.
@@ -183,6 +193,7 @@ namespace gb {
         }
     };
 
+
     /**
      * @brief Converts a Vector2 to a string representation.
      *
@@ -304,6 +315,13 @@ namespace gb {
          * @param position Top left corner of overlay.
          */
         virtual void overlay_image(Image_ptr &image, const Vector2i &position = {0, 0}) = 0;
+
+        /**
+         * @brief Resizes image to given size.
+         *
+         * @param size Size of resized image.
+         */
+        virtual void resize(const Vector2i &size) = 0;
     };
 
 
