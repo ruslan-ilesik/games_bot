@@ -18,6 +18,9 @@ namespace gb {
             "popular games, played by millions of people worldwide.";
         lobby_image_url = "https://cdn.discordapp.com/attachments/1010981120554320003/1013870289798570104/chess.png";
     }
+
+    void Discord_chess_command_impl::run() { Discord_chess_command::run(); }
+
     void Discord_chess_command_impl::stop() {
         _command_handler->remove_command("chess");
         Discord_chess_command::stop();

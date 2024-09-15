@@ -157,6 +157,14 @@ namespace gb {
          */
         void overlay_image(Image_ptr &image, const Vector2i &position) override;
 
+
+        /**
+         * @brief Resizes image to given size.
+         *
+         * @param size Size of resized image.
+         */
+        void resize(const Vector2i &size) override;
+
         /**
          * @brief Gets a reference to the internal OpenCV image matrix.
          *

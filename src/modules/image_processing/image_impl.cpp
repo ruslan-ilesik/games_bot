@@ -133,59 +133,49 @@ namespace gb {
         int x = position.x;
         int y = position.y;
         auto upcoming = std::static_pointer_cast<Image_impl>(image);
-        auto handle_cv_8uc4 = [=,this](int i, int j)
-        {
-
-            if(upcoming->_image.at<cv::Vec4b>(j, i)[3] > 10)
-            {
-                _image.at<cv::Vec4b>(y+j, x+i) = upcoming->_image.at<cv::Vec4b>(j, i);
+        auto handle_cv_8uc4 = [=, this](int i, int j) {
+            if (upcoming->_image.at<cv::Vec4b>(j, i)[3] > 10) {
+                _image.at<cv::Vec4b>(y + j, x + i) = upcoming->_image.at<cv::Vec4b>(j, i);
             }
         };
 
-        auto handle_cv_8uc3 = [=,this](int i, int j)
-        {
-            _image.at<cv::Vec4b>(y+j, x+i)[0] = upcoming->_image.at<cv::Vec3b>(j, i)[0];
-            _image.at<cv::Vec4b>(y+j, x+i)[1] = upcoming->_image.at<cv::Vec3b>(j, i)[1];
-            _image.at<cv::Vec4b>(y+j, x+i)[2] = upcoming->_image.at<cv::Vec3b>(j, i)[2];
-            _image.at<cv::Vec4b>(y+j, x+i)[3] = 255;
+        auto handle_cv_8uc3 = [=, this](int i, int j) {
+            _image.at<cv::Vec4b>(y + j, x + i)[0] = upcoming->_image.at<cv::Vec3b>(j, i)[0];
+            _image.at<cv::Vec4b>(y + j, x + i)[1] = upcoming->_image.at<cv::Vec3b>(j, i)[1];
+            _image.at<cv::Vec4b>(y + j, x + i)[2] = upcoming->_image.at<cv::Vec3b>(j, i)[2];
+            _image.at<cv::Vec4b>(y + j, x + i)[3] = 255;
         };
 
-        for(int i = 0; i < upcoming->_image.cols; i++)
-        {
-            for(int j = 0; j < upcoming->_image.rows; j++)
-            {
-                if(j + y >= _image.rows)
-                {
+        for (int i = 0; i < upcoming->_image.cols; i++) {
+            for (int j = 0; j < upcoming->_image.rows; j++) {
+                if (j + y >= _image.rows) {
                     break;
                 }
 
-                if(x + i >= _image.cols)
-                {
+                if (x + i >= _image.cols) {
                     return;
                 }
 
-                switch(upcoming->_image.channels())
-                {
-                    case 3:
-                    {
+                switch (upcoming->_image.channels()) {
+                    case 3: {
                         handle_cv_8uc3(i, j);
                         break;
                     }
 
-                    case 4:
-                    {
+                    case 4: {
                         handle_cv_8uc4(i, j);
                         break;
                     }
 
-                    default:
-                    {
-
+                    default: {
                     }
                 }
-
             }
         }
+    }
+
+    void Image_impl::resize(const Vector2i &size) {
+        cv::resize(_image,_image,vector_to_cv_point(size));
     }
 
     cv::Mat &Image_impl::get_image() {

@@ -304,6 +304,13 @@ namespace gb {
          * @param position Top left corner of overlay.
          */
         virtual void overlay_image(Image_ptr &image, const Vector2i &position = {0, 0}) = 0;
+
+        /**
+         * @brief Resizes image to given size.
+         *
+         * @param size Size of resized image.
+         */
+        virtual void resize(const Vector2i &size) = 0;
     };
 
 
