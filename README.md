@@ -17,7 +17,7 @@ and full redesign of architecture.
 - [ ] about
 - [X] achievements
 - [X] battleships
-- [ ] chess
+- [X] chess
 - [ ] connect_four
 - [X] dominoes
 - [X] global_stats
