@@ -15,7 +15,7 @@ and full redesign of architecture.
 ## TO DO
 - [ ] 2048
 - [ ] about
-- [X] achivements
+- [X] achievements
 - [X] battleships
 - [ ] chess
 - [ ] connect_four
