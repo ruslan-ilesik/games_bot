@@ -97,6 +97,7 @@ namespace gb {
                                            const std::vector<dpp::snowflake> &players) : Discord_game(_data, players) {}
 
     dpp::task<void> Discord_chess_game::run(dpp::button_click_t event, int timeout) {
+        game_start(event.command.channel_id, event.command.guild_id);
         dpp::message message;
         message.add_embed(dpp::embed());
         message.id = event.command.message_id;
@@ -247,6 +248,16 @@ namespace gb {
         while (1) {
             if (r.second) {
                 // timeout
+                next_player();
+                std::string desc = "If you still want to play, you can create new game.\nPlayer"+dpp::utility::user_mention(get_current_player())+" was automatically selected as the winner.\n";
+                next_player();
+                desc += "Player "+dpp::utility::user_mention(get_current_player()) + " should think faster next time.";
+                message.embeds[0].set_color(dpp::colors::red).set_title("Game Timeout.").set_description(desc);
+                message.embeds[0].set_image(add_image(message,generate_image()));
+                message.components.clear();
+                _data.bot->message_edit(message);
+                remove_player(USER_REMOVE_REASON::TIMEOUT,get_current_player());
+                remove_player(USER_REMOVE_REASON::WIN,get_current_player());
                 break;
             }
             event = r.first;
@@ -290,8 +301,16 @@ namespace gb {
                             _data.achievements_processing->activate_achievement("Blitzkrieg", get_current_player(),
                                                                                 event.command.channel_id);
                         }
-                        // someone win
-                        // me->end_game();
+                        message.components.clear();
+                        std::string desc ="Player "+dpp::utility::user_mention(get_current_player())+ " *won* the game.";
+                        next_player();
+                        desc += "\nPlayer "+dpp::utility::user_mention(get_current_player())+" will be luckier next time";
+                        message.embeds[0].set_title("Game over").set_description(desc).set_color(dpp::colors::blue);
+                        message.embeds[0].set_image(add_image(message,generate_image()));
+                        _data.bot->reply(event,message);
+                        remove_player(USER_REMOVE_REASON::LOSE,get_current_player());
+                        remove_player(USER_REMOVE_REASON::WIN,get_current_player());
+                        break;
                     }
                 } else if (_board.is_fivefold_repetition() || _board.is_insufficient_material()) {
                     // draw
@@ -302,6 +321,7 @@ namespace gb {
                                          dpp::utility::user_mention(get_players()[1]) +
                                          " tried their best, but the game ended in a *DRAW!!!*")
                         .set_color(dpp::colors::yellow);
+                    message.embeds[0].set_image(add_image(message,generate_image()));
                     _data.bot->reply(event, message);
                     remove_player(USER_REMOVE_REASON::DRAW, get_current_player());
                     remove_player(USER_REMOVE_REASON::DRAW, get_current_player());
@@ -317,6 +337,7 @@ namespace gb {
                 co_await send_message();
             }
         }
+        game_stop();
         co_return;
     }
 
