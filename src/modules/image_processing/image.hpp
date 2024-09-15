@@ -58,7 +58,7 @@ namespace gb {
          * @param x_val The x-coordinate value.
          * @param y_val The y-coordinate value.
          */
-        Vector2(const T &x_val, const T &y_val) : x(x_val), y(y_val) {}
+        constexpr Vector2(const T &x_val = 0, const T &y_val = 0) : x(x_val), y(y_val) {}
 
         /**
          * @brief Compares this vector with another Vector2 using the spaceship operator.
@@ -68,7 +68,7 @@ namespace gb {
          */
         template<typename U>
             requires std::three_way_comparable_with<T, U>
-        auto operator<=>(const Vector2<U> &other) const {
+        constexpr auto operator<=>(const Vector2<U> &other) const {
             if (auto cmp = x <=> other.x; cmp != 0)
                 return cmp;
             return y <=> other.y;
@@ -82,7 +82,7 @@ namespace gb {
          */
         template<typename U>
             requires requires(T a, U b) { a + b; }
-        auto operator+(const Vector2<U> &other) const {
+        constexpr auto operator+(const Vector2<U> &other) const {
             using Result_type = decltype(T{} + U{});
             return Vector2<Result_type>{x + other.x, y + other.y};
         }
@@ -95,7 +95,7 @@ namespace gb {
          */
         template<typename U>
             requires requires(T a, U b) { a - b; }
-        auto operator-(const Vector2<U> &other) const {
+        constexpr auto operator-(const Vector2<U> &other) const {
             using Result_type = decltype(T{} - U{});
             return Vector2<Result_type>{x - other.x, y - other.y};
         }
@@ -108,7 +108,7 @@ namespace gb {
          */
         template<typename U>
             requires requires(T &a, U b) { a += b; }
-        Vector2 &operator+=(const Vector2<U> &other) {
+        constexpr Vector2 &operator+=(const Vector2<U> &other) {
             x += other.x;
             y += other.y;
             return *this;
@@ -122,7 +122,7 @@ namespace gb {
          */
         template<typename U>
             requires requires(T &a, U b) { a -= b; }
-        Vector2 &operator-=(const Vector2<U> &other) {
+        constexpr Vector2 &operator-=(const Vector2<U> &other) {
             x -= other.x;
             y -= other.y;
             return *this;
@@ -136,7 +136,7 @@ namespace gb {
          */
         template<typename Scalar>
             requires requires(T a, Scalar s) { a *s; }
-        auto operator*(const Scalar &scalar) const {
+        constexpr auto operator*(const Scalar &scalar) const {
             using Result_type = decltype(T{} * scalar);
             return Vector2<Result_type>{x * scalar, y * scalar};
         }
@@ -149,7 +149,7 @@ namespace gb {
          */
         template<typename Scalar>
             requires requires(T a, Scalar s) { a / s; }
-        auto operator/(const Scalar &scalar) const {
+        constexpr auto operator/(const Scalar &scalar) const {
             using Result_type = decltype(T{} / scalar);
             return Vector2<Result_type>{x / scalar, y / scalar};
         }
@@ -162,7 +162,7 @@ namespace gb {
          */
         template<typename Scalar>
             requires requires(T &a, Scalar s) { a *= s; }
-        Vector2 &operator*=(const Scalar &scalar) {
+        constexpr Vector2 &operator*=(const Scalar &scalar) {
             x *= scalar;
             y *= scalar;
             return *this;
@@ -176,7 +176,7 @@ namespace gb {
          */
         template<typename Scalar>
             requires requires(T &a, Scalar s) { a /= s; }
-        Vector2 &operator/=(const Scalar &scalar) {
+        constexpr Vector2 &operator/=(const Scalar &scalar) {
             x /= scalar;
             y /= scalar;
             return *this;
@@ -214,6 +214,7 @@ namespace gb {
      * @brief Defines a shared pointer type for the Image class.
      */
     typedef std::shared_ptr<Image> Image_ptr;
+
     /**
      * @brief Abstract base class representing an image.
      *
@@ -257,12 +258,33 @@ namespace gb {
 
 
         /**
+         * @brief Calculates and returns size of rendered text in pixels.
+         *
+         * @param text Text which render size should be calculated.
+         * @param font_scale The scale of the font.
+         * @param thickness The thickness of the text.
+         * @return Size which rendered text would take on screen.
+         */
+        virtual Vector2i get_text_size(const std::string &text, double font_scale, int thickness) = 0;
+
+        /**
+         * @brief Draws rectangle on the image.
+         *
+         * @param position_start Starting left top position of rectangle
+         * @param position_end Ending right bottom position of rectangle
+         * @param color Color of rectangle
+         * @param thickness Thickness of rectangle line. -1 - fill circle.
+         */
+        virtual void draw_rectangle(const Vector2i &position_start, const Vector2i &position_end, const Color &color,
+                                    int thickness) = 0;
+
+        /**
          * @brief Draws circle on the image.
          *
          * @param position Center position of circle on image.
          * @param radius Radius of circle.
          * @param color Color of the circle.
-         * @param thickness thickness of circle line. -1 - fill circle.
+         * @param thickness Thickness of circle line. -1 - fill circle.
          */
         virtual void draw_circle(const Vector2i &position, int radius, const Color &color, int thickness) = 0;
 
@@ -281,7 +303,7 @@ namespace gb {
          * @param image Image to overlay with.
          * @param position Top left corner of overlay.
          */
-        virtual void overlay_image(Image_ptr &image, const Vector2i &position = {0,0}) = 0;
+        virtual void overlay_image(Image_ptr &image, const Vector2i &position = {0, 0}) = 0;
     };
 
 

@@ -40,6 +40,16 @@ namespace gb {
          */
         static cv::Point vector_to_cv_point(const Vector2i &v);
 
+
+        /**
+         * @brief Blends 2 images with given alpha weight.
+         *
+         * @param base_image Background image.
+         * @param overlay Foreground image.
+         * @param alpha Alpha value between 0 and 1.
+         */
+        static void blend_images(cv::Mat &base_image, const cv::Mat &overlay, float alpha);
+
     public:
         /**
          * @brief Destructor for the Image_impl class.
@@ -100,12 +110,23 @@ namespace gb {
                        int thickness) override;
 
         /**
+         * @brief Draws rectangle on the image.
+         *
+         * @param position_start Starting left top position of rectangle
+         * @param position_end Ending right bottom position of rectangle
+         * @param color Color of rectangle
+         * @param thickness Thickness of rectangle line. -1 - fill circle.
+         */
+        void draw_rectangle(const Vector2i &position_start, const Vector2i &position_end, const Color &color,
+                            int thickness) override;
+
+        /**
          * @brief Draws circle on the image.
          *
          * @param position Center position of circle on image.
          * @param radius Radius of circle.
          * @param color Color of the circle.
-         * @param thickness thickness of circle line. -1 - fill circle.
+         * @param thickness Thickness of circle line. -1 - fill circle.
          */
         void draw_circle(const Vector2i &position, int radius, const Color &color, int thickness) override;
 
@@ -117,6 +138,16 @@ namespace gb {
          * @param angle Angle in degrees to rotate image on.
          */
         void rotate(double angle) override;
+
+        /**
+         * @brief Calculates and returns size of rendered text in pixels.
+         *
+         * @param text Text which render size should be calculated.
+         * @param font_scale The scale of the font.
+         * @param thickness The thickness of the text.
+         * @return Size which rendered text would take on screen.
+         */
+        Vector2i get_text_size(const std::string &text, double font_scale, int thickness) override;
 
         /**
          * @breif Overlays given image with current on provided position.
