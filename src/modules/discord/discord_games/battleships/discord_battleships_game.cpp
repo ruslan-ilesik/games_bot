@@ -274,96 +274,91 @@ namespace gb {
             for (auto &i: ships_placement) {
                 co_await i;
             }
-            _engine.start_game();
-            _move_start =
-                std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch())
-                    .count();
-            dpp::task<Button_click_return> button_click_awaiter;
-            Button_click_return r;
-            bool clear = false;
-            event.custom_id = "FIRST_TURN";
-            _states= {0,0};
-            while (1) {
-                auto back_row = dpp::component().set_type(dpp::cot_action_row);
-                back_row.add_component(dpp::component()
-                                           .set_type(dpp::cot_button)
-                                           .set_id("back")
-                                           .set_label("Back")
-                                           .set_emoji("🔙")
-                                           .set_style(dpp::cos_danger));
-
-                _message.components.clear();
-                _message.embeds[0]
-                    .set_title("Battleships game")
-                    .set_description(std::format(
-                        "Turn: {}\nTimeout: <t:{}:R>\nState: {}", dpp::utility::user_mention(get_current_player()),
-                        _move_start + 60ll,
-                        (_states[_user_to_player_id[get_current_player()]] == 0
-                             ? "Select column"
-                             : (_states[_user_to_player_id[get_current_player()]] == 1 ? "Select row"
-                                                                                       : "Submit action"))));
-                dpp::component row = dpp::component().set_type(dpp::cot_action_row);
-
-                if (_states[_user_to_player_id[get_current_player()]] == 0) {
-                    for (int i: _engine.get_free_cols_for_attack()) {
-                        if (row.components.size() == 5) {
-                            _message.add_component(row);
-                            row = dpp::component().set_type(dpp::cot_action_row);
-                        }
-                        row.add_component(dpp::component()
-                                              .set_type(dpp::cot_button)
-                                              .set_id(std::to_string(i))
-                                              .set_label(std::string(1, static_cast<char>(65 + i))));
-                    }
-                    if (!row.components.empty()) {
-                        _message.add_component(row);
-                    }
-                }
-
-                else if (_states[_user_to_player_id[get_current_player()]] == 1) {
-                    for (int i:
-                         _engine.get_free_rows_for_attack(_temp_pos[_user_to_player_id[get_current_player()]][0])) {
-                        if (row.components.size() == 5) {
-                            _message.add_component(row);
-                            row = dpp::component().set_type(dpp::cot_action_row);
-                        }
-                        row.add_component(dpp::component()
-                                              .set_type(dpp::cot_button)
-                                              .set_id(std::to_string(i))
-                                              .set_label(std::to_string(i + 1)));
-                    }
-                    if (!row.components.empty()) {
-                        _message.add_component(row);
-                    }
-                    _message.add_component(back_row);
-                }
-
-                else {
+            if (_is_timeout) {
+                end_of_game_timeout(_is_timeout == 2);
+            } else {
+                _engine.start_game();
+                _move_start = std::chrono::duration_cast<std::chrono::seconds>(
+                                  std::chrono::system_clock::now().time_since_epoch())
+                                  .count();
+                dpp::task<Button_click_return> button_click_awaiter;
+                Button_click_return r;
+                event.custom_id = "FIRST_TURN";
+                _states = {0, 0};
+                while (1) {
+                    auto back_row = dpp::component().set_type(dpp::cot_action_row);
                     back_row.add_component(dpp::component()
                                                .set_type(dpp::cot_button)
-                                               .set_label("Attack")
-                                               .set_id("attack")
-                                               .set_style(dpp::cos_secondary)
-                                               .set_emoji("🎯"));
-                    _message.add_component(back_row);
-                }
+                                               .set_id("back")
+                                               .set_label("Back")
+                                               .set_emoji("🔙")
+                                               .set_style(dpp::cos_danger));
 
-                _img_cnt++;
-                Image_ptr img = _data.image_processing->create_image(_image_size, _default_background);
-                auto &player = _engine.get_player_by_ind(_user_to_player_id[get_current_player()]);
-                auto &player2 = _engine.get_player_by_ind(_user_to_player_id[get_current_player()] + 1 > 1 ? 0 : 1);
-                auto view_field = generate_view_field();
-                img->overlay_image(view_field, {0, 0});
-                view_field = generate_view_field(_states[_user_to_player_id[get_current_player()]] + 1);
-                img->overlay_image(view_field, {_field_size + _distance_between_fields, 0});
-                if (clear) {
-                    draw_private_field(img, {static_cast<int>(_sector_size), static_cast<int>(_sector_size)},
-                                       player.get_field(), player.get_ships());
-                    draw_private_field(img,
-                                       {static_cast<int>(_field_size + _distance_between_fields + _sector_size),
-                                        static_cast<int>(_sector_size)},
-                                       player2.get_field(), player2.get_ships());
-                } else {
+                    _message.components.clear();
+                    _message.embeds[0]
+                        .set_title("Battleships game")
+                        .set_description(std::format(
+                            "Turn: {}\nTimeout: <t:{}:R>\nState: {}", dpp::utility::user_mention(get_current_player()),
+                            _move_start + 60ll,
+                            (_states[_user_to_player_id[get_current_player()]] == 0
+                                 ? "Select column"
+                                 : (_states[_user_to_player_id[get_current_player()]] == 1 ? "Select row"
+                                                                                           : "Submit action"))));
+                    dpp::component row = dpp::component().set_type(dpp::cot_action_row);
+
+                    if (_states[_user_to_player_id[get_current_player()]] == 0) {
+                        for (int i: _engine.get_free_cols_for_attack()) {
+                            if (row.components.size() == 5) {
+                                _message.add_component(row);
+                                row = dpp::component().set_type(dpp::cot_action_row);
+                            }
+                            row.add_component(dpp::component()
+                                                  .set_type(dpp::cot_button)
+                                                  .set_id(std::to_string(i))
+                                                  .set_label(std::string(1, static_cast<char>(65 + i))));
+                        }
+                        if (!row.components.empty()) {
+                            _message.add_component(row);
+                        }
+                    }
+
+                    else if (_states[_user_to_player_id[get_current_player()]] == 1) {
+                        for (int i:
+                             _engine.get_free_rows_for_attack(_temp_pos[_user_to_player_id[get_current_player()]][0])) {
+                            if (row.components.size() == 5) {
+                                _message.add_component(row);
+                                row = dpp::component().set_type(dpp::cot_action_row);
+                            }
+                            row.add_component(dpp::component()
+                                                  .set_type(dpp::cot_button)
+                                                  .set_id(std::to_string(i))
+                                                  .set_label(std::to_string(i + 1)));
+                        }
+                        if (!row.components.empty()) {
+                            _message.add_component(row);
+                        }
+                        _message.add_component(back_row);
+                    }
+
+                    else {
+                        back_row.add_component(dpp::component()
+                                                   .set_type(dpp::cot_button)
+                                                   .set_label("Attack")
+                                                   .set_id("attack")
+                                                   .set_style(dpp::cos_secondary)
+                                                   .set_emoji("🎯"));
+                        _message.add_component(back_row);
+                    }
+
+                    _img_cnt++;
+                    Image_ptr img = _data.image_processing->create_image(_image_size, _default_background);
+                    auto &player = _engine.get_player_by_ind(_user_to_player_id[get_current_player()]);
+                    auto &player2 = _engine.get_player_by_ind(_user_to_player_id[get_current_player()] + 1 > 1 ? 0 : 1);
+                    auto view_field = generate_view_field();
+                    img->overlay_image(view_field, {0, 0});
+                    view_field = generate_view_field(_states[_user_to_player_id[get_current_player()]] + 1);
+                    img->overlay_image(view_field, {_field_size + _distance_between_fields, 0});
+
                     draw_public_field(img, {static_cast<int>(_sector_size), static_cast<int>(_sector_size)},
                                       player.get_field(), player.get_ships());
                     if (_states[_user_to_player_id[get_current_player()]] == 1) {
@@ -395,70 +390,127 @@ namespace gb {
                                       {static_cast<int>(_field_size + _distance_between_fields + _sector_size),
                                        static_cast<int>(_sector_size)},
                                       player2.get_field(), player2.get_ships());
-                }
 
-                _message.embeds[0].set_image(add_image(_message, img));
 
-                button_click_awaiter = _data.button_click_handler->wait_for(
-                    _message, {get_current_player()},
-                    _place_timeout - (std::chrono::duration_cast<std::chrono::seconds>(
-                                          std::chrono::system_clock::now().time_since_epoch())
-                                          .count() -
-                                      _game_start_time));
-                if (event.custom_id == "FIRST_TURN") {
-                    _data.bot->message_edit(_message);
-                } else {
-                    _data.bot->reply(event, _message);
-                }
-                r = co_await button_click_awaiter;
+                    _message.embeds[0].set_image(add_image(_message, img));
 
-                if (r.second) {
-                    // timeout
-                    break;
-                }
-                event = r.first;
-                if (event.custom_id == "back") {
-                    _states[_user_to_player_id[get_current_player()]]--;
-                    continue;
-                }
-
-                if (_states[_user_to_player_id[get_current_player()]] == 0) {
-                    _temp_pos[_user_to_player_id[get_current_player()]][0] = std::stoi(event.custom_id);
-                } else if (_states[_user_to_player_id[get_current_player()]] == 1) {
-                    _temp_pos[_user_to_player_id[get_current_player()]][1] = std::stoi(event.custom_id);
-                }
-                else {
-                    if (!_engine.attack({_temp_pos[_user_to_player_id[get_current_player()]]})){
-                        next_player();
+                    button_click_awaiter = _data.button_click_handler->wait_for(
+                        _message, {get_current_player()},
+                        _place_timeout - (std::chrono::duration_cast<std::chrono::seconds>(
+                                              std::chrono::system_clock::now().time_since_epoch())
+                                              .count() -
+                                          _game_start_time));
+                    if (event.custom_id == "FIRST_TURN") {
+                        _data.bot->message_edit(_message);
+                    } else {
+                        _data.bot->reply(event, _message);
                     }
-                    else {
-                        auto ind = _user_to_player_id[get_current_player()] == 1? 0:1;
-                        auto& ships = _engine.get_player_by_ind(ind).get_ships();
-                        for (const auto& i : ships) {
-                            if (i->get_type() == battleships_engine::Ship_types::Carrier && i->is_dead()) {
-                                _data.achievements_processing->activate_achievement("44.92002°, 31.49265°",get_current_player(),event.command.channel_id);
-                            }
-                        }
-                    }
-                    int winner = _engine.get_winner();
-                    if (winner != -1) {
-                        //win
+                    r = co_await button_click_awaiter;
+
+                    if (r.second) {
+                        // timeout
+                        end_of_game_timeout();
                         break;
                     }
-                    _move_start = std::chrono::duration_cast<std::chrono::seconds>(
-                                      std::chrono::system_clock::now().time_since_epoch())
-                                      .count();
-                    _states[_user_to_player_id[get_current_player()]] = -1;
-                }
-                _states[_user_to_player_id[get_current_player()]]++;
+                    event = r.first;
+                    if (event.custom_id == "back") {
+                        _states[_user_to_player_id[get_current_player()]]--;
+                        continue;
+                    }
 
+                    if (_states[_user_to_player_id[get_current_player()]] == 0) {
+                        _temp_pos[_user_to_player_id[get_current_player()]][0] = std::stoi(event.custom_id);
+                    } else if (_states[_user_to_player_id[get_current_player()]] == 1) {
+                        _temp_pos[_user_to_player_id[get_current_player()]][1] = std::stoi(event.custom_id);
+                    } else {
+                        if (!_engine.attack({_temp_pos[_user_to_player_id[get_current_player()]]})) {
+                            next_player();
+                        } else {
+                            auto ind = _user_to_player_id[get_current_player()] == 1 ? 0 : 1;
+                            auto &ships = _engine.get_player_by_ind(ind).get_ships();
+                            for (const auto &i: ships) {
+                                if (i->get_type() == battleships_engine::Ship_types::Carrier && i->is_dead()) {
+                                    _data.achievements_processing->activate_achievement(
+                                        "44.92002°, 31.49265°", get_current_player(), event.command.channel_id);
+                                }
+                            }
+                        }
+                        int winner = _engine.get_winner();
+                        if (winner != -1) {
+                            // win
+                            auto winner_id = get_current_player();
+                            next_player();
+                            _message.components.clear();
+                            _message.embeds[0]
+                                .set_title("Game over")
+                                .set_description(std::format(
+                                    "Player {} won a game.\nPlayer {} will be luckier next time.",
+                                    dpp::utility::user_mention(winner_id),
+                                    dpp::utility::user_mention(winner == 1 ? get_players()[0] : get_players()[1])))
+                                .set_color(dpp::colors::blue);
+
+                            _img_cnt++;
+                            Image_ptr img = _data.image_processing->create_image(_image_size, _default_background);
+                            auto &player = _engine.get_player_by_ind(_user_to_player_id[get_current_player()]);
+                            auto &player2 =
+                                _engine.get_player_by_ind(_user_to_player_id[get_current_player()] + 1 > 1 ? 0 : 1);
+                            auto view_field = generate_view_field();
+                            img->overlay_image(view_field, {0, 0});
+                            view_field = generate_view_field(_states[_user_to_player_id[get_current_player()]] + 1);
+                            img->overlay_image(view_field, {_field_size + _distance_between_fields, 0});
+                            draw_private_field(img, {static_cast<int>(_sector_size), static_cast<int>(_sector_size)},
+                                               player.get_field(), player.get_ships());
+                            draw_private_field(img,
+                                               {static_cast<int>(_field_size + _distance_between_fields + _sector_size),
+                                                static_cast<int>(_sector_size)},
+                                               player2.get_field(), player2.get_ships());
+                            _message.embeds[0].set_image(add_image(_message, img));
+                            _data.bot->reply(event, _message);
+
+                            remove_player(USER_REMOVE_REASON::WIN, winner_id);
+                            remove_player(USER_REMOVE_REASON::LOSE, get_current_player());
+                            break;
+                        }
+                        _move_start = std::chrono::duration_cast<std::chrono::seconds>(
+                                          std::chrono::system_clock::now().time_since_epoch())
+                                          .count();
+                        _states[_user_to_player_id[get_current_player()]] = -1;
+                    }
+                    _states[_user_to_player_id[get_current_player()]]++;
+                }
             }
             game_stop();
         }
         co_return;
     }
 
-    void Discord_battleships_game::end_of_game_timeout() {}
+    void Discord_battleships_game::end_of_game_timeout(bool is_both_timeout) {
+        dpp::snowflake loser_id = get_current_player();
+        next_player();
+        if (is_both_timeout) {
+            _message.embeds[0]
+                .set_title("Game over")
+                .set_description(std::format("If you still want to play, you can create new game.\nPlayers {} and {} "
+                                             "got timeout, both of them lost the game .",
+                                             dpp::utility::user_mention(get_current_player()),
+                                             dpp::utility::user_mention(loser_id)))
+                .set_color(dpp::colors::red);
+            _data.bot->message_edit(_message);
+            remove_player(USER_REMOVE_REASON::LOSE, get_current_player());
+            remove_player(USER_REMOVE_REASON::LOSE, get_current_player());
+        } else {
+            _message.embeds[0]
+                .set_title("Game over")
+                .set_description(std::format("If you still want to play, you can create new game.\nPlayer {} won the "
+                                             "game.\nPlayer {} should think faster next time.",
+                                             dpp::utility::user_mention(get_current_player()),
+                                             dpp::utility::user_mention(loser_id)))
+                .set_color(dpp::colors::blue);
+            _data.bot->message_edit(_message);
+            remove_player(USER_REMOVE_REASON::WIN, get_current_player());
+            remove_player(USER_REMOVE_REASON::LOSE, loser_id);
+        }
+    }
 
     dpp::task<void> Discord_battleships_game::player_place_ships(const dpp::snowflake player) {
         std::unique_lock lk(_mutex);
@@ -556,27 +608,21 @@ namespace gb {
         r = co_await button_click_awaiter;
         lk.lock();
         while (1) {
-            if (_is_timeout) {
-                break;
-            }
             if (r.second) {
-                _is_timeout = true;
-                for (auto &message: std::ranges::views::values(_messages)) {
-                    message.embeds[0]
-                        .set_title("Game has been ended!")
-                        .set_color(dpp::colors::green)
-                        .set_description(std::format(
-                            "Reason: Game timeout\nGo here to see result: https://discord.com/channels/{}/{}/{} \n",
-                            _message.guild_id, _message.channel_id, _message.id));
-                    _data.bot->message_edit(message);
-                }
+                _is_timeout++;
+                m.components.clear();
+                m.embeds[0]
+                    .set_title("Game has been ended!")
+                    .set_color(dpp::colors::green)
+                    .set_description(std::format(
+                        "Reason: Game timeout\nGo here to see result: https://discord.com/channels/{}/{}/{} \n",
+                        _message.guild_id, _message.channel_id, _message.id));
+                _data.bot->message_edit(m);
                 if (get_players()[0] == player) {
                     set_current_player_index(0);
                 } else {
                     set_current_player_index(1);
                 }
-
-                end_of_game_timeout();
                 break;
             }
             event = r.first;

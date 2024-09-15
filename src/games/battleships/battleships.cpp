@@ -298,7 +298,7 @@ bool battleships_engine::Ship::is_rotatable(const Ships_container &ships) {
             for (int i = 1; i < ship_sizes[this->my_type]; i++){
                 temp_cell.y = y+i;
                 for (const auto& ship : ships){
-                    if (ship.get() != this && ship->is_overlapes(temp_cell)){
+                    if (ship.get() != this && ship->is_overlapping(temp_cell)){
                         return false;
                     }
                 }
@@ -314,7 +314,7 @@ bool battleships_engine::Ship::is_rotatable(const Ships_container &ships) {
             for (int i = 1; i < ship_sizes[this->my_type]; i++){
                 temp_cell.x = x+i;
                 for (const auto& ship : ships){
-                    if (ship.get() != this && ship->is_overlapes(temp_cell)){
+                    if (ship.get() != this && ship->is_overlapping(temp_cell)){
                         return false;
                     }
                 }
@@ -323,7 +323,7 @@ bool battleships_engine::Ship::is_rotatable(const Ships_container &ships) {
         return true;
 }
 
-bool battleships_engine::Ship::is_overlapes(const Cell& cell) {
+bool battleships_engine::Ship::is_overlapping(const Cell& cell) {
     if (!this->is_placed()){
         return false;
     }
@@ -381,7 +381,7 @@ bool battleships_engine::Ship::can_be_placed(const battleships_engine::Ships_con
         for (int i =0; i < static_cast<int>(this->cells.size()); i++){
             temp_cell.x = cell.x+i;
             for (const auto& i : ships){
-                if (i.get()!= this && i->is_overlapes(temp_cell)){
+                if (i.get()!= this && i->is_overlapping(temp_cell)){
                     return false;
                 }
             }
@@ -395,7 +395,7 @@ bool battleships_engine::Ship::can_be_placed(const battleships_engine::Ships_con
         for (int i =0; i < static_cast<int>(this->cells.size()); i++){
             temp_cell.y = cell.y+i;
             for (const auto& i : ships){
-                if (i.get()!= this && i->is_overlapes(temp_cell)){
+                if (i.get()!= this && i->is_overlapping(temp_cell)){
                     return false;
                 }
             }

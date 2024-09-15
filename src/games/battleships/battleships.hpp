@@ -296,7 +296,7 @@ namespace battleships_engine {
          * @param cell The cell to check against.
          * @return True if the ship overlaps with the specified cell, false otherwise.
          */
-        bool is_overlapes(const Cell &cell);
+        bool is_overlapping(const Cell &cell);
 
         /**
          * @brief Checks if the ship has been placed on the field.
