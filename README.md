@@ -16,7 +16,7 @@ and full redesign of architecture.
 - [ ] 2048
 - [ ] about
 - [X] achivements
-- [ ] battleships
+- [X] battleships
 - [ ] chess
 - [ ] connect_four
 - [X] dominoes
