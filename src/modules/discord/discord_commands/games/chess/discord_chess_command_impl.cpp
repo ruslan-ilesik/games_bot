@@ -33,6 +33,9 @@ namespace gb {
         _bot->add_pre_requirement([this]() {
             dpp::slashcommand command("chess", "Command to start chess game", _bot->get_bot()->me.id);
             command.add_option(dpp::command_option(dpp::co_user, "player", "Player to play with.", false));
+            command.add_option(dpp::command_option(dpp::co_integer, "move_timeout",
+                                                   "Time for move in seconds 60 < time < 600 (default 60).", false));
+
             _command_handler->register_command(_discord->create_discord_command(
                 command,
                 [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
@@ -42,12 +45,25 @@ namespace gb {
                     if (std::holds_alternative<dpp::snowflake>(parameter)) {
                         players.push_back(std::get<dpp::snowflake>(parameter));
                     }
-                    Lobby_return r = co_await this->lobby(event, players, event.command.usr.id, 2);
-                    if (!r.is_timeout) {
-                        auto d = get_game_data_initialization("chess");
-                        auto game = std::make_unique<Discord_chess_game>(d, r.players);
-                        co_await game->run(r.event);
+                    parameter = event.get_parameter("move_timeout");
+                    long timeout = 60;
+                    if (std::holds_alternative<long>(parameter)) {
+                        timeout = std::get<long>(parameter);
                     }
+
+                    if (timeout < 60 || timeout > 600) {
+                        dpp::message m;
+                        m.add_embed(dpp::embed().set_color(dpp::colors::red).set_title("Error!").set_description("move_timeout should be between 60 and 600"));
+                        _bot->reply(event,m);
+                    } else {
+                        Lobby_return r = co_await this->lobby(event, players, event.command.usr.id, 2);
+                        if (!r.is_timeout) {
+                            auto d = get_game_data_initialization("chess");
+                            auto game = std::make_unique<Discord_chess_game>(d, r.players);
+                            co_await game->run(r.event);
+                        }
+                    }
+
                     this->command_end();
                     co_return;
                 },
