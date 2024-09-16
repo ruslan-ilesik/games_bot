@@ -18,7 +18,7 @@ and full redesign of architecture.
 - [X] achievements
 - [X] battleships
 - [X] chess
-- [ ] connect_four
+- [X] connect_four
 - [X] dominoes
 - [X] global_stats
 - [ ] hangman
