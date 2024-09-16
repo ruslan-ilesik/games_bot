@@ -90,8 +90,9 @@ public:
    *
    * @param game Pointer to the Discord game to remove.
    * @param end_reason Reason why game should be removed from games manager.
+   * @param additional_data Additional data in json format to be inserted to database.
    */
-  virtual void remove_game(Discord_game *game, GAME_END_REASON end_reason) = 0;
+  virtual void remove_game(Discord_game *game, GAME_END_REASON end_reason, const std::string& additional_data="{}") = 0;
 
   /**
    * @brief Records result of specific user to specific game.

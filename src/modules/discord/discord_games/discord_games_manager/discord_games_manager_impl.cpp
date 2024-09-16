@@ -12,7 +12,7 @@ Discord_games_manager_impl::add_game(Discord_game *game, const dpp::snowflake& c
   return _db->execute_prepared_statement(_create_game_stmt, game->get_name(),channel_id,guild_id);
 }
 
-void Discord_games_manager_impl::remove_game(Discord_game *game, GAME_END_REASON end_reason) {
+void Discord_games_manager_impl::remove_game(Discord_game *game, GAME_END_REASON end_reason, const std::string& additional_data) {
   std::unique_lock lock(_mutex);
   auto e = std::ranges::remove(_games, game);
   _games.erase(e.begin(), e.end());
@@ -30,7 +30,7 @@ void Discord_games_manager_impl::remove_game(Discord_game *game, GAME_END_REASON
   default:
       throw std::runtime_error("No known to_string conversion for GAME_END_REASON");
   }
-  _db->background_execute_prepared_statement(_finish_game_stmt,end_r_str,game->get_image_cnt(),game->get_uid());
+  _db->background_execute_prepared_statement(_finish_game_stmt,end_r_str,game->get_image_cnt(),additional_data,game->get_uid());
   _cv.notify_all();
 }
 
@@ -69,7 +69,7 @@ void Discord_games_manager_impl::init(const Modules &modules) {
       )XXX"
       );
 
-  _finish_game_stmt = _db->create_prepared_statement("UPDATE `games_history` SET `end_time`=UTC_TIMESTAMP(), `game_state`=?, `images_generated`=? WHERE `id`=?");
+  _finish_game_stmt = _db->create_prepared_statement("UPDATE `games_history` SET `end_time`=UTC_TIMESTAMP(), `game_state`=?, `images_generated`=?, `additional_data`=? WHERE `id`=?");
 }
 
 Discord_games_manager_impl::Discord_games_manager_impl()
