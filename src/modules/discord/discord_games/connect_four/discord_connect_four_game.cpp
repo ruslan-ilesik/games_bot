@@ -20,19 +20,19 @@ namespace gb {
         int distance_between = 2;
         int circle_size = size / 12 - distance_between / 2;
         Image_ptr img = _data.image_processing->create_image({ size/6*7+distance_between,size+for_numbers}, {0, 0, 255});
-        for (int y = 0; y < static_cast<int>(std::size(board)); y++) {
-            for (int x = 0; x < static_cast<int>(std::size(board[y])); x++) {
+        for (int y = 0; y < static_cast<int>(std::size(_board)); y++) {
+            for (int x = 0; x < static_cast<int>(std::size(_board[y])); x++) {
                 img->draw_circle({circle_size + distance_between + circle_size * x * 2 + distance_between * x,
                                   circle_size + distance_between + circle_size * y * 2 + distance_between * y},
                                  circle_size,
-                                 board[y][x] == " "   ? Color(0, 0, 0)
-                                 : board[y][x] == "r" ? Color(255, 0, 0)
+                                 _board[y][x] == " "   ? Color(0, 0, 0)
+                                 : _board[y][x] == "r" ? Color(255, 0, 0)
                                                       : Color(204, 204, 0),
                                  -1);
             }
         }
 
-        for (int x = 0; x < static_cast<int>(std::size(board[0])); x++) {
+        for (int x = 0; x < static_cast<int>(std::size(_board[0])); x++) {
             img->draw_text(std::to_string(x + 1),
                            {distance_between + circle_size / 2 + circle_size * x * 2 + distance_between * x,
                             size + for_numbers - for_numbers / 3},
@@ -72,19 +72,19 @@ namespace gb {
                 .set_title("Connect four game")
                 .set_description(std::format(
                     "Turn: {}\nYour color is {}\nTimeout: <t:{}:R>", dpp::utility::user_mention(get_current_player()),
-                    (this->signs[get_current_player_index()] == "r" ? "**red**" : "**yellow**"),
+                    (this->_signs[get_current_player_index()] == "r" ? "**red**" : "**yellow**"),
                     std::chrono::duration_cast<std::chrono::seconds>(
                         std::chrono::system_clock::now().time_since_epoch())
                             .count() +
                         60));
             dpp::component row = dpp::component().set_type(dpp::cot_action_row);
-            for (int i = 0; i < static_cast<int>(std::size(this->board[0])); i++) {
+            for (int i = 0; i < static_cast<int>(std::size(this->_board[0])); i++) {
 
                 row.add_component(dpp::component()
                                       .set_type(dpp::cot_button)
                                       .set_id(std::to_string(i))
                                       .set_label(std::to_string(i + 1))
-                                      .set_disabled(this->board[0][i] != " ")
+                                      .set_disabled(this->_board[0][i] != " ")
                                       .set_style(dpp::cos_primary));
                 if (row.components.size() == 5) {
                     message.add_component(row);
@@ -109,18 +109,18 @@ namespace gb {
             event = r.first;
 
             // place object
-            for (int i = static_cast<int>(std::size(board) - 1); i >= 0; i--) {
-                if (board[i][std::stoi(event.custom_id)] == " ") {
-                    board[i][std::stoi(event.custom_id)] = signs[get_current_player_index()];
+            for (int i = static_cast<int>(std::size(_board) - 1); i >= 0; i--) {
+                if (_board[i][std::stoi(event.custom_id)] == " ") {
+                    _board[i][std::stoi(event.custom_id)] = _signs[get_current_player_index()];
                     break;
                 }
             }
             // check win
-            std::string player = signs[get_current_player_index()];
+            std::string player = _signs[get_current_player_index()];
             for (int r = 0; r < 3; r++) {
                 for (int c = 0; c < 4; c++) {
-                    if (board[r][c] == player && board[r + 1][c + 1] == player && board[r + 2][c + 2] == player &&
-                        board[r + 3][c + 3] == player && !end) {
+                    if (_board[r][c] == player && _board[r + 1][c + 1] == player && _board[r + 2][c + 2] == player &&
+                        _board[r + 3][c + 3] == player && !end) {
                         end_game();
                         end = true;
                     }
@@ -128,8 +128,8 @@ namespace gb {
             }
             for (int r = 0; r < 3; r++) {
                 for (int c = 0; c < 7; c++) {
-                    if (board[r][c] == player && board[r + 1][c] == player && board[r + 2][c] == player &&
-                        board[r + 3][c] == player && !end) {
+                    if (_board[r][c] == player && _board[r + 1][c] == player && _board[r + 2][c] == player &&
+                        _board[r + 3][c] == player && !end) {
                         end_game();
                         end = true;
                     }
@@ -137,8 +137,8 @@ namespace gb {
             }
             for (int r = 0; r < 6; r++) {
                 for (int c = 0; c < 4; c++) {
-                    if (board[r][c] == player && board[r][c + 1] == player && board[r][c + 2] == player &&
-                        board[r][c + 3] == player&& !end) {
+                    if (_board[r][c] == player && _board[r][c + 1] == player && _board[r][c + 2] == player &&
+                        _board[r][c + 3] == player&& !end) {
                         end_game();
                         end = true;
                     }
@@ -146,8 +146,8 @@ namespace gb {
             }
             for (int r = 5; r > 2; r--) {
                 for (int c = 0; c < 4; c++) {
-                    if (board[r][c] == player && board[r - 1][c + 1] == player && board[r - 2][c + 2] == player &&
-                        board[r - 3][c + 3] == player&& !end) {
+                    if (_board[r][c] == player && _board[r - 1][c + 1] == player && _board[r - 2][c + 2] == player &&
+                        _board[r - 3][c + 3] == player&& !end) {
                         end_game();
                         end = true;
                     }
@@ -156,8 +156,8 @@ namespace gb {
 
             // usual move
             bool skip = false;
-            for (int i = 0; i < static_cast<int>(std::size(board[0])) && !end; i++) {
-                if (board[0][i] == " ") {
+            for (int i = 0; i < static_cast<int>(std::size(_board[0])) && !end; i++) {
+                if (_board[0][i] == " ") {
                     next_player();
                     co_await send_message();
                     skip = true;

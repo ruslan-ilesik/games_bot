@@ -22,7 +22,7 @@ namespace gb {
          * Each element in the board represents a cell, with empty cells containing a space (" "),
          * red player cells containing "r", and yellow player cells containing "y".
          */
-        std::string board[6][7] = {{" ", " ", " ", " ", " ", " ", " "}, {" ", " ", " ", " ", " ", " ", " "},
+        std::string _board[6][7] = {{" ", " ", " ", " ", " ", " ", " "}, {" ", " ", " ", " ", " ", " ", " "},
                                    {" ", " ", " ", " ", " ", " ", " "}, {" ", " ", " ", " ", " ", " ", " "},
                                    {" ", " ", " ", " ", " ", " ", " "}, {" ", " ", " ", " ", " ", " ", " "}};
 
@@ -31,7 +31,7 @@ namespace gb {
          *
          * The first player is represented by "r" (red), and the second player is represented by "y" (yellow).
          */
-        std::string signs[2] = {"r", "y"};
+        std::string _signs[2] = {"r", "y"};
 
     public:
         /**
