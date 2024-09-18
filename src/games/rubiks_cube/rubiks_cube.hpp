@@ -17,7 +17,7 @@ class Rubiks_cube_engine{
             {{'B', 'B', 'B'}, {'B', 'B', 'B'}, {'B', 'B', 'B'}},
             {{'Y', 'Y', 'Y'}, {'Y', 'Y', 'Y'}, {'Y', 'Y', 'Y'}}
     };
-    char cube_copy[6][3][3] = {
+    static constexpr char cube_copy[6][3][3] = {
             {{'W', 'W', 'W'}, {'W', 'W', 'W'}, {'W', 'W', 'W'}},
             {{'O', 'O', 'O'}, {'O', 'O', 'O'}, {'O', 'O', 'O'}},
             {{'G', 'G', 'G'}, {'G', 'G', 'G'}, {'G', 'G', 'G'}},
