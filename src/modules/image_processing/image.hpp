@@ -322,6 +322,16 @@ namespace gb {
          * @param size Size of resized image.
          */
         virtual void resize(const Vector2i &size) = 0;
+
+        /**
+         * @brief Draws polygon by given points.
+         *
+         * @param contour Vector of points between which polygons should be drawn.
+         * @param color Color of internal part of polygon.
+         * @param lines_color Color of lines of polygon.
+         * @param thickness thickness of polygon line.
+         */
+        virtual void draw_polygon(const std::vector<Vector2i> &contour, const Color &color, const Color& lines_color, int thickness) = 0;
     };
 
 

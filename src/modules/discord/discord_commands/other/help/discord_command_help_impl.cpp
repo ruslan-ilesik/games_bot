@@ -6,7 +6,7 @@
 
 namespace gb {
     std::map<std::string, std::string> category_emojis = {
-        {"Other", "🔄"}, {"Game", "🎮"}, {"Multiplayer", "🌐"}, {"Statistics", "📊"}};
+        {"Other", "🔄"}, {"Game", "🎮"}, {"Multiplayer", "🌐"}, {"Statistics", "📊"},{"Single-player","🎯"}};
 
 
     void Discord_command_help_impl::init(const Modules &modules) {

@@ -166,6 +166,17 @@ namespace gb {
         void resize(const Vector2i &size) override;
 
         /**
+         * @brief Draws polygon by given points.
+         *
+         * @param contour Vector of points between which polygons should be drawn.
+         * @param color Color of line polygons will be drawn.
+         * @param lines_color Color of lines of polygon.
+         * @param thickness thickness of polygon line.
+         */
+        void draw_polygon(const std::vector<Vector2i> &contour, const Color &color, const Color &lines_color,
+                          int thickness) override;
+
+        /**
          * @brief Gets a reference to the internal OpenCV image matrix.
          *
          * @return cv::Mat& Reference to the internal image matrix.
