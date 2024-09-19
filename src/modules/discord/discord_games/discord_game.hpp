@@ -67,6 +67,7 @@ namespace gb {
         uint64_t _unique_game_id =
             std::numeric_limits<uint64_t>::max(); ///< Unique ID for the game, initialized as max.
         bool _is_game_started = false; ///< Flag which checks if game was started.
+        bool _is_game_stopped = false; ///< Flag which checks if game was stopped.
 
     protected:
         Game_data_initialization _data; ///< Initialization data for the game.
@@ -159,8 +160,10 @@ namespace gb {
 
         /**
          * @brief Stops the game and deregisters it from the game manager.
+         *
+         * @param additional_data Optional additional data for a game in json format.
          */
-        void game_stop();
+        void game_stop(const std::string& additional_data = "{}");
 
         /**
          * @brief Gets the name of the game.

@@ -22,12 +22,8 @@ namespace gb {
     }
 
     cv::Scalar Image_impl::color_to_cv_scalar(const Color &color) {
-        return {
-            static_cast<double>(color.b),
-            static_cast<double>(color.g),
-            static_cast<double>(color.r),
-            static_cast<double>(std::max(0, std::min(255, static_cast<int>(floor(color.a * 256.0)))))
-        };
+        return {static_cast<double>(color.b), static_cast<double>(color.g), static_cast<double>(color.r),
+                static_cast<double>(std::max(0, std::min(255, static_cast<int>(floor(color.a * 256.0)))))};
     }
 
 
@@ -38,7 +34,7 @@ namespace gb {
     }
 
     Image_impl::Image_impl(size_t x, size_t y, const Color &color) {
-        _image = {static_cast<int>(y), static_cast<int>(x),CV_8UC4, color_to_cv_scalar(color)};
+        _image = {static_cast<int>(y), static_cast<int>(x), CV_8UC4, color_to_cv_scalar(color)};
     }
 
     std::pair<std::string, std::string> Image_impl::convert_to_string() {
@@ -54,32 +50,37 @@ namespace gb {
         _image.copyTo(overlay);
 
         // Draw the line on the overlay
-        cv::line(overlay, vector_to_cv_point(from), vector_to_cv_point(to), color_to_cv_scalar(color), thickness, cv::LINE_8);
+        cv::line(overlay, vector_to_cv_point(from), vector_to_cv_point(to), color_to_cv_scalar(color), thickness,
+                 cv::LINE_8);
 
         // Blend the overlay with the base image using the alpha value from the color
         blend_images(_image, overlay, color.a);
     }
 
 
-    void Image_impl::draw_text(const std::string &text, const Vector2i &position, double font_scale, const Color &color, int thickness) {
+    void Image_impl::draw_text(const std::string &text, const Vector2i &position, double font_scale, const Color &color,
+                               int thickness) {
         // Create a copy of the image as overlay
         cv::Mat overlay;
         _image.copyTo(overlay);
 
         // Draw the text on the overlay
-        cv::putText(overlay, text, vector_to_cv_point(position), cv::FONT_HERSHEY_DUPLEX, font_scale, color_to_cv_scalar(color), thickness);
+        cv::putText(overlay, text, vector_to_cv_point(position), cv::FONT_HERSHEY_DUPLEX, font_scale,
+                    color_to_cv_scalar(color), thickness);
 
         // Blend the overlay with the base image using the alpha value from the color
         blend_images(_image, overlay, color.a);
     }
 
-    void Image_impl::draw_rectangle(const Vector2i &position_start, const Vector2i &position_end, const Color &color, int thickness) {
+    void Image_impl::draw_rectangle(const Vector2i &position_start, const Vector2i &position_end, const Color &color,
+                                    int thickness) {
         // Create a copy of the image as overlay
         cv::Mat overlay;
         _image.copyTo(overlay);
 
         // Draw the rectangle on the overlay
-        cv::rectangle(overlay, vector_to_cv_point(position_start), vector_to_cv_point(position_end), color_to_cv_scalar(color), thickness);
+        cv::rectangle(overlay, vector_to_cv_point(position_start), vector_to_cv_point(position_end),
+                      color_to_cv_scalar(color), thickness);
 
         // Blend the overlay with the base image using the alpha value from the color
         blend_images(_image, overlay, color.a);
@@ -125,8 +126,8 @@ namespace gb {
     }
 
     Vector2i Image_impl::get_text_size(const std::string &text, double font_scale, int thickness) {
-        cv::Size2i t_size = cv::getTextSize(text,cv::FONT_HERSHEY_DUPLEX,font_scale,thickness,0);
-        return {t_size.width,t_size.height};
+        cv::Size2i t_size = cv::getTextSize(text, cv::FONT_HERSHEY_DUPLEX, font_scale, thickness, 0);
+        return {t_size.width, t_size.height};
     }
 
     void Image_impl::overlay_image(Image_ptr &image, const Vector2i &position) {
@@ -145,7 +146,6 @@ namespace gb {
             _image.at<cv::Vec4b>(y + j, x + i)[2] = upcoming->_image.at<cv::Vec3b>(j, i)[2];
             _image.at<cv::Vec4b>(y + j, x + i)[3] = 255;
         };
-
         for (int i = 0; i < upcoming->_image.cols; i++) {
             for (int j = 0; j < upcoming->_image.rows; j++) {
                 if (j + y >= _image.rows) {
@@ -174,11 +174,36 @@ namespace gb {
         }
     }
 
-    void Image_impl::resize(const Vector2i &size) {
-        cv::resize(_image,_image,vector_to_cv_point(size));
+    void Image_impl::resize(const Vector2i &size) { cv::resize(_image, _image, vector_to_cv_point(size)); }
+
+    void Image_impl::draw_polygon(const std::vector<Vector2i> &contour, const Color &color,const Color &lines_color, int thickness) {
+        if (contour.size() < 3) {
+            // Not enough points to form a valid polygon
+            return;
+        }
+
+        // Create a copy of the image as an overlay
+        cv::Mat overlay;
+        _image.copyTo(overlay);
+
+        // Convert std::vector<Vector2i> to std::vector<cv::Point>
+        std::vector<cv::Point> cv_contour;
+        cv_contour.reserve(contour.size());
+        for (const auto &point: contour) {
+            cv_contour.emplace_back(vector_to_cv_point(point));
+        }
+
+        // Create a pointer to the contour data
+        const cv::Point *pts = cv_contour.data();
+        int npts = static_cast<int>(cv_contour.size());
+
+        cv::fillPoly(overlay, &pts, &npts, 1, color_to_cv_scalar(color));
+        cv::polylines(overlay, &pts, &npts, 1, true, color_to_cv_scalar(lines_color), thickness);
+
+        // Blend the overlay with the base image using the alpha value from the color
+        blend_images(_image, overlay, color.a);
     }
 
-    cv::Mat &Image_impl::get_image() {
-        return _image;
-    }
-} // gb
+
+    cv::Mat &Image_impl::get_image() { return _image; }
+} // namespace gb
