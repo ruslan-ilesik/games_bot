@@ -28,7 +28,7 @@ and full redesign of architecture.
 - [X] ping
 - [ ] premium
 - [ ] puzzle_15
-- [ ] rubicks_cube
+- [X] rubiks_cube
 - [ ] sudocku
 - [X] tic_tac_toe
 - [ ] website
