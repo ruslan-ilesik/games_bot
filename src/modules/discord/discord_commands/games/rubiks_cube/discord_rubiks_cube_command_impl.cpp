@@ -9,7 +9,7 @@
 namespace gb {
     Discord_rubiks_cube_command_impl::Discord_rubiks_cube_command_impl() :
         Discord_rubiks_cube_command("discord_rubiks_cube_command", {}) {
-        lobby_title = "Rubiks cube";
+        lobby_title = "Rubik's cube";
         lobby_description = "The Rubik's Cube is a 3-D combination puzzle originally invented in 1974 by Hungarian "
                             "sculptor and professor of architecture Ernő Rubik";
         lobby_image_url = "https://cdn.discordapp.com/attachments/1010981120554320003/1031936352591290458/unknown.png";

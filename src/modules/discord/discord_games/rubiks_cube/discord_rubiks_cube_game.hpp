@@ -44,6 +44,8 @@ namespace gb {
         void prepare_message(dpp::message& message);
 
         Image_ptr create_image();
+
+        bool is_win();
     };
 
 } // namespace gb

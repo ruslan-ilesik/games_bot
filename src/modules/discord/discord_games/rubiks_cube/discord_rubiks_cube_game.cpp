@@ -28,7 +28,7 @@ namespace gb {
     void Discord_rubiks_cube_game::prepare_message(dpp::message &message) {
         message.components.clear();
         message.embeds[0]
-            .set_title("Rubiks`s cube game")
+            .set_title("Rubik`s cube game")
             .set_description(std::format(
                 "Player: {}\nAmount of moves: {}\nTimeout: <t:{}:R>", dpp::utility::user_mention(get_current_player()),
                 _amount_moves,
@@ -118,7 +118,7 @@ namespace gb {
                             dpp::component().set_id("right right down").set_emoji("rrightdown", 1034201277145559072)));
         }
 
-        message.embeds[0].set_image(add_image(message,create_image()));
+        message.embeds[0].set_image(add_image(message, create_image()));
     }
 
     Image_ptr Discord_rubiks_cube_game::create_image() {
@@ -145,19 +145,34 @@ namespace gb {
                 {static_cast<float>(std::pow(3.0 / 4.0, 0.5)), -0.5}, {0, 1})};
 
         _engine.update_for_draw();
-        for (int y = 0; y < static_cast<int>(std::size(_engine.draw[0])) ;y++){
-            for (int x = 0; x < static_cast<int>(std::size(_engine.draw[0][y])) ;x++){
-                for (int i=0; i < static_cast<int>(std::size(sides));i++){
+        for (int y = 0; y < static_cast<int>(std::size(_engine.draw[0])); y++) {
+            for (int x = 0; x < static_cast<int>(std::size(_engine.draw[0][y])); x++) {
+                for (int i = 0; i < static_cast<int>(std::size(sides)); i++) {
                     std::vector<Vector2i> contour;
-                    contour.push_back(sides[i].get_dot(Vector2d(0 + block_size*x,0 + block_size*y)));
-                    contour.push_back(sides[i].get_dot(Vector2d(0 + block_size*x,block_size + block_size*y)));
-                    contour.push_back(sides[i].get_dot(Vector2d(block_size + block_size*x,block_size + block_size*y)));
-                    contour.push_back(sides[i].get_dot(Vector2d(block_size + block_size*x,0 + block_size*y)));
-                    img->draw_polygon(contour,rubiks_cube::colors.at(_engine.draw[i][y][x]),{0,0,0},image_size/70);
+                    contour.push_back(sides[i].get_dot(Vector2d(0 + block_size * x, 0 + block_size * y)));
+                    contour.push_back(sides[i].get_dot(Vector2d(0 + block_size * x, block_size + block_size * y)));
+                    contour.push_back(
+                        sides[i].get_dot(Vector2d(block_size + block_size * x, block_size + block_size * y)));
+                    contour.push_back(sides[i].get_dot(Vector2d(block_size + block_size * x, 0 + block_size * y)));
+                    img->draw_polygon(contour, rubiks_cube::colors.at(_engine.draw[i][y][x]), {0, 0, 0},
+                                      image_size / 70);
                 }
             }
         }
         return img;
+    }
+
+    bool Discord_rubiks_cube_game::is_win() {
+        for (int i = 0; i < static_cast<int>(std::size(_engine.cube)); i++) {
+            for (int y = 0; y < static_cast<int>(std::size(_engine.cube[i])); y++) {
+                for (int x = 0; x < static_cast<int>(std::size(_engine.cube[i][y])); x++) {
+                    if (_engine.cube[i][y][x] != _engine.cube[i][0][0]) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     };
 
 
@@ -176,25 +191,156 @@ namespace gb {
         for (int i = 0; i < 41; i++) {
             std::uniform_int_distribution<size_t> random_int{0ul, std::size(f) - 1};
             size_t id = random_int(_rand_obj);
-            (this->_engine.*(f[id]))();
+            (_engine.*(f[id]))();
         }
 
         dpp::message message;
         message.add_embed(dpp::embed());
         message.channel_id = sevent.command.channel_id;
         message.guild_id = sevent.command.guild_id;
+        message.id = 0;
 
         Button_click_return r;
         prepare_message(message);
-        dpp::task<Button_click_return> button_click_awaitable = _data.button_click_handler->wait_for(message,{get_current_player()},60);
-        _data.bot->reply(sevent,message);
+        dpp::task<Button_click_return> button_click_awaitable =
+            _data.button_click_handler->wait_for(message, {get_current_player()}, 60);
+        _data.bot->reply(sevent, message);
         r = co_await button_click_awaitable;
         dpp::button_click_t event;
+        while (1) {
+            if (r.second) {
+                message.components.clear();
+                message.embeds[0]
+                    .set_title("Game Timeout!!")
+                    .set_description("If you still want to play, you can create new game.\nPlayer " +
+                                     dpp::utility::user_mention(get_current_player()) +
+                                     " lost his game.\nMoves amount: " + std::to_string(_amount_moves))
+                .set_color(dpp::colors::red);
+                message.embeds[0].set_image(add_image(message, create_image()));
+                if (message.id !=0) {
+                    _data.bot->message_edit(message);
+                }
+                else {
+                    _data.bot->message_create(message);
+                }
+
+                remove_player(USER_REMOVE_REASON::TIMEOUT, get_current_player());
+                break;
+            }
+            event = r.first;
+            message.id = event.command.message_id;
 
 
+            if (_is_view) {
+                if (event.custom_id == "rotate right up") {
+                    _engine.x();
+                } else if (event.custom_id == "rotate left up") {
+                    _engine.z();
+                } else if (event.custom_id == "rotate left") {
+                    _engine.y();
+                } else if (event.custom_id == "rotate right") {
+                    for (int i = 0; i < 3; i++) {
+                        _engine.y();
+                    }
+                } else if (event.custom_id == "rotate right down") {
+                    for (int i = 0; i < 3; i++) {
+                        _engine.x();
+                    }
+                } else if (event.custom_id == "rotate left down") {
+                    for (int i = 0; i < 3; i++) {
+                        _engine.z();
+                    }
+                } else if (event.custom_id == "moving mode") {
+                    _is_view = false;
+                }
+            }
 
+            else {
+                _amount_moves++;
+                if (event.custom_id == "left left up") {
+                    for (int i = 0; i < 3; i++) {
+                        _engine.b();
+                    }
+                } else if (event.custom_id == "left right up") {
+                    _engine.f();
+                } else if (event.custom_id == "right left up") {
+                    for (int i = 0; i < 3; i++) {
+                        _engine.l();
+                    }
+                } else if (event.custom_id == "right right up") {
+                    _engine.r();
+                } else if (event.custom_id == "vertical up left") {
+                    _engine.u();
+                } else if (event.custom_id == "left center up") {
+                    _engine.s();
+                } else if (event.custom_id == "vertical center left") {
+                    for (int i = 0; i < 3; i++) {
+                        _engine.e();
+                    }
+                } else if (event.custom_id == "right center up") {
+                    for (int i = 0; i < 3; i++) {
+                        _engine.m();
+                    }
+                } else if (event.custom_id == "vertical up right") {
+                    for (int i = 0; i < 3; i++) {
+                        _engine.u();
+                    }
+                } else if (event.custom_id == "vertical down left") {
+                    for (int i = 0; i < 3; i++) {
+                        _engine.d();
+                    }
+                } else if (event.custom_id == "left center down") {
+                    for (int i = 0; i < 3; i++) {
+                        _engine.s();
+                    }
+                } else if (event.custom_id == "vertical center right") {
+                    _engine.e();
+                } else if (event.custom_id == "right center down") {
+                    _engine.m();
+                } else if (event.custom_id == "vertical down right") {
+                    _engine.d();
+                } else if (event.custom_id == "left left down") {
+                    _engine.b();
+                } else if (event.custom_id == "left right down") {
+                    for (int i = 0; i < 3; i++) {
+                        _engine.f();
+                    }
+                } else if (event.custom_id == "right left down") {
+                    _engine.l();
+                } else if (event.custom_id == "right right down") {
+                    for (int i = 0; i < 3; i++) {
+                        _engine.r();
+                    }
+                } else if (event.custom_id == "rmode2" || event.custom_id == "rmode") {
+                    _is_view = true;
+                    _amount_moves--;
+                }
+            }
+            if (is_win()) {
+                // win
+                if (_amount_moves < 21) {
+                    _data.achievements_processing->activate_achievement("3.134 seconds", get_current_player(),
+                                                                        event.command.channel_id);
+                }
+                message.components.clear();
+                message.embeds[0]
+                    .set_title("Game over!!")
+                    .set_description("Player " + dpp::utility::user_mention(get_current_player()) +
+                                     " solved Rubik`s cube in " + std::to_string(_amount_moves) + " moves.")
+                    .set_color(dpp::colors::green);
+                message.embeds[0].set_image(add_image(message, create_image()));
+                _data.bot->reply(event, message);
+                remove_player(USER_REMOVE_REASON::WIN, get_current_player());
+                break;
+            }
+            prepare_message(message);
+            button_click_awaitable = _data.button_click_handler->wait_for(message, {get_current_player()}, 60);
+            _data.bot->reply(event, message);
+            r = co_await button_click_awaitable;
+        }
 
-        game_stop();
+        nlohmann::json json{{"moves", _amount_moves}};
+        game_stop(json.dump());
         co_return;
     }
 } // namespace gb

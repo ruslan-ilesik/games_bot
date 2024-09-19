@@ -26,7 +26,7 @@ std::string to_string(USER_REMOVE_REASON r) {
   }
 }
 Discord_game::~Discord_game() {
-    if (_is_game_started) {
+    if (_is_game_started && !_is_game_stopped) {
         game_stop();
     }
 
@@ -86,8 +86,9 @@ Discord_game::~Discord_game() {
         _game_create_req = _data.games_manager->add_game(this,channel_id,guild_id);
     }
 
-    void Discord_game::game_stop() {
-        _data.games_manager->remove_game(this,GAME_END_REASON::FINISHED);
+    void Discord_game::game_stop(const std::string& additional_data ) {
+        _is_game_stopped = true;
+        _data.games_manager->remove_game(this,GAME_END_REASON::FINISHED,additional_data);
     }
 
     std::string Discord_game::add_image(dpp::message &m, const Image_ptr &image) {
