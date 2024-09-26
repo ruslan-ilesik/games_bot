@@ -24,7 +24,7 @@ and full redesign of architecture.
 - [ ] hangman
 - [X] help
 - [X] local_stats
-- [ ] minesweeper
+- [X] minesweeper
 - [X] ping
 - [ ] premium
 - [ ] puzzle_15

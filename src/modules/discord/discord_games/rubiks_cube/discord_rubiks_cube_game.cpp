@@ -203,7 +203,7 @@ namespace gb {
         Button_click_return r;
         prepare_message(message);
         dpp::task<Button_click_return> button_click_awaitable =
-            _data.button_click_handler->wait_for(message, {get_current_player()}, 60);
+        _data.button_click_handler->wait_for(message, {get_current_player()}, 60);
         _data.bot->reply(sevent, message);
         r = co_await button_click_awaitable;
         dpp::button_click_t event;
