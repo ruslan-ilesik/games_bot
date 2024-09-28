@@ -29,7 +29,7 @@ namespace gb {
         /**
          * @brief Executes the Minesweeper command.
          *
-         * This method contains the logic for running the Minesweeper game within the Discord environment.
+         * Placeholder to implement abstract class.
          */
         void run() override;
 
