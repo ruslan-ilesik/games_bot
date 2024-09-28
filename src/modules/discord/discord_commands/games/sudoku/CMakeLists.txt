@@ -7,6 +7,7 @@ add_library(discord_game_sudoku SHARED
         ../../../discord_games/sudoku/discord_sudoku_game.cpp
         discord_sudoku_command_impl.hpp
         ../../../discord_games/sudoku/discord_sudoku_game.hpp
+        ../../../../../games/sudoku/sudoku.cpp
 )
 
 

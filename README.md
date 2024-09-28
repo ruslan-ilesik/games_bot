@@ -29,7 +29,7 @@ and full redesign of architecture.
 - [ ] premium
 - [ ] puzzle_15
 - [X] rubiks_cube
-- [ ] sudocku
+- [X] sudoku
 - [X] tic_tac_toe
 - [ ] website
 - [ ] reports to websites like top.gg
