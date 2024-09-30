@@ -60,23 +60,23 @@ namespace gb {
             }
             event = r.first;
             if (event.custom_id == "up") {
-                up(board);
+                up(_board);
             } else if (event.custom_id == "down") {
-                down(board);
+                down(_board);
             } else if (event.custom_id == "left") {
-                left(board);
+                left(_board);
             } else {
-                right(board);
+                right(_board);
             }
 
             // check win condition
-            for (int y = 0; y < static_cast<int>(std::size(board)); y++) {
-                for (int x = 0; x < static_cast<int>(std::size(board[y])); x++) {
-                    if (board[y][x] >= 1024) {
+            for (int y = 0; y < static_cast<int>(std::size(_board)); y++) {
+                for (int x = 0; x < static_cast<int>(std::size(_board[y])); x++) {
+                    if (_board[y][x] >= 1024) {
                         _data.achievements_processing->activate_achievement("Half way there", get_current_player(),
                                                                event.command.channel_id);
                     }
-                    if (board[y][x] == 2048) {
+                    if (_board[y][x] == 2048) {
                         _data.achievements_processing->activate_achievement("2^11", get_current_player(), event.command.channel_id);
                         message.components.clear();
                         message.embeds[0]
@@ -102,14 +102,14 @@ namespace gb {
                 remove_player(USER_REMOVE_REASON::LOSE,get_current_player());
             };
             find_clear();
-            if (clear_places.empty()) {
+            if (_clear_places.empty()) {
                 lose();
                 break;
             }
             new_peace();
             get_possible_moves();
-            if (!possible_moves['w'] && !possible_moves['s'] && !possible_moves['a'] &&
-                !possible_moves['d']) {
+            if (!_possible_moves['w'] && !_possible_moves['s'] && !_possible_moves['a'] &&
+                !_possible_moves['d']) {
                 lose();
                 break;
             }
@@ -128,19 +128,19 @@ namespace gb {
         _img_cnt++;
         int img_size = 256;
         Image_ptr img = _data.image_processing->create_image({img_size, img_size}, Color(187, 173, 160));
-        int space_size = (img_size / std::size(this->board)) / 10;
-        int square_size = (img_size - space_size * std::size(this->board) - space_size) / std::size(this->board);
-        for (int i = 0; i < static_cast<int>(std::size(this->board)); i++) {
-            for (int j = 0; j < static_cast<int>(std::size(this->board[i])); j++) {
+        int space_size = (img_size / std::size(this->_board)) / 10;
+        int square_size = (img_size - space_size * std::size(this->_board) - space_size) / std::size(this->_board);
+        for (int i = 0; i < static_cast<int>(std::size(this->_board)); i++) {
+            for (int j = 0; j < static_cast<int>(std::size(this->_board[i])); j++) {
                 Vector2d s(space_size + j * space_size + square_size * j,
                            space_size + i * space_size + square_size * i);
                 img->draw_rectangle(s, Vector2i(s.x + square_size, s.y + square_size),
-                                    n_2048::bg_colors.at(board[i][j]), -1);
-                if (board[i][j]) {
-                    img->draw_text(std::to_string(board[i][j]),
-                                   Vector2d(s.x + (4 - std::to_string(board[i][j]).length()) * (square_size / 8),
+                                    n_2048::bg_colors.at(_board[i][j]), -1);
+                if (_board[i][j]) {
+                    img->draw_text(std::to_string(_board[i][j]),
+                                   Vector2d(s.x + (4 - std::to_string(_board[i][j]).length()) * (square_size / 8),
                                             s.y + square_size / 1.5),
-                                   0.65 * img_size / 256, n_2048::txt_colors.at(board[i][j]), square_size / 25.0);
+                                   0.65 * img_size / 256, n_2048::txt_colors.at(_board[i][j]), square_size / 25.0);
                 }
             }
         }
@@ -171,7 +171,7 @@ namespace gb {
                                                   )
                                .add_component(dpp::component()
                                                   .set_type(dpp::cot_button)
-                                                  .set_disabled(!this->possible_moves['w'])
+                                                  .set_disabled(!this->_possible_moves['w'])
                                                   .set_style(dpp::cos_primary)
                                                   .set_id("up")
                                                   .set_emoji("⬆️"))
@@ -184,7 +184,7 @@ namespace gb {
             .add_component(dpp::component()
                                .add_component(dpp::component()
                                                   .set_type(dpp::cot_button)
-                                                  .set_disabled(!this->possible_moves['a'])
+                                                  .set_disabled(!this->_possible_moves['a'])
                                                   .set_style(dpp::cos_primary)
                                                   .set_id("left")
                                                   .set_emoji("⬅️")
@@ -198,7 +198,7 @@ namespace gb {
                                                   .set_emoji("clear", 1015646216509468683))
                                .add_component(dpp::component()
                                                   .set_type(dpp::cot_button)
-                                                  .set_disabled(!this->possible_moves['d'])
+                                                  .set_disabled(!this->_possible_moves['d'])
                                                   .set_style(dpp::cos_primary)
                                                   .set_id("right")
                                                   .set_emoji("➡️")))
@@ -213,7 +213,7 @@ namespace gb {
                                                   )
                                .add_component(dpp::component()
                                                   .set_type(dpp::cot_button)
-                                                  .set_disabled(!this->possible_moves['s'])
+                                                  .set_disabled(!this->_possible_moves['s'])
                                                   .set_style(dpp::cos_primary)
                                                   .set_id("down")
                                                   .set_emoji("⬇️"))
@@ -332,59 +332,59 @@ namespace gb {
         }
     }
     void Discord_game_2048::find_clear() {
-        this->clear_places.clear();
-        for (int y = 0; y < static_cast<int>(std::size(this->board)); y++) {
-            for (int x = 0; x < static_cast<int>(std::size(this->board)); x++) {
-                if (!board[y][x]) {
-                    this->clear_places.push_back({y, x});
+        this->_clear_places.clear();
+        for (int y = 0; y < static_cast<int>(std::size(this->_board)); y++) {
+            for (int x = 0; x < static_cast<int>(std::size(this->_board)); x++) {
+                if (!_board[y][x]) {
+                    this->_clear_places.push_back({y, x});
                 }
             }
         }
     }
     void Discord_game_2048::get_possible_moves() {
-        this->possible_moves = {{'w', false}, {'s', false}, {'a', false}, {'d', false}};
-        for (int y = 0; y < static_cast<int>(std::size(this->board)); y++) {
-            for (int x = 0; x < static_cast<int>(std::size(this->board[y])); x++) {
-                if (this->board[y][x] == 0) {
-                    if (y && this->board[y - 1][x]) {
-                        this->possible_moves['s'] = true;
+        this->_possible_moves = {{'w', false}, {'s', false}, {'a', false}, {'d', false}};
+        for (int y = 0; y < static_cast<int>(std::size(this->_board)); y++) {
+            for (int x = 0; x < static_cast<int>(std::size(this->_board[y])); x++) {
+                if (this->_board[y][x] == 0) {
+                    if (y && this->_board[y - 1][x]) {
+                        this->_possible_moves['s'] = true;
                     }
-                    if (y < static_cast<int>(std::size(this->board) - 1) && this->board[y + 1][x]) {
-                        this->possible_moves['w'] = true;
+                    if (y < static_cast<int>(std::size(this->_board) - 1) && this->_board[y + 1][x]) {
+                        this->_possible_moves['w'] = true;
                     }
-                    if (x && this->board[y][x - 1]) {
-                        this->possible_moves['d'] = true;
+                    if (x && this->_board[y][x - 1]) {
+                        this->_possible_moves['d'] = true;
                     }
-                    if (x < static_cast<int>(std::size(this->board[y]) - 1) && this->board[y][x + 1]) {
-                        this->possible_moves['a'] = true;
+                    if (x < static_cast<int>(std::size(this->_board[y]) - 1) && this->_board[y][x + 1]) {
+                        this->_possible_moves['a'] = true;
                     }
                 } else {
-                    if ((y && this->board[y - 1][x] == this->board[y][x]) ||
-                        (y < static_cast<int>(std::size(this->board) - 1) &&
-                         this->board[y + 1][x] == this->board[y][x])) {
-                        this->possible_moves['s'] = true;
-                        this->possible_moves['w'] = true;
+                    if ((y && this->_board[y - 1][x] == this->_board[y][x]) ||
+                        (y < static_cast<int>(std::size(this->_board) - 1) &&
+                         this->_board[y + 1][x] == this->_board[y][x])) {
+                        this->_possible_moves['s'] = true;
+                        this->_possible_moves['w'] = true;
                     }
-                    if ((x && this->board[y][x - 1] == this->board[y][x]) ||
-                        (x < static_cast<int>(std::size(this->board[y]) - 1) &&
-                         this->board[y][x + 1] == this->board[y][x])) {
-                        this->possible_moves['d'] = true;
-                        this->possible_moves['a'] = true;
+                    if ((x && this->_board[y][x - 1] == this->_board[y][x]) ||
+                        (x < static_cast<int>(std::size(this->_board[y]) - 1) &&
+                         this->_board[y][x + 1] == this->_board[y][x])) {
+                        this->_possible_moves['d'] = true;
+                        this->_possible_moves['a'] = true;
                     }
                 }
             }
         }
     }
     void Discord_game_2048::new_peace() {
-        std::uniform_int_distribution<size_t> random_int{0ul, std::size(this->clear_places) - 1};
-        size_t id = random_int(this->rand_obj);
+        std::uniform_int_distribution<size_t> random_int{0ul, std::size(this->_clear_places) - 1};
+        size_t id = random_int(this->_rand_obj);
         std::uniform_int_distribution<size_t> random_int2{0ul, 100ul};
         unsigned int to_put = 2;
-        if (random_int2(this->rand_obj) > 90) {
+        if (random_int2(this->_rand_obj) > 90) {
             to_put = 4;
         }
-        this->board[this->clear_places[id][0]][this->clear_places[id][1]] = to_put;
-        this->clear_places.erase(this->clear_places.begin() + id);
+        this->_board[this->_clear_places[id][0]][this->_clear_places[id][1]] = to_put;
+        this->_clear_places.erase(this->_clear_places.begin() + id);
     }
 
 } // namespace gb
