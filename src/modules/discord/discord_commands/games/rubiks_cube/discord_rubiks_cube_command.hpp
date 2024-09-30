@@ -9,10 +9,8 @@ namespace gb {
 
   /**
    * @class Discord_rubiks_cube_command
-   * @brief A class that handles the Rubik's Cube game command for the Discord bot.
-   *
-   * This class inherits from Discord_game_command and is responsible for managing
-   * the Rubik's Cube game interactions within a Discord server.
+*
+
    */
   class Discord_rubiks_cube_command: public Discord_game_command {
   public:
