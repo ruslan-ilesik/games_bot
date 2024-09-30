@@ -13,7 +13,7 @@ this repository is not direct open sourcing of games bot, it is full remake of i
 and full redesign of architecture.  
 
 ## TO DO
-- [ ] 2048
+- [X] 2048
 - [ ] about
 - [X] achievements
 - [X] battleships

@@ -10,8 +10,6 @@ namespace gb {
   /**
    * @brief Represents a command to initiate a chess game within Discord.
    *
-   * The `Discord_chess_command` class inherits from `Discord_game_command` and is used
-   * to register and manage commands related to the chess game.
    */
   class Discord_chess_command : public Discord_game_command {
   public:

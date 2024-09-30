@@ -10,8 +10,6 @@ namespace gb {
     /**
      * @brief Represents a command to initiate a Connect Four game within Discord.
      *
-     * The `Discord_connect_four_command` class inherits from `Discord_game_command` and is used
-     * to register and manage commands related to the Connect Four game.
      */
     class Discord_connect_four_command : public Discord_game_command {
     public:

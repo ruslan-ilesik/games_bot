@@ -7,10 +7,21 @@
 
 namespace gb {
 
-class Discord_battleships_command: public Discord_game_command {
-public:
-    Discord_battleships_command(const std::string& name, const std::vector<std::string>& deps)
-     : Discord_game_command(name, deps) {};
-};
+    /**
+     * @brief Represents a command to initiate a Battleships game within Discord.
+     *
+     */
+    class Discord_battleships_command : public Discord_game_command {
+    public:
 
-} // gb
+        /**
+         * @brief Constructs a new `Discord_battleships_command` object.
+         *
+         * @param name The name of the command.
+         * @param deps A vector of strings representing dependencies required for the command.
+         */
+        Discord_battleships_command(const std::string& name, const std::vector<std::string>& deps)
+            : Discord_game_command(name, deps) {}
+    };
+
+} // namespace gb

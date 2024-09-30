@@ -9,10 +9,7 @@ namespace gb {
 
   /**
    * @class Discord_minesweeper_command
-   * @brief A class that handles the Minesweeper game command for the Discord bot.
    *
-   * This class inherits from Discord_game_command and is responsible for managing
-   * the Minesweeper game interactions within a Discord server.
    */
   class Discord_minesweeper_command: public Discord_game_command {
   public:
