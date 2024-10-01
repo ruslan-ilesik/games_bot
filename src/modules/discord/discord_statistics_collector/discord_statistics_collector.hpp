@@ -4,6 +4,7 @@
 
 #pragma once
 #include <src/module/module.hpp>
+#include <src/utils/coro/coro.hpp>
 
 namespace gb {
 

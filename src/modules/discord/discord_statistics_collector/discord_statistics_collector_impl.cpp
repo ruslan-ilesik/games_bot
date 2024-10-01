@@ -35,7 +35,7 @@ namespace gb {
         _config = std::static_pointer_cast<Config>(modules.at("config"));
         _bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         _db = std::static_pointer_cast<Database>(modules.at("database"));
-        _db->background_execute("DELETE FROM `guilds_users_data`;");
+
         _add_guild_stmt = _db->create_prepared_statement("INSERT INTO `guilds_users_data` (`guild_id`,`users_cnt`) "
                                                          "VALUES (?,?) ON DUPLICATE KEY UPDATE `users_cnt`=?;");
         _remove_guild_stmt = _db->create_prepared_statement("DELETE FROM `guilds_users_data` WHERE `guild_id`=?");
@@ -58,6 +58,7 @@ namespace gb {
 
 
         _bot->add_pre_requirement([this]() {
+            sync_wait(_db->execute("DELETE FROM `guilds_users_data`;"));
             _on_guild_create_handler = _bot->get_bot()->on_guild_create([this](const dpp::guild_create_t &event) {
                 _db->execute_prepared_statement(_add_guild_stmt, event.created->id, event.created->member_count,
                                                 event.created->member_count);

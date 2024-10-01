@@ -10,7 +10,7 @@
 namespace gb {
 
     /**
-     * @class Discord_logging_imp
+     * @class Discord_logging_impl
      * @brief Implementation of the Discord_logging module.
      *
      * This class implements the Discord_logging module, which handles logging events from a Discord bot.
