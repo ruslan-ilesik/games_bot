@@ -6,7 +6,7 @@
 
 namespace gb {
 
-    Discord_bot_impl::Discord_bot_impl() : Discord_bot("discord_bot", {"config"}) {}
+    Discord_bot_impl::Discord_bot_impl() : Discord_bot("discord_bot", {"config","database"}) {}
 
     Discord_bot_impl::~Discord_bot_impl() {}
 

@@ -32,8 +32,8 @@ and full redesign of architecture.
 - [X] sudoku
 - [X] tic_tac_toe
 - [ ] website
-- [ ] reports to websites like top.gg
-- [ ] statistics collection
+- [X] reports to websites like top.gg
+- [X] statistics collection
 
 
 # Implementation details
