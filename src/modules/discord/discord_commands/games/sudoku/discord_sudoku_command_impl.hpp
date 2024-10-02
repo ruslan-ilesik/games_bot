@@ -16,7 +16,7 @@ namespace gb {
      * in a Discord environment. It inherits from the Discord_sudoku_command base class
      * and overrides essential methods such as `run`, `init`, and `stop`.
      */
-    class Discord_sudoku_command_impl: public Discord_sudoku_command {
+    class Discord_sudoku_command_impl : public Discord_sudoku_command {
 
     public:
         /**
@@ -25,6 +25,11 @@ namespace gb {
          * Initializes the Sudoku command with the necessary dependencies.
          */
         Discord_sudoku_command_impl();
+
+        /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_sudoku_command_impl() = default;
 
         /**
          * @brief Executes the Sudoku command.

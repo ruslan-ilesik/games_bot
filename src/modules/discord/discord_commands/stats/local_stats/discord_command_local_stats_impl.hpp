@@ -4,94 +4,99 @@
 
 #pragma once
 
-#include "./discord_command_local_stats.hpp"
 #include <src/modules/database/database.hpp>
+#include "./discord_command_local_stats.hpp"
 
 namespace gb {
 
-/**
- * @class Discord_command_local_stats_impl
- * @brief Implementation of the Discord command for retrieving local statistics.
- *
- * This class provides the implementation for the Discord command that allows users
- * to retrieve local statistics such as bot command usage and game statistics.
- */
-class Discord_command_local_stats_impl : public Discord_command_local_stats {
-private:
-    /// Pointer to the database instance.
-    Database_ptr _db;
+    /**
+     * @class Discord_command_local_stats_impl
+     * @brief Implementation of the Discord command for retrieving local statistics.
+     *
+     * This class provides the implementation for the Discord command that allows users
+     * to retrieve local statistics such as bot command usage and game statistics.
+     */
+    class Discord_command_local_stats_impl : public Discord_command_local_stats {
+    private:
+        /// Pointer to the database instance.
+        Database_ptr _db;
 
-    /// Prepared statement for querying bot commands statistics.
-    Prepared_statement _bot_commands_stmt;
+        /// Prepared statement for querying bot commands statistics.
+        Prepared_statement _bot_commands_stmt;
 
-    /// Prepared statement for querying bot games statistics.
-    Prepared_statement _bot_games_stmt;
+        /// Prepared statement for querying bot games statistics.
+        Prepared_statement _bot_games_stmt;
 
-    /// Prepared statement for querying the user's commands statistics.
-    Prepared_statement _me_commands_stmt;
+        /// Prepared statement for querying the user's commands statistics.
+        Prepared_statement _me_commands_stmt;
 
-    /// Prepared statement for querying the user's games statistics.
-    Prepared_statement _me_games_stmt;
+        /// Prepared statement for querying the user's games statistics.
+        Prepared_statement _me_games_stmt;
+
+        /**
+         * @brief Retrieves and sends the bot statistics to the user.
+         *
+         * This function handles the 'bot' subcommand, executing the appropriate queries
+         * to retrieve bot command and game statistics, and sending the results to the user via Discord.
+         *
+         * @param event The event triggered by the slash command.
+         */
+        dpp::task<void> select_bot(const dpp::slashcommand_t &event);
+
+        /**
+         * @brief Retrieves and sends the user's statistics to the user.
+         *
+         * This function handles the 'me' command, subcommand the appropriate queries
+         * to retrieve the user's command and game statistics, and sending the results to the user via Discord.
+         *
+         * @param event The event triggered by the slash command.
+         */
+        dpp::task<void> select_me(const dpp::slashcommand_t &event);
+
+    public:
+        /**
+         * @brief Constructor for Discord_command_local_stats_impl.
+         *
+         * Initializes the class and prepares the necessary database statements.
+         */
+        Discord_command_local_stats_impl();
+
+        /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_command_local_stats_impl() = default;
+
+        /**
+         * @brief Initializes the command with necessary modules.
+         *
+         * This function is used to initialize the command with dependencies, such as the database module.
+         *
+         * @param modules The set of modules required by the command.
+         */
+        void init(const Modules &modules) override;
+
+        /**
+         * @brief Runs the command.
+         *
+         * This function starts the execution of the command, making it ready to handle Discord events.
+         */
+        void run() override;
+
+        /**
+         * @brief Stops the command.
+         *
+         * This function stops the execution of the command, cleaning up any resources or ongoing operations.
+         */
+        void stop() override;
+    };
 
     /**
-     * @brief Retrieves and sends the bot statistics to the user.
+     * @brief Factory function for creating an instance of the module.
      *
-     * This function handles the 'bot' subcommand, executing the appropriate queries
-     * to retrieve bot command and game statistics, and sending the results to the user via Discord.
+     * This function is used to create a new instance of the Discord_command_local_stats_impl class.
      *
-     * @param event The event triggered by the slash command.
+     * @return Module_ptr A pointer to the newly created module instance.
      */
-    dpp::task<void> select_bot(const dpp::slashcommand_t& event);
-
-    /**
-     * @brief Retrieves and sends the user's statistics to the user.
-     *
-     * This function handles the 'me' command, subcommand the appropriate queries
-     * to retrieve the user's command and game statistics, and sending the results to the user via Discord.
-     *
-     * @param event The event triggered by the slash command.
-     */
-    dpp::task<void> select_me(const dpp::slashcommand_t& event);
-
-public:
-    /**
-     * @brief Constructor for Discord_command_local_stats_impl.
-     *
-     * Initializes the class and prepares the necessary database statements.
-     */
-    Discord_command_local_stats_impl();
-
-    /**
-     * @brief Initializes the command with necessary modules.
-     *
-     * This function is used to initialize the command with dependencies, such as the database module.
-     *
-     * @param modules The set of modules required by the command.
-     */
-    void init(const Modules &modules) override;
-
-    /**
-     * @brief Runs the command.
-     *
-     * This function starts the execution of the command, making it ready to handle Discord events.
-     */
-    void run() override;
-
-    /**
-     * @brief Stops the command.
-     *
-     * This function stops the execution of the command, cleaning up any resources or ongoing operations.
-     */
-    void stop() override;
-};
-
-/**
- * @brief Factory function for creating an instance of the module.
- *
- * This function is used to create a new instance of the Discord_command_local_stats_impl class.
- *
- * @return Module_ptr A pointer to the newly created module instance.
- */
-extern "C" Module_ptr create();
+    extern "C" Module_ptr create();
 
 } // namespace gb

@@ -107,6 +107,11 @@ public:
    */
   Discord_statistics_collector_impl();
 
+ /**
+  * @breif Define destructor.
+  */
+  virtual ~Discord_statistics_collector_impl() = default;
+
   /**
    * @brief Starts the statistics collection process, setting up timers and attaching event handlers.
    */

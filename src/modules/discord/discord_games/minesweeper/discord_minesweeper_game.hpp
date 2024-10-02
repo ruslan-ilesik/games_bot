@@ -16,7 +16,8 @@ namespace gb {
      */
     class Discord_minesweeper_game : public Discord_game {
         minesweeper_engine::Minesweeper _engine; ///< The Minesweeper game engine instance.
-        constexpr static auto _numeration = "123456789ABCDEFGHIJKLMNOPQRSTYVWXYZ"; ///< Column/Row numeration for the game board.
+        constexpr static auto _numeration =
+            "123456789ABCDEFGHIJKLMNOPQRSTYVWXYZ"; ///< Column/Row numeration for the game board.
         bool _is_fst_move = true; ///< Flag indicating whether it's the first move of the game.
         std::array<int, 2> _action_position; ///< Stores the current selected position (column and row).
 
@@ -44,7 +45,13 @@ namespace gb {
          * @param players List of players participating in the game.
          * @param level Difficulty level of the game (1 = Easy, 2 = Medium, 3 = Hard).
          */
-        Discord_minesweeper_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players, int level);
+        Discord_minesweeper_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players,
+                                 int level);
+
+        /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_minesweeper_game() = default;
 
         /**
          * @brief Retrieves a list of image generators for the game.

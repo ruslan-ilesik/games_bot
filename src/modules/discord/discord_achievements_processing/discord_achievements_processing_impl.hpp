@@ -36,6 +36,11 @@ namespace gb {
         Discord_achievements_processing_impl();
 
         /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_achievements_processing_impl() = default;
+
+        /**
          * @brief Stops the module and performs necessary cleanup.
          */
         void stop() override;

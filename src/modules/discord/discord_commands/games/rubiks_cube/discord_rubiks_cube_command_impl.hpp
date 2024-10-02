@@ -27,6 +27,11 @@ namespace gb {
         Discord_rubiks_cube_command_impl();
 
         /**
+        * @breif Define destructor.
+        */
+        virtual ~Discord_rubiks_cube_command_impl() = default;
+
+        /**
          * @brief Empty function to implement abstract class.
          *
          */

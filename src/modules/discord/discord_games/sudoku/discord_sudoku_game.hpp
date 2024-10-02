@@ -38,6 +38,11 @@ namespace gb {
         Discord_sudoku_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players);
 
         /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_sudoku_game() = default;
+
+        /**
          * @brief Retrieves a list of image generators associated with the game.
          * @return A vector of pairs containing string descriptions and corresponding image generator functions.
          */
@@ -47,7 +52,7 @@ namespace gb {
          * @brief Prepares the Discord message with the current game state and UI components.
          * @param message The message to be updated with game details and interactive elements.
          */
-        void prepare_message(dpp::message& message);
+        void prepare_message(dpp::message &message);
 
         /**
          * @brief Creates an image representing the current state of the Sudoku puzzle.

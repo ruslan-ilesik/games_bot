@@ -27,6 +27,11 @@ namespace gb {
         Discord_tic_tac_toe_command_impl();
 
         /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_tic_tac_toe_command_impl() = default;
+
+        /**
          * @brief Initializes the command with the necessary modules.
          *
          * This method sets up the command handler, Discord module, and image processing.

@@ -174,6 +174,11 @@ namespace gb {
         Discord_dominoes_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players);
 
         /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_dominoes_game() = default;
+
+        /**
          * @brief Retrieves a list of image generators for the game.
          *
          * @return Vector of pairs containing image generator names and their corresponding generators.
@@ -225,7 +230,8 @@ namespace gb {
         void make_message();
 
         /**
-         * @brief Custom condition for determining the end of the game (when no move can be made but everyone have dominoes).
+         * @brief Custom condition for determining the end of the game (when no move can be made but everyone have
+         * dominoes).
          *
          * This method allows for setting specific conditions under which the game should end.
          */

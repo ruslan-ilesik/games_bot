@@ -16,7 +16,7 @@ namespace gb {
      * in a Discord environment. It inherits from the Discord_minesweeper_command base class
      * and overrides the necessary methods such as `run`, `init`, and `stop`.
      */
-    class Discord_minesweeper_command_impl: public Discord_minesweeper_command {
+    class Discord_minesweeper_command_impl : public Discord_minesweeper_command {
 
     public:
         /**
@@ -25,6 +25,11 @@ namespace gb {
          * Initializes the Minesweeper command with the required dependencies.
          */
         Discord_minesweeper_command_impl();
+
+        /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_minesweeper_command_impl() = default;
 
         /**
          * @brief Executes the Minesweeper command.
