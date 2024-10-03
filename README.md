@@ -26,7 +26,7 @@ and full redesign of architecture.
 - [X] local_stats
 - [X] minesweeper
 - [X] ping
-- [ ] premium
+- [X] premium
 - [ ] puzzle_15
 - [X] rubiks_cube
 - [X] sudoku
