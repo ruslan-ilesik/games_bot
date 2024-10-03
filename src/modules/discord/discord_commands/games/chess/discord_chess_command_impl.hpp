@@ -26,6 +26,11 @@ namespace gb {
         Discord_chess_command_impl();
 
         /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_chess_command_impl() = default;
+
+        /**
          * @brief Runs the chess game command.
          *
          * This method is responsible for initiating the chess game, registering it in the bot,

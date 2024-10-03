@@ -41,6 +41,11 @@ namespace gb {
         Discord_command_help_impl();
 
         /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_command_help_impl() = default;
+
+        /**
          * @brief Initializes the module with the provided modules.
          *
          * @param modules The modules to initialize with.

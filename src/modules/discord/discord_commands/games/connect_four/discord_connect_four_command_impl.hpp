@@ -26,6 +26,11 @@ namespace gb {
         Discord_connect_four_command_impl();
 
         /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_connect_four_command_impl() = default;
+
+        /**
          * @brief Initializes the Connect Four game command with the required modules.
          *
          * This method sets up the necessary environment for the Connect Four command, including registering

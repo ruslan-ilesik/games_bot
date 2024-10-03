@@ -61,6 +61,11 @@ public:
   Discord_reports_impl();
 
   /**
+  * @breif Define destructor.
+  */
+  virtual ~Discord_reports_impl() = default;
+
+  /**
    * @brief Starts the reporting process.
    *
    * This method starts the periodic timer to submit bot statistics at regular intervals to the configured

@@ -4,17 +4,17 @@
 
 #pragma once
 
-#include "./database.hpp"  // Include base class definition
-#include "src/modules/logging/logging.hpp"
-#include "src/modules/config/config.hpp"
+#include "./database.hpp" // Include base class definition
 #include "src/modules/admin_terminal/admin_terminal.hpp"
+#include "src/modules/config/config.hpp"
+#include "src/modules/logging/logging.hpp"
 
 #include <iostream>
+#include <list>
 #include <memory>
+#include <mysql/mysql.h>
 #include <shared_mutex>
 #include <thread>
-#include <list>
-#include <mysql/mysql.h>
 
 namespace gb {
 
@@ -24,19 +24,18 @@ namespace gb {
     class Database_impl;
 
     /**
-    * @class Mysql_prepared_statement_params
-    * @brief This class implements the Prepared_statement_params interface for MySQL prepared statements.
-    *
-    * The Mysql_prepared_statement_params class is responsible for managing the parameters
-    * used in MySQL prepared statements. It stores the parameters and provides methods to
-    * add new parameters and retrieve the stored parameters in a format suitable for MySQL
-    * operations.
-    */
+     * @class Mysql_prepared_statement_params
+     * @brief This class implements the Prepared_statement_params interface for MySQL prepared statements.
+     *
+     * The Mysql_prepared_statement_params class is responsible for managing the parameters
+     * used in MySQL prepared statements. It stores the parameters and provides methods to
+     * add new parameters and retrieve the stored parameters in a format suitable for MySQL
+     * operations.
+     */
     class Mysql_prepared_statement_params : public Prepared_statement_params {
         std::vector<MYSQL_BIND> _binds; ///< Container to hold the MySQL bind structures.
         std::list<std::string> _string_data; ///< Container to hold the string data for the parameters.
     public:
-
         /**
          * @brief Destructor for Mysql_prepared_statement_params.
          *
@@ -67,20 +66,20 @@ namespace gb {
     };
 
     /**
-    * @class Mysql_connection
-    * @brief Represents a MySQL database connection.
-    *
-    * Manages a connection to a MySQL database, executes queries, and handles reconnecting
-    * in case of connection loss.
-    */
+     * @class Mysql_connection
+     * @brief Represents a MySQL database connection.
+     *
+     * Manages a connection to a MySQL database, executes queries, and handles reconnecting
+     * in case of connection loss.
+     */
     class Mysql_connection {
     private:
-        MYSQL *_conn = nullptr;         ///< MySQL connection object
-        Logging_ptr _log;               ///< Pointer to the logging module
-        Config_ptr _config;             ///< Pointer to the configuration module
-        Database_impl *_db;             ///< Pointer to the parent database implementation
-        bool _is_running = true;        ///< Flag indicating if the execution thread should run.
-        std::thread _execution_thread;  ///< Thread for executing database tasks asynchronously
+        MYSQL *_conn = nullptr; ///< MySQL connection object
+        Logging_ptr _log; ///< Pointer to the logging module
+        Config_ptr _config; ///< Pointer to the configuration module
+        Database_impl *_db; ///< Pointer to the parent database implementation
+        bool _is_running = true; ///< Flag indicating if the execution thread should run.
+        std::thread _execution_thread; ///< Thread for executing database tasks asynchronously
 
         /**
          * @brief Establishes a connection to the MySQL database.
@@ -96,12 +95,12 @@ namespace gb {
          *
          * @param st The prepared statement to be initialized and prepared.
          */
-        void _prepare_statement(const Prepared_statement& st);
+        void _prepare_statement(const Prepared_statement &st);
 
     public:
-        std::mutex _mutex;                  ///< Mutex to protect shared resources
-        std::atomic_bool _busy = false;     ///< Atomic flag indicating if the connection is busy
-        std::map<Prepared_statement, MYSQL_STMT*> _prepared_statements; ///< Map of prepared statements
+        std::mutex _mutex; ///< Mutex to protect shared resources
+        std::atomic_bool _busy = false; ///< Atomic flag indicating if the connection is busy
+        std::map<Prepared_statement, MYSQL_STMT *> _prepared_statements; ///< Map of prepared statements
 
         /**
          * @brief Constructor for Mysql_connection.
@@ -144,7 +143,8 @@ namespace gb {
          * @param params The parameters for the prepared statement
          * @return The result of the query as a Database_return_t
          */
-        Database_return_t execute_prepared_statement(const Prepared_statement& st, std::unique_ptr<Prepared_statement_params> params);
+        Database_return_t execute_prepared_statement(const Prepared_statement &st,
+                                                     std::unique_ptr<Prepared_statement_params> params);
 
         /**
          * @brief Prepares a MySQL statement.
@@ -153,7 +153,7 @@ namespace gb {
          *
          * @param st The prepared statement to be initialized and prepared.
          */
-        void prepare_statement(const Prepared_statement& st);
+        void prepare_statement(const Prepared_statement &st);
 
         /**
          * @brief Removes a prepared statement.
@@ -162,7 +162,7 @@ namespace gb {
          *
          * @param st The prepared statement to be removed.
          */
-        void remove_statement(const Prepared_statement& st);
+        void remove_statement(const Prepared_statement &st);
     };
 
     /**
@@ -174,32 +174,33 @@ namespace gb {
 
 
     /**
-    * @class Database_impl
-    * @brief Implements the Database interface to manage MySQL connections and execute queries.
-    *
-    * Manages multiple MySQL connections, executes SQL queries, and handles prepared statements.
-    * Provides asynchronous execution of queries and supports background task execution.
-    */
+     * @class Database_impl
+     * @brief Implements the Database interface to manage MySQL connections and execute queries.
+     *
+     * Manages multiple MySQL connections, executes SQL queries, and handles prepared statements.
+     * Provides asynchronous execution of queries and supports background task execution.
+     */
     class Database_impl : public Database {
     private:
-        Logging_ptr _log;                       ///< Pointer to the logging module
-        Config_ptr _config;                     ///< Pointer to the configuration module
-        Admin_terminal_ptr _admin_terminal;     ///< Pointer to the admin terminal module
-        std::vector<std::unique_ptr<Mysql_connection>> _mysql_list{};  ///< List of MySQL connections
-        std::atomic_size_t queries_amount = 0;  ///< Atomic counter for active queries
-        std::condition_variable _cv_stop;       ///< Condition variable for stopping background tasks
-        std::thread _bg_thread;                 ///< Thread for background task execution
-        std::queue<std::string> _bg_queue;      ///< Queue of background SQL queries
-        std::thread _bg_stmt_thread;            ///< Thread for background prepared statements execution
-        std::queue<std::pair<Prepared_statement, std::unique_ptr<Prepared_statement_params>>> _bg_stmt_queue;  ///< Queue of background prepared statements queries
-        bool _is_bg_running = true;             ///< Flag indicating if background tasks are running
-        std::condition_variable _cv_bg;         ///< Condition variable for background task execution
-        std::mutex _bg_thread_mutex;            ///< Mutex for _bg_queue access synchronization
-        std::condition_variable _cv_bg_stmt;    ///< Condition variable for background prepared statements execution
-        std::mutex _bg_thread_stmt_mutex;       ///< Mutex for _bg_stmt_queue access synchronization
+        Logging_ptr _log; ///< Pointer to the logging module
+        Config_ptr _config; ///< Pointer to the configuration module
+        Admin_terminal_ptr _admin_terminal; ///< Pointer to the admin terminal module
+        std::vector<std::unique_ptr<Mysql_connection>> _mysql_list{}; ///< List of MySQL connections
+        std::atomic_size_t queries_amount = 0; ///< Atomic counter for active queries
+        std::condition_variable _cv_stop; ///< Condition variable for stopping background tasks
+        std::thread _bg_thread; ///< Thread for background task execution
+        std::queue<std::string> _bg_queue; ///< Queue of background SQL queries
+        std::thread _bg_stmt_thread; ///< Thread for background prepared statements execution
+        std::queue<std::pair<Prepared_statement, std::unique_ptr<Prepared_statement_params>>>
+            _bg_stmt_queue; ///< Queue of background prepared statements queries
+        bool _is_bg_running = true; ///< Flag indicating if background tasks are running
+        std::condition_variable _cv_bg; ///< Condition variable for background task execution
+        std::mutex _bg_thread_mutex; ///< Mutex for _bg_queue access synchronization
+        std::condition_variable _cv_bg_stmt; ///< Condition variable for background prepared statements execution
+        std::mutex _bg_thread_stmt_mutex; ///< Mutex for _bg_stmt_queue access synchronization
         std::map<Prepared_statement, std::string> _prepared_statements; ///< Map of prepared statements
         std::shared_mutex _prepared_statements_mutex; ///< Mutex for _prepared_statements access synchronization
-        size_t _prepared_statements_index = 0;  ///< Index for generating prepared statement identifiers
+        size_t _prepared_statements_index = 0; ///< Index for generating prepared statement identifiers
 
         /**
          * @brief Creates a new MySQL connection and adds it to _mysql_list.
@@ -221,7 +222,8 @@ namespace gb {
          * @param params The parameters for the prepared statement
          * @return A Task that, when awaited, returns the result of the query as a Database_return_t.
          */
-        Task<Database_return_t> _execute_prepared_statement(Prepared_statement st, std::unique_ptr<Prepared_statement_params> params) override;
+        Task<Database_return_t> _execute_prepared_statement(Prepared_statement st,
+                                                            std::unique_ptr<Prepared_statement_params> params) override;
 
         /**
          * @brief Executes a prepared statement in the background.
@@ -229,12 +231,13 @@ namespace gb {
          * @param p The prepared statement to execute
          * @param params The parameters for the prepared statement
          */
-        void _background_execute_prepared_statement(Prepared_statement p, std::unique_ptr<Prepared_statement_params> params) override;
+        void _background_execute_prepared_statement(Prepared_statement p,
+                                                    std::unique_ptr<Prepared_statement_params> params) override;
 
     public:
-        std::mutex _mutex;                ///< Mutex for _sql_queue access synchronization
-        std::condition_variable _cv;      ///< Condition variable for task execution
-        Database_queue _sql_queue;        ///< Queue of database tasks
+        std::mutex _mutex; ///< Mutex for _sql_queue access synchronization
+        std::condition_variable _cv; ///< Condition variable for task execution
+        Database_queue _sql_queue; ///< Queue of database tasks
 
         /**
          * @brief Constructor for Database_impl.
@@ -242,6 +245,11 @@ namespace gb {
          * Initializes the database module and starts the background execution thread.
          */
         Database_impl();
+
+        /**
+         * @breif Define destructor.
+         */
+        virtual ~Database_impl() = default;
 
         /**
          * @brief Initializes the Database_impl instance with required modules.
@@ -281,7 +289,7 @@ namespace gb {
          * @param sql The SQL query for the prepared statement
          * @return The identifier for the prepared statement
          */
-        Prepared_statement create_prepared_statement(const std::string& sql) override;
+        Prepared_statement create_prepared_statement(const std::string &sql) override;
 
         /**
          * @brief Removes a prepared statement. Bloks database until it is done in every connection.
@@ -303,7 +311,7 @@ namespace gb {
          * @param st The identifier of the prepared statement
          * @return The SQL query of the prepared statement
          */
-        std::string get_prepared_statement(const Prepared_statement& st);
+        std::string get_prepared_statement(const Prepared_statement &st);
     };
 
     /**

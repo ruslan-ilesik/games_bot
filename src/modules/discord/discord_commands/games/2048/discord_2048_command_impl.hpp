@@ -26,6 +26,11 @@ namespace gb {
         Discord_2048_command_impl();
 
         /**
+        * @breif Define destructor.
+        */
+        virtual ~Discord_2048_command_impl() = default;
+
+        /**
          * @brief Initializes the 2048 game command with the required modules.
          *
          * This method sets up the necessary environment for the 2048 command, including

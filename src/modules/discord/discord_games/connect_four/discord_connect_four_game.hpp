@@ -23,8 +23,8 @@ namespace gb {
          * red player cells containing "r", and yellow player cells containing "y".
          */
         std::string _board[6][7] = {{" ", " ", " ", " ", " ", " ", " "}, {" ", " ", " ", " ", " ", " ", " "},
-                                   {" ", " ", " ", " ", " ", " ", " "}, {" ", " ", " ", " ", " ", " ", " "},
-                                   {" ", " ", " ", " ", " ", " ", " "}, {" ", " ", " ", " ", " ", " ", " "}};
+                                    {" ", " ", " ", " ", " ", " ", " "}, {" ", " ", " ", " ", " ", " ", " "},
+                                    {" ", " ", " ", " ", " ", " ", " "}, {" ", " ", " ", " ", " ", " ", " "}};
 
         /**
          * @brief The player tokens representing the two players.
@@ -43,6 +43,11 @@ namespace gb {
          * @param players A vector of player IDs participating in the game.
          */
         Discord_connect_four_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players);
+
+        /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_connect_four_game() = default;
 
         /**
          * @brief Gets the image generators for the game.

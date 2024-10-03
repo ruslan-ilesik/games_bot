@@ -26,6 +26,12 @@ namespace gb {
          */
         Discord_command_achievements_impl();
 
+
+        /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_command_achievements_impl() = default;
+
         /**
          * @brief Initializes the command and sets up command handling.
          *

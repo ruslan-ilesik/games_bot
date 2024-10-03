@@ -77,6 +77,11 @@ namespace gb {
         Discord_rubiks_cube_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players);
 
         /**
+        * @breif Define destructor.
+        */
+        virtual ~Discord_rubiks_cube_game() = default;
+
+        /**
          * @brief Returns a list of image generators for the game.
          * @return A vector of pairs, each containing a string description and an image generator function.
          */

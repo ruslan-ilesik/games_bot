@@ -27,6 +27,11 @@ namespace gb {
         Discord_battleships_command_impl();
 
         /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_battleships_command_impl() = default;
+
+        /**
          * @brief Runs the Battleships game command.
          *
          * This method starts the Battleships game logic, handling player interactions and moves

@@ -28,11 +28,16 @@ namespace gb {
         Env_config();
 
         /**
+         * @breif Define destructor.
+         */
+        virtual ~Env_config() = default;
+
+        /**
          * @brief Method to initialize the Env_config instance.
          * @param modules Map of all modules managed by the application, including the module manager.
          * @note This method sets the config_manager by retrieving it from the provided modules.
          */
-        virtual void init(const Modules& modules);
+        virtual void init(const Modules &modules);
 
         /**
          * @brief Method to stop the Env_config instance.
@@ -52,15 +57,16 @@ namespace gb {
          * @return The value of the configuration parameter.
          * @throws std::runtime_error if the configuration parameter is not found.
          */
-        virtual std::string get_value(const std::string& name);
+        virtual std::string get_value(const std::string &name);
 
         /**
-         * @brief Method to get a configuration value by name from the environment variables, with a default return value.
+         * @brief Method to get a configuration value by name from the environment variables, with a default return
+         * value.
          * @param name The name of the configuration parameter to retrieve.
          * @param default_return The default value to return if the configuration parameter is not found.
          * @return The value of the configuration parameter if found, otherwise the default return value.
          */
-        virtual std::string get_value_or(const std::string& name, const std::string& default_return);
+        virtual std::string get_value_or(const std::string &name, const std::string &default_return);
     };
 
     /**

@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "./discord_command_ping.hpp"
-#include "../../../discord_command_handler/discord_command_handler.hpp"
 #include "../../../discord_bot/discord_bot.hpp"
+#include "../../../discord_command_handler/discord_command_handler.hpp"
+#include "./discord_command_ping.hpp"
 
 namespace gb {
 
@@ -23,6 +23,11 @@ namespace gb {
          * @brief Constructor for Discord_command_ping_impl.
          */
         Discord_command_ping_impl();
+
+        /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_command_ping_impl() = default;
 
         /**
          * @brief Runs the ping command.
@@ -42,8 +47,8 @@ namespace gb {
         void init(const Modules &modules) override;
 
         /**
-        * @brief Stops the ping module.
-        */
+         * @brief Stops the ping module.
+         */
         void stop() override;
     };
 

@@ -22,6 +22,11 @@ namespace gb {
         Discord_impl();
 
         /**
+         * @breif Define destructor.
+         */
+        virtual ~Discord_impl() = default;
+
+        /**
          * @brief Starts the Discord module.
          */
         void run() override;
@@ -44,9 +49,9 @@ namespace gb {
          * @param command_data Additional data for the command.
          * @return A shared pointer to the created Discord command.
          */
-        Discord_command_ptr create_discord_command(const dpp::slashcommand &command, const slash_command_handler_t &handler,
+        Discord_command_ptr create_discord_command(const dpp::slashcommand &command,
+                                                   const slash_command_handler_t &handler,
                                                    const Command_data &command_data) override;
-
     };
 
     /**
@@ -55,4 +60,4 @@ namespace gb {
      */
     Module_ptr create();
 
-} // gb
+} // namespace gb

@@ -23,7 +23,8 @@ namespace gb {
         Database_ptr _db; ///< Pointer to the database module.
         Prepared_statement _activate_achievement_stmt; ///< Prepared statement for activating an achievement.
         Prepared_statement _check_achievement_stmt; ///< Prepared statement for checking if a user has an achievement.
-        Prepared_statement _get_user_achievements; ///< Prepared statement to get achievements unlocked by specific user.
+        Prepared_statement
+            _get_user_achievements; ///< Prepared statement to get achievements unlocked by specific user.
         std::shared_mutex _mutex; ///< Mutex for thread-safe access to the achievements map.
         std::map<std::string, Achievement> _achievements; ///< Map of achievement names to Achievement objects.
 
@@ -40,6 +41,11 @@ namespace gb {
          * @brief Constructs an instance of Achievements_processing_impl.
          */
         Achievements_processing_impl();
+
+        /**
+         * @brief Default destructor.
+         */
+        virtual ~Achievements_processing_impl() = default;
 
         /**
          * @brief Stops the achievements processing, removing related commands and statements.
