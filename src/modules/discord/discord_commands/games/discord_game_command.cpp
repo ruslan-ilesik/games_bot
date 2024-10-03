@@ -137,6 +137,7 @@ namespace gb {
             std::vector<dpp::snowflake> waiting = {};
             if (!players.empty() && players.size() + joined_players.size() >= players_amount) {
                 waiting = players;
+                waiting.insert(waiting.end(), joined_players.begin(), joined_players.end());
             }
             bool fst = true;
             auto awaitable = _button_click_handler->wait_for(m, waiting, 60, fst, false);
