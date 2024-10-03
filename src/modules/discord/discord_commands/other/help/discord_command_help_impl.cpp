@@ -5,8 +5,9 @@
 #include "discord_command_help_impl.hpp"
 
 namespace gb {
-    std::map<std::string, std::string> category_emojis = {
-        {"Other", "🔄"}, {"Game", "🎮"}, {"Multiplayer", "🌐"}, {"Statistics", "📊"},{"Single-player","🎯"}};
+    std::map<std::string, std::string> category_emojis = {{"Premium", "💎"},    {"Other", "🔄"},
+                                                          {"Game", "🎮"},       {"Multiplayer", "🌐"},
+                                                          {"Statistics", "📊"}, {"Single-player", "🎯"}};
 
 
     void Discord_command_help_impl::init(const Modules &modules) {
@@ -33,9 +34,7 @@ namespace gb {
     Discord_command_help_impl::Discord_command_help_impl() :
         Discord_command_help("discord_command_help", {"discord_select_menu_handler"}) {}
 
-    void Discord_command_help_impl::run() {
-
-    }
+    void Discord_command_help_impl::run() {}
     void Discord_command_help_impl::stop() {
         _command_handler->remove_command("help");
         Discord_command_help::stop();
@@ -129,9 +128,9 @@ namespace gb {
 
         if (command->get_command().options.empty()) {
             command_embed.add_field(select_cat.values[0],
-                        std::format("Description: {}\n\nDetailed: \n{}\n\nCategories: **{}**",
-                                    command->get_command().description, command->get_command_data().help_text,
-                                    s));
+                                    std::format("Description: {}\n\nDetailed: \n{}\n\nCategories: **{}**",
+                                                command->get_command().description,
+                                                command->get_command_data().help_text, s));
             command_embed.add_field("This command has no arguments:", "");
             m3.add_embed(command_embed);
             _bot->reply(select_cat, m3);
@@ -139,22 +138,23 @@ namespace gb {
         }
 
         auto options = command->get_command().options;
-        std::vector<std::array<std::string,3>> subcommands;
+        std::vector<std::array<std::string, 3>> subcommands;
         size_t ind1 = 0;
-        for (auto& option : options) {
+        for (auto &option: options) {
             size_t ind2 = 0;
-            if (option.type ==  dpp::co_sub_command_group || option.type == dpp::co_sub_command) {
-                std::string base = option.name+" ";
+            if (option.type == dpp::co_sub_command_group || option.type == dpp::co_sub_command) {
+                std::string base = option.name + " ";
                 bool is_inserted = false;
-                for(auto& option2 : option.options) {
+                for (auto &option2: option.options) {
                     if (option2.type == dpp::co_sub_command) {
                         is_inserted = true;
-                        subcommands.push_back({base+option2.name,std::to_string(ind1) + std::to_string(ind2),option2.description});
+                        subcommands.push_back(
+                            {base + option2.name, std::to_string(ind1) + std::to_string(ind2), option2.description});
                     }
                     ind2++;
                 }
                 if (!is_inserted) {
-                    subcommands.push_back({base,std::to_string(ind1),option.description});
+                    subcommands.push_back({base, std::to_string(ind1), option.description});
                 }
                 ind1++;
             }
@@ -165,13 +165,14 @@ namespace gb {
             dpp::message m4;
             dpp::embed emb4;
             emb4.set_title("HELP")
-            .set_description(std::format("Category: {}\nCommand: {}\nChoose subcommand below.", select_cat.values[0],command->get_command().name))
-            .set_color(dpp::colours::blue);
+                .set_description(std::format("Category: {}\nCommand: {}\nChoose subcommand below.",
+                                             select_cat.values[0], command->get_command().name))
+                .set_color(dpp::colours::blue);
             dpp::component subcommands_comps;
             subcommands_comps.set_type(dpp::cot_selectmenu).set_placeholder("Choose subcommand").set_id("help_command");
-            for (auto& i : subcommands) {
+            for (auto &i: subcommands) {
                 subcommands_comps.add_select_option({i[0], i[1]});
-                emb4.add_field(i[0],i[2]);
+                emb4.add_field(i[0], i[2]);
             }
 
             m4.add_embed(emb4).add_component(dpp::component().add_component(subcommands_comps));
@@ -185,12 +186,15 @@ namespace gb {
             std::string val = select_cat.values[0];
             additional_command_name += " " + command->get_command().options[val[0] - '0'].name;
             final_opts = command->get_command().options[val[0] - '0'].options;
-            if (val.size() >=2) {
+            if (val.size() >= 2) {
                 additional_command_name += " " + final_opts[val[1] - '0'].name;
-                final_opts = command->get_command().options[val[0] - '0'].options[val[1] - '0'].options; //getting it from relative final_opts cause UB when strings get corrupted. (Incorrect copy constructor in dpp?)
+                final_opts = command->get_command()
+                                 .options[val[0] - '0']
+                                 .options[val[1] - '0']
+                                 .options; // getting it from relative final_opts cause UB when strings get corrupted.
+                                           // (Incorrect copy constructor in dpp?)
             }
-        }
-        else {
+        } else {
             final_opts = command->get_command().options;
         }
 
@@ -199,8 +203,8 @@ namespace gb {
                                             command->get_command().description, command->get_command_data().help_text,
                                             s));
         command_embed.add_field("Arguments:", "");
-        for (dpp::command_option& i: final_opts) {
-                command_embed.add_field(i.name, std::format("{}\n Mandatory: {}", i.description, i.required));
+        for (dpp::command_option &i: final_opts) {
+            command_embed.add_field(i.name, std::format("{}\n Mandatory: {}", i.description, i.required));
         }
         m3.add_embed(command_embed);
         _bot->reply(select_cat, m3);

@@ -116,4 +116,10 @@ namespace gb {
         virtual Task<PREMIUM_STATUS> get_users_premium_status(const dpp::snowflake& user_id) = 0;
     };
 
+    /**
+     * @brief Typedef for Premium_manager_ptr.
+     */
+    typedef std::shared_ptr<Premium_manager> Premium_manager_ptr;
+
+
 } // namespace gb
