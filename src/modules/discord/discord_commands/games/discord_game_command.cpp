@@ -38,12 +38,43 @@ namespace gb {
                                                                               std::vector<dpp::snowflake> players,
                                                                               const dpp::snowflake &host,
                                                                               unsigned int players_amount) {
+        int cnt = 0;
+        for (const auto &player: players) {
+            cnt+= player == host;
+        }
+        bool has_duplicates = cnt > 1;
         std::vector<dpp::snowflake> joined_players{host};
         std::vector<dpp::snowflake> required_players = players;
         auto e = std::ranges::find(players, host);
         if (e != players.end()) {
             players.erase(e);
         }
+
+        std::unordered_map<dpp::snowflake, int> player_count;
+
+
+        // Count occurrences of each player
+        for (const auto &player: players) {
+            player_count[player]++;
+            // If any player count exceeds 1, we found a duplicate
+            if (player_count[player] > 1 || player == host) {
+                has_duplicates = true;
+                break; // Exit early if a duplicate is found
+            }
+        }
+
+        if (has_duplicates) {
+            auto m = dpp::message()
+                         .set_flags(dpp::m_ephemeral)
+                         .add_embed(dpp::embed()
+                                        .set_color(dpp::colors::red)
+                                        .set_title("Error creating lobby.")
+                                        .set_description("You can not specify same player more than once."));
+            _bot->reply(event, m);
+            co_return {true, {}, {}};
+        }
+
+
         required_players.push_back(host);
         dpp::button_click_t click;
         bool is_click = false;

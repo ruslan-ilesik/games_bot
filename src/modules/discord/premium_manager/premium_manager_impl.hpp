@@ -60,6 +60,12 @@ namespace gb {
         void stop() override;
 
         /**
+        *
+        * @return A url to buy subscription.
+        **/
+        std::string get_premium_buy_url() override;
+
+        /**
          * Retrieves the premium status of a specific user.
          *
          * @param user_id The Discord user ID (snowflake) of the user whose premium status is being queried.
