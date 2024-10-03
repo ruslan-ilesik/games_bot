@@ -36,6 +36,9 @@ namespace gb {
         /// Prepared statement to record user game result.
         Prepared_statement _user_game_result_stmt;
 
+        /// Prepared statement to get how much time passed since user last played specific game.
+        Prepared_statement _get_last_user_game_played;
+
     public:
         /**
          * @brief Constructor for Discord_games_manager_impl.
@@ -77,6 +80,15 @@ namespace gb {
          * @param result Result of the game which should be recorded.
          */
         void record_user_result(Discord_game *game, const dpp::snowflake &player, const std::string &result) override;
+
+
+        /**
+         * @brief Gets how long time ago user played specified game.
+         * @param game_name Name of the game we are looking for.
+         * @param user_id ID of user who supposedly played the game.
+         * @return Time in seconds since last played game
+         */
+        Task<time_t> get_seconds_since_last_game(const std::string &game_name, const dpp::snowflake &user_id) override;
 
         /**
          * @brief Stops the manager's operation.
