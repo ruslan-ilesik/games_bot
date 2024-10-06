@@ -14,14 +14,13 @@ and full redesign of architecture.
 
 ## TO DO
 - [X] 2048
-- [ ] about
 - [X] achievements
 - [X] battleships
 - [X] chess
 - [X] connect_four
 - [X] dominoes
 - [X] global_stats
-- [ ] hangman
+- [X] hangman
 - [X] help
 - [X] local_stats
 - [X] minesweeper

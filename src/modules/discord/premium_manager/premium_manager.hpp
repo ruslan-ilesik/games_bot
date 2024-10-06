@@ -114,6 +114,12 @@ namespace gb {
          * @return A Task object representing the user's premium status.
          */
         virtual Task<PREMIUM_STATUS> get_users_premium_status(const dpp::snowflake& user_id) = 0;
+
+        /**
+         *
+         * @return A url to buy subscription.
+         **/
+        virtual std::string get_premium_buy_url() = 0;
     };
 
     /**

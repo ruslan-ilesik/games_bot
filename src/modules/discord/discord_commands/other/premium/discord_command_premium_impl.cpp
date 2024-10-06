@@ -42,7 +42,7 @@ namespace gb {
                                             .set_label("Subscribe!")
                                             .set_type(dpp::cot_button)
                                             .set_style(dpp::cos_link)
-                                            .set_url("https://www.patreon.com/ilesik/membership"));
+                                            .set_url(_premium->get_premium_buy_url()));
                         m.add_component(c);
                     }
                     _bot->reply(event, m.add_embed(embed));

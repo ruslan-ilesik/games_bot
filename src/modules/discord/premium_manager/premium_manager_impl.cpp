@@ -50,6 +50,10 @@ namespace gb {
         co_return premium_status_from_string(r.at(0).at("type"));
     }
 
+    std::string Premium_manager_impl::get_premium_buy_url() {
+        return "https://www.patreon.com/ilesik/membership";
+    }
+
 
     Module_ptr create() { return std::dynamic_pointer_cast<Module>(std::make_shared<Premium_manager_impl>()); }
 } // namespace gb
