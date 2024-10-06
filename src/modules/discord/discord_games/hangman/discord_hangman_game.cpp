@@ -51,6 +51,7 @@ namespace gb {
 
     void Discord_hangman_game::prepare_message(dpp::message &message, const dpp::snowflake &player) {
         hangman::Player_ptr &p = hangman_rel.at(player);
+        message.components.clear();
         if (!p->is_finished()) {
             message.embeds[0]
                 .set_title("Hangman game: ")
@@ -78,15 +79,16 @@ namespace gb {
                                                 .set_id(std::string{chars[i]} + std::to_string(player))
                                                 .set_emoji(letter_to_emoji(chars[i])));
                 }
+                message.add_component(component);
             } else {
                 int s_ind = 0;
                 if (users_buttons_page.at(player) == 1) {
                     s_ind = 24;
                     component.add_component(dpp::component()
                                                 .set_type(dpp::cot_button)
-                                                .set_label("Next Page")
+                                                .set_label("Previous Page")
                                                 .set_style(dpp::cos_primary)
-                                                .set_emoji("⏭️")
+                                                .set_emoji(std::string(reinterpret_cast<const char *>(u8"⏮️")))
                                                 .set_id("back"));
                 }
 
@@ -125,8 +127,9 @@ namespace gb {
             if (p->error_cnt == p->moves_cnt && p->is_finished() && !p->is_eliminated()) {
                 _data.achievements_processing->activate_achievement("Stalin repression", player, message.channel_id);
             }
-
-            if (get_players().size() > 1) {
+            int active_p_cnt = std::ranges::count_if(std::ranges::views::values(hangman_rel),[=](hangman::Player_ptr& p){
+                return !p->is_finished();});
+            if (active_p_cnt >= 1) {
                 if (p->is_eliminated()) {
                     message.embeds[0].set_title("Game timeout!");
                 } else {
@@ -138,28 +141,25 @@ namespace gb {
                                 "finish the game",
                                 _message.guild_id, _message.channel_id, _message.id));
             }
-            if (get_players().size() == 1) {
+            if (hangman_rel.size() == 1) {
                 if (p->is_eliminated()) {
                     message.embeds[0]
                         .set_title("Game timeout!")
                         .set_color(dpp::colors::red)
                         .set_description("Game timeout has been reached, if you still want to play, start a new game.");
-                    /*db->execute(fmt::format(R"(CALL end_of_game("{}","0","time out","{}",'{}') )",
-                       this->database_record_id, this->img_cnt, to_json()), false);*/
+                    remove_player(USER_REMOVE_REASON::TIMEOUT, get_current_player());
                 } else if (!p->is_win()) {
                     message.embeds[0]
                         .set_title("Game over!")
                         .set_color(dpp::colors::red)
                         .set_description("You could not guess the word and lost a game!\nWord was: **" + word + "**");
-                    /*db->execute(fmt::format(R"(CALL end_of_game("{}","0","lose","{}",'{}') )",
-                       this->database_record_id, this->img_cnt, to_json()), false);*/
+                    remove_player(USER_REMOVE_REASON::LOSE, get_current_player());
                 } else {
                     message.embeds[0]
                         .set_title("Game over!")
                         .set_color(dpp::colors::green)
                         .set_description("You successfully guessed a word and won a game!");
-                    /*db->execute(fmt::format(R"(CALL end_of_game("{}","{}","win","{}",'{}') )",
-                       this->database_record_id, id, this->img_cnt, to_json()), false);*/
+                    remove_player(USER_REMOVE_REASON::WIN, get_current_player());
                 }
             } else if (game.is_game_finished()) {
                 auto result = game.get_winners();
@@ -170,25 +170,33 @@ namespace gb {
                         .set_description("Everyone reached timeout!\n"
                                          "Word was: **" +
                                          word + "**");
-                    /*db->execute(fmt::format(R"(CALL end_of_game("{}","0","time out","{}",'{}') )",
-                                            this->database_record_id, this->img_cnt, to_json()),
-                                false);*/
+                    int temp =  get_players().size();
+                    for (int i = 0; i < temp; i++) {
+                        remove_player(USER_REMOVE_REASON::TIMEOUT, get_current_player());
+                    }
                 } else if (result.empty()) {
                     embed.set_title("Game over!")
                         .set_color(dpp::colors::red)
                         .set_description("No one was able to win the game!\n"
                                          "Word was: **" +
                                          word + "**");
-                    /*db->execute(fmt::format(R"(CALL end_of_game("{}","0","lose","{}",'{}') )",
-                       this->database_record_id, this->img_cnt, to_json()), false);*/
+                    for (int i = 0; i < get_players().size(); i++) {
+                        remove_player(USER_REMOVE_REASON::LOSE, get_current_player());
+                    }
                 } else if (result.size() >= 2) {
                     embed.set_title("Game over!")
                         .set_color(dpp::colors::yellow)
                         .set_description("Draw! 2 or more players got same results!\n"
                                          "Word was: **" +
                                          word + "**");
-                    /*db->execute(fmt::format(R"(CALL end_of_game("{}","0","draw","{}",'{}') )",
-                       this->database_record_id, this->img_cnt, to_json()), false);*/
+                    int temp =  get_players().size();
+                    for (int i = 0; i < temp; i++) {
+                        if (std::ranges::find(result, hangman_rel.at(get_current_player())) != result.end()) {
+                            remove_player(USER_REMOVE_REASON::DRAW, get_current_player());
+                        } else {
+                            remove_player(USER_REMOVE_REASON::LOSE, get_current_player());
+                        }
+                    }
                 } else {
                     dpp::snowflake winner_id;
                     for (const auto &pair: hangman_rel) {
@@ -203,11 +211,17 @@ namespace gb {
                                          "\n"
                                          "Word was: **" +
                                          word + "**");
-                    /*db->execute(fmt::format(R"(CALL end_of_game("{}","{}","win","{}",'{}') )",
-                       this->database_record_id, winner_id, this->img_cnt, to_json()), false);*/
+                    int temp =  get_players().size();
+                    for (int i = 0; i < temp; i++) {
+                        if (std::ranges::find(result, hangman_rel.at(get_current_player())) != result.end()) {
+                            remove_player(USER_REMOVE_REASON::WIN, get_current_player());
+                        } else {
+                            remove_player(USER_REMOVE_REASON::LOSE, get_current_player());
+                        }
+                    }
                 }
                 std::string results = "";
-                for (auto &i: get_players()) {
+                for (auto &[i, p]: hangman_rel) {
                     auto guessed_word = p->get_guessed_word();
                     auto used_characters = p->get_used_characters();
                     auto guessed_word_copy = guessed_word;
@@ -318,15 +332,76 @@ namespace gb {
             users_buttons_page.emplace(i, 0);
         }
     }
+    std::string Discord_hangman_game::results_json() {
+        nlohmann::json json;
+        for (auto &[i, p]: hangman_rel) {
+            std::vector<char> wtg = p->get_word_to_guess();
+            std::vector<char> gw = p->get_guessed_word();
+            std::vector<char> uc = p->get_used_characters();
+
+            json[std::to_string(i)] = {{"guessed_word", std::string(gw.begin(), gw.end())},
+                                       {"word", std::string(wtg.begin(), wtg.end())},
+                                       {"used_characters", std::string(uc.begin(), uc.end())},
+                                       {"errors_cnt", p->error_cnt},
+                                       {"moves_amount", p->moves_cnt}};
+        }
+        return json.dump();
+    }
+
+    dpp::task<void> Discord_hangman_game::per_player_run(dpp::snowflake player,
+                                                         dpp::task<Button_click_return> &button_click_awaitable) {
+        Button_click_return r;
+        dpp::button_click_t event;
+        while (1) {
+            r = co_await button_click_awaitable;
+            std::unique_lock lk(_mutex);
+            if (r.second) {
+                // timeout
+                hangman_rel.at(player)->eliminate();
+                prepare_message(_messages.at(player), player);
+                if (_messages.at(player).id == 0) {
+                    _data.bot->message_create(_messages.at(player));
+                } else {
+                    _data.bot->message_edit(_messages.at(player));
+                }
+                break;
+            }
+            event = r.first;
+            _messages.at(player).id = event.command.message_id;
+            auto &p = hangman_rel.at(player);
+            if (event.custom_id == "next") {
+                users_buttons_page[player]++;
+            } else if (event.custom_id == "back") {
+                users_buttons_page[player]--;
+            } else {
+                char letter = event.custom_id[0];
+                game.make_move(p, letter);
+            }
+            prepare_message(_messages.at(player), player);
+            if (hangman_rel.at(player)->is_finished()) {
+                _data.bot->reply(event, _messages.at(player));
+                break;
+            } else {
+                button_click_awaitable = _data.button_click_handler->wait_for(_messages.at(player), {player}, 60);
+                _data.bot->reply(event, _messages.at(player));
+            }
+        }
+        co_return;
+    }
 
     dpp::task<void> Discord_hangman_game::run(dpp::slashcommand_t sevent) {
+        game_start(sevent.command.channel_id, sevent.command.guild_id);
         start();
         _message.add_embed(dpp::embed());
         _message.guild_id = sevent.command.guild_id;
         _message.channel_id = sevent.command.channel_id;
         _messages.insert({sevent.command.usr.id, _message});
         prepare_message(_messages.at(get_current_player()), get_current_player());
+        dpp::task<Button_click_return> button_click_awaitable =
+            _data.button_click_handler->wait_for(_messages.at(get_current_player()), {get_current_player()}, 60);
         _data.bot->reply(sevent, _messages.at(get_current_player()));
+        co_await per_player_run(get_current_player(), button_click_awaitable);
+        game_stop(results_json());
         co_return;
     }
 
@@ -373,13 +448,29 @@ namespace gb {
                 _data.bot->message_edit(message);
             }
         } else {
+            game_start(event.command.channel_id, event.command.guild_id);
+            std::list<dpp::task<Button_click_return>> temp;
+            std::list<dpp::task<void>> list;
             _messages = messages.second;
             for (size_t i = 0; i < get_players().size(); i++) {
                 prepare_message(_messages.at(get_current_player()), get_current_player());
+                temp.push_back(_data.button_click_handler->wait_for(_messages.at(get_current_player()),
+                                                                    {get_current_player()}, 60));
+                list.push_back(per_player_run(get_current_player(), temp.back()));
                 _data.bot->message_edit(_messages.at(get_current_player()));
                 next_player();
             }
+            _message.embeds[0]
+                .set_title("Hangman game!")
+                .set_description("Players should check their private messages with bot");
+            _data.bot->message_edit(_message);
+            for (auto &i: list) {
+                co_await i;
+            }
+            game_stop(results_json());
         }
+
         co_return;
     }
 } // namespace gb
+

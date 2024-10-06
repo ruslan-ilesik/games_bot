@@ -93,7 +93,10 @@ std::vector<Player_ptr> Hangman::get_winners() {
     if (!is_game_finished()) {
         throw std::runtime_error("Can not get winner of not ended game");
     }
-    std::ranges::sort(players, [](auto &p1, auto &p2) {
+    std::ranges::sort(players, [](Player_ptr  &p1, Player_ptr  &p2) {
+        if (p1->is_win() != p2->is_win()) {
+            return p1->is_win() > p2->is_win();
+        }
         if (p1->error_cnt == p2->error_cnt) {
             return p1->moves_cnt < p2->moves_cnt;
         }

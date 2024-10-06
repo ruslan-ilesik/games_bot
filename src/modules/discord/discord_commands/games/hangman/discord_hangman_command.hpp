@@ -7,10 +7,22 @@
 
 namespace gb {
 
-class Discord_hangman_command: public Discord_game_command {
-public:
-  Discord_hangman_command(const std::string& name, const std::vector<std::string>& deps)
-      : Discord_game_command(name, deps) {};
-};
+  /**
+   * @brief Base class for the Discord Hangman command.
+   *
+   * This class serves as a specialized version of the `Discord_game_command` for the Hangman game.
+   */
+  class Discord_hangman_command : public Discord_game_command {
+  public:
 
-} // gb
+    /**
+     * @brief Constructor for the Discord Hangman command.
+     *
+     * @param name The name of the module.
+     * @param deps A vector of strings representing dependencies required by the module.
+     */
+    Discord_hangman_command(const std::string& name, const std::vector<std::string>& deps)
+      : Discord_game_command(name, deps) {};
+  };
+
+} // namespace gb

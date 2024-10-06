@@ -27,6 +27,11 @@ namespace gb {
         Image_ptr create_image(const dpp::snowflake& player);
 
         void start();
+
+        std::string results_json();
+
+        dpp::task<void> per_player_run(dpp::snowflake player, dpp::task<Button_click_return>& button_click_awaitable);
+
         dpp::task<void> run(dpp::slashcommand_t sevent);
         dpp::task<void> run(dpp::button_click_t event);
     };
