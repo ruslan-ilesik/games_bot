@@ -26,7 +26,7 @@ and full redesign of architecture.
 - [X] minesweeper
 - [X] ping
 - [X] premium
-- [ ] puzzle_15
+- [X] puzzle_15
 - [X] rubiks_cube
 - [X] sudoku
 - [X] tic_tac_toe

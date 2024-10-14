@@ -98,7 +98,7 @@ namespace gb {
                                                         .set_description(std::format(
                                                             "Playing hangman with more than 2 players is a premium "
                                                             "only feature! If you wish to play with more players, "
-                                                            "please consider supporting us via [pateron]({})!",
+                                                            "please consider supporting us via [patreon]({})!",
                                                             _premium->get_premium_buy_url())))
                                          .add_component(
                                              dpp::component()

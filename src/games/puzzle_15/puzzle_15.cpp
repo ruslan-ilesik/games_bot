@@ -72,7 +72,7 @@ namespace puzzle_15 {
     void Puzzle_15::shuffle() {
         for (int i = 0; i <= 81; i++) {
             auto moves = get_possible_moves();
-            std::uniform_int_distribution<int> dist(0, moves.size());
+            std::uniform_int_distribution<int> dist(0, moves.size()-1);
             auto my_move = moves[dist(_random)];
             move(my_move);
         }
