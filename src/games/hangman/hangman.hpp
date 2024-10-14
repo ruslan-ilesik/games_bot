@@ -68,11 +68,11 @@ namespace hangman {
      */
     class Player {
     private:
-        std::vector<char> word_to_guess;      /**< The word the player is trying to guess. */
-        std::vector<char> guessed_word;       /**< The word as guessed so far (with underscores). */
-        std::vector<char> unused_characters;  /**< The characters that have not been used by the player. */
-        std::vector<char> used_characters = {}; /**< The characters that have been used by the player. */
-        bool is_elimin = false;               /**< Indicates if the player is eliminated. */
+        std::vector<char> _word_to_guess;      /**< The word the player is trying to guess. */
+        std::vector<char> _guessed_word;       /**< The word as guessed so far (with underscores). */
+        std::vector<char> _unused_characters;  /**< The characters that have not been used by the player. */
+        std::vector<char> _used_characters = {}; /**< The characters that have been used by the player. */
+        bool _is_elimin = false;               /**< Indicates if the player is eliminated. */
 
         /**
          * @brief Private constructor that initializes the player with the word to guess.

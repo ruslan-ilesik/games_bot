@@ -81,10 +81,10 @@ namespace battleships_engine {
      */
     class Player {
     private:
-        Field my_field{}; ///< The player's game field (10x10 grid).
-        Ships_container ships; ///< The player's collection of ships (5 in total).
-        bool ready = false; ///< Flag indicating if the player is ready to start the game.
-        short id; ///< Player's unique ID (used for distinguishing between players).
+        Field _my_field{}; ///< The player's game field (10x10 grid).
+        Ships_container _ships; ///< The player's collection of ships (5 in total).
+        bool _ready = false; ///< Flag indicating if the player is ready to start the game.
+        short _id; ///< Player's unique ID (used for distinguishing between players).
 
         /**
          * @brief Generates a random integer between the specified range.
@@ -170,9 +170,9 @@ namespace battleships_engine {
      */
     class Cell {
     public:
-        int x; ///< X-coordinate of the cell (horizontal position on the field).
-        int y; ///< Y-coordinate of the cell (vertical position on the field).
-        bool killed; ///< Flag indicating if the cell is part of a ship that has been destroyed.
+        int _x; ///< X-coordinate of the cell (horizontal position on the field).
+        int _y; ///< Y-coordinate of the cell (vertical position on the field).
+        bool _killed; ///< Flag indicating if the cell is part of a ship that has been destroyed.
 
         /**
          * @brief Constructs a Cell with given coordinates and killed status.
@@ -190,12 +190,12 @@ namespace battleships_engine {
          */
         template<typename Container>
             requires(std::same_as<std::ranges::range_value_t<Container>, int>)
-        Cell(const Container &values) : killed(false) {
+        Cell(const Container &values) : _killed(false) {
             if (std::ranges::size(values) != 2) {
                 throw std::runtime_error("There should be 2 values in the container");
             }
-            this->x = values[0];
-            this->y = values[1];
+            this->_x = values[0];
+            this->_y = values[1];
         }
 
         /**
@@ -243,9 +243,9 @@ namespace battleships_engine {
      */
     class Ship {
     protected:
-        Ship_types my_type; ///< The type of ship (Carrier, Battleship, etc.).
-        bool rotated; ///< Whether the ship is rotated (true if vertical, false if horizontal).
-        std::vector<Cell> cells; ///< The cells occupied by the ship on the field.
+        Ship_types _my_type; ///< The type of ship (Carrier, Battleship, etc.).
+        bool _rotated; ///< Whether the ship is rotated (true if vertical, false if horizontal).
+        std::vector<Cell> _cells; ///< The cells occupied by the ship on the field.
 
     public:
         /**
@@ -436,10 +436,10 @@ namespace battleships_engine {
  */
 class Battleships {
 private:
-    Player player_1;         ///< The first player.
-    Player player_2;         ///< The second player.
-    Player *player_now;      ///< Pointer to the current player (the one whose turn it is).
-    bool is_game_started;    ///< Flag indicating whether the game has started.
+    Player _player_1;         ///< The first player.
+    Player _player_2;         ///< The second player.
+    Player *_player_now;      ///< Pointer to the current player (the one whose turn it is).
+    bool _is_game_started;    ///< Flag indicating whether the game has started.
 
 public:
     /**

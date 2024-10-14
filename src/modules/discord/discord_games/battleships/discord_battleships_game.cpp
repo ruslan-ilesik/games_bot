@@ -133,14 +133,14 @@ namespace gb {
         // middle cells have very simple algorithm to draw
         Vector2i temp_pos;
         for (int i = 1; i < static_cast<int>(cells.size() - 1); i++) {
-            temp_pos = {cells[i].x, cells[i].y};
+            temp_pos = {cells[i]._x, cells[i]._y};
             for (auto &offset: offsets) {
                 draw_cell(temp_pos + offset);
             }
         }
 
         // first cells require much more work
-        temp_pos = {cells[0].x, cells[0].y};
+        temp_pos = {cells[0]._x, cells[0]._y};
         draw_cell(temp_pos + Vector2i(-1, -1));
         draw_cell(temp_pos + Vector2i(-1, 0));
         draw_cell(temp_pos + Vector2i(0, -1));
@@ -153,7 +153,7 @@ namespace gb {
         }
 
         // last cells require much more work
-        temp_pos = {cells[cells.size() - 1].x, cells[cells.size() - 1].y};
+        temp_pos = {cells[cells.size() - 1]._x, cells[cells.size() - 1]._y};
         draw_cell(temp_pos + Vector2i(0, 1));
         draw_cell(temp_pos + Vector2i(1, 0));
         draw_cell(temp_pos + Vector2i(1, 1));

@@ -22,7 +22,7 @@ minesweeper_engine::Minesweeper::Minesweeper(int harness_level) {
         for (int y = 0 ; y < size[1];y++){
             temp.push_back(0);
         }
-        this->board.push_back(temp);
+        this->_board.push_back(temp);
         this->visible_board.push_back(temp);
     }
 
@@ -33,14 +33,14 @@ void minesweeper_engine::Minesweeper::generate_safe_field(std::array<int, 2> pos
 
     for (int i =0; i < bombs_amount;i++){
         while (1){
-            std::uniform_int_distribution<int> dis(0, this->board.size()-1);
-            std::uniform_int_distribution<int> dis2(0, this->board[0].size()-1);
+            std::uniform_int_distribution<int> dis(0, this->_board.size()-1);
+            std::uniform_int_distribution<int> dis2(0, this->_board[0].size()-1);
             std::array<int,2> p({dis(_rd),dis2(_rd)});
-            if ((abs(p[0]-pos[0])<=1 && abs(p[1]-pos[1])<=1) || this->board[p[0]][p[1]] == 9){
+            if ((abs(p[0]-pos[0])<=1 && abs(p[1]-pos[1])<=1) || this->_board[p[0]][p[1]] == 9){
                 continue;
             }
             else{
-                this->board[p[0]][p[1]] = 9;
+                this->_board[p[0]][p[1]] = 9;
                 break;
             }
         }
@@ -49,22 +49,22 @@ void minesweeper_engine::Minesweeper::generate_safe_field(std::array<int, 2> pos
     //COUNT BOMBS AROUND EACH SQUARE
 
 
-    for (int x =0; x < static_cast<int>(this->board.size());x++){
-        for (int y =0; y < static_cast<int>(this->board[0].size());y++){
-            if ( this->board[x][y] == 9){
+    for (int x =0; x < static_cast<int>(this->_board.size());x++){
+        for (int y =0; y < static_cast<int>(this->_board[0].size());y++){
+            if ( this->_board[x][y] == 9){
                 continue;
             }
             int cnt = 0;
-            for (auto offset : this->offsets){
-                if (x+offset[0] < 0 || x+offset[0] >= static_cast<int>(this->board.size()) || y+offset[1] < 0 || y+offset[1] >= static_cast<int>(this->board[0].size())){
+            for (auto offset : this->_offsets){
+                if (x+offset[0] < 0 || x+offset[0] >= static_cast<int>(this->_board.size()) || y+offset[1] < 0 || y+offset[1] >= static_cast<int>(this->_board[0].size())){
                     continue;
                 }
-                cnt += this->board[x+offset[0]][y+offset[1]] == 9;
+                cnt += this->_board[x+offset[0]][y+offset[1]] == 9;
             }
-            this->board[x][y] = cnt;
+            this->_board[x][y] = cnt;
         }
     }
-    is_stated = true;
+    _is_stated = true;
 }
 
 std::vector<int> minesweeper_engine::Minesweeper::get_possible_moves(int col) {
@@ -77,7 +77,7 @@ std::vector<int> minesweeper_engine::Minesweeper::get_possible_moves(int col) {
             }
             else{
                 for (auto offset : offsets){
-                    if (x+offset[0] < 0 || x+offset[0] >= static_cast<int>(this->board.size()) || y+offset[1] < 0 || y+offset[1] >= static_cast<int>(this->board[0].size())){
+                    if (x+offset[0] < 0 || x+offset[0] >= static_cast<int>(this->_board.size()) || y+offset[1] < 0 || y+offset[1] >= static_cast<int>(this->_board[0].size())){
                         continue;
                     }
                     if (this->visible_board[x+offset[0]][y+offset[1]] == 0){
@@ -93,7 +93,7 @@ std::vector<int> minesweeper_engine::Minesweeper::get_possible_moves(int col) {
 
 minesweeper_engine::STATES minesweeper_engine::Minesweeper::make_action(minesweeper_engine::ACTIONS action, std::array<int, 2> pos) {
     if (action == DIG){
-        this->visible_board[pos[0]][pos[1]] = this->board[pos[0]][pos[1]];
+        this->visible_board[pos[0]][pos[1]] = this->_board[pos[0]][pos[1]];
         if (this->visible_board[pos[0]][pos[1]] == 0){
             this->open_all_zeros_around(pos);
         }
@@ -108,7 +108,7 @@ minesweeper_engine::STATES minesweeper_engine::Minesweeper::make_action(mineswee
     }
     else if (action == REMOVE_FLAG_AND_DIG){
         this->flags_cnt++;
-        this->visible_board[pos[0]][pos[1]] = this->board[pos[0]][pos[1]];
+        this->visible_board[pos[0]][pos[1]] = this->_board[pos[0]][pos[1]];
         if (this->visible_board[pos[0]][pos[1]] == 0){
             this->visible_board[pos[0]][pos[1]] = 11;
         }
@@ -117,20 +117,20 @@ minesweeper_engine::STATES minesweeper_engine::Minesweeper::make_action(mineswee
         this->open_all_zeros_around(pos);
     }
 
-    if(!is_stated) {
+    if(!_is_stated) {
         return CONTINUE;
     }
-    for (int x = 0 ; x < static_cast<int>(this->board.size());x++){
-        for (int y = 0 ; y < static_cast<int>(this->board[0].size());y++){
+    for (int x = 0 ; x < static_cast<int>(this->_board.size());x++){
+        for (int y = 0 ; y < static_cast<int>(this->_board[0].size());y++){
             if (this->visible_board[x][y] == 9){
                 return LOSE;
             }
         }
     }
 
-    for (int x = 0 ; x < static_cast<int>(this->board.size());x++){
-        for (int y = 0 ; y < static_cast<int>(this->board[0].size());y++){
-            if (this->board[x][y] == 9 && this->visible_board[x][y] == 0){
+    for (int x = 0 ; x < static_cast<int>(this->_board.size());x++){
+        for (int y = 0 ; y < static_cast<int>(this->_board[0].size());y++){
+            if (this->_board[x][y] == 9 && this->visible_board[x][y] == 0){
                 return CONTINUE;
             }
         }
@@ -143,13 +143,13 @@ void minesweeper_engine::Minesweeper::open_all_zeros_around(const std::array<int
         return;
     }
 
-    this->visible_board[pos[0]][pos[1]] = this->board[pos[0]][pos[1]];
+    this->visible_board[pos[0]][pos[1]] = this->_board[pos[0]][pos[1]];
     if (this->visible_board[pos[0]][pos[1]] == 0){
         this->visible_board[pos[0]][pos[1]] = 11;
     }
     if (fst || this->visible_board[pos[0]][pos[1]] == 11){
-        for (auto i :this->offsets){
-            if (pos[0] + i[0] < 0 || pos[0] + i[0] >= static_cast<int>(this->board.size()) || pos[1] + i[1] < 0 || pos[1] + i[1] >= static_cast<int>(this->board[0].size())) {
+        for (auto i :this->_offsets){
+            if (pos[0] + i[0] < 0 || pos[0] + i[0] >= static_cast<int>(this->_board.size()) || pos[1] + i[1] < 0 || pos[1] + i[1] >= static_cast<int>(this->_board[0].size())) {
                 continue;
             }
             this->open_all_zeros_around({pos[0] + i[0], pos[1] + i[1]}, false);
@@ -160,9 +160,9 @@ void minesweeper_engine::Minesweeper::open_all_zeros_around(const std::array<int
 }
 
 void minesweeper_engine::Minesweeper::end_of_game() {
-    for (int x = 0 ; x < static_cast<int>(this->board.size());x++){
-        for (int y= 0 ; y < static_cast<int>(this->board[x].size());y++){
-            if (this->board[x][y] == 9){
+    for (int x = 0 ; x < static_cast<int>(this->_board.size());x++){
+        for (int y= 0 ; y < static_cast<int>(this->_board[x].size());y++){
+            if (this->_board[x][y] == 9){
                 if (this->visible_board[x][y] != 10){
                     this->visible_board[x][y] = 9;
                 }
