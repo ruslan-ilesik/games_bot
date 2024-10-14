@@ -11,10 +11,10 @@ namespace gb {
     class Discord_hangman_game : public Discord_game {
         std::map<dpp::snowflake, dpp::message> _messages;
         std::mutex _mutex;
-        std::map<dpp::snowflake,hangman::Player_ptr> hangman_rel;
-        std::map<dpp::snowflake,int> users_buttons_page;
-        hangman::Hangman game = {};
-        std::string word;
+        std::map<dpp::snowflake,hangman::Player_ptr> _hangman_rel;
+        std::map<dpp::snowflake,int> _users_buttons_page;
+        hangman::Hangman _game = {};
+        std::string _word;
         dpp::message _message;
 
     public:
