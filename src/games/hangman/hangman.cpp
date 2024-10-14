@@ -15,16 +15,16 @@ std::string hangman::get_random_word() {
 }
 
 Player::Player(const std::string &word) {
-    word_to_guess.resize(word.size());
-    guessed_word.resize(word.size());
+    _word_to_guess.resize(word.size());
+    _guessed_word.resize(word.size());
 
-    std::ranges::copy(word, word_to_guess.begin());
+    std::ranges::copy(word, _word_to_guess.begin());
 
-    std::ranges::fill(guessed_word, '_');
+    std::ranges::fill(_guessed_word, '_');
 
     // Initialize used_characters with all lowercase letters
     for (char i = 'a'; i <= 'z'; i++) {
-        unused_characters.push_back(i);
+        _unused_characters.push_back(i);
     }
 }
 
@@ -34,20 +34,20 @@ bool Player::make_move(char move) {
     if (is_finished()) {
         throw std::runtime_error("Player can not move after he finished a game");
     }
-    if (std::ranges::find(used_characters, move) != used_characters.end()) {
+    if (std::ranges::find(_used_characters, move) != _used_characters.end()) {
         throw std::invalid_argument("Character was already used in guessed word");
     }
     moves_cnt++;
-    used_characters.push_back(move);
-    std::erase(unused_characters, move);
-    if (std::ranges::find(word_to_guess, move) == word_to_guess.end()) {
+    _used_characters.push_back(move);
+    std::erase(_unused_characters, move);
+    if (std::ranges::find(_word_to_guess, move) == _word_to_guess.end()) {
         error_cnt++;
         return is_finished();
     }
 
-    for (size_t i = 0; i < word_to_guess.size(); i++) {
-        if (word_to_guess[i] == move) {
-            guessed_word[i] = move;
+    for (size_t i = 0; i < _word_to_guess.size(); i++) {
+        if (_word_to_guess[i] == move) {
+            _guessed_word[i] = move;
         }
     }
 
@@ -56,19 +56,19 @@ bool Player::make_move(char move) {
 
 bool Player::is_finished() const { return error_cnt >= 11 || is_win() || is_eliminated(); }
 
-bool Player::is_win() const { return this->word_to_guess == this->guessed_word; }
+bool Player::is_win() const { return this->_word_to_guess == this->_guessed_word; }
 
-void Player::eliminate() { is_elimin = true; }
+void Player::eliminate() { _is_elimin = true; }
 
-bool Player::is_eliminated() const { return is_elimin; }
+bool Player::is_eliminated() const { return _is_elimin; }
 
-std::vector<char> Player::get_word_to_guess() { return word_to_guess; }
+std::vector<char> Player::get_word_to_guess() { return _word_to_guess; }
 
-std::vector<char> Player::get_unused_characters() { return unused_characters; }
+std::vector<char> Player::get_unused_characters() { return _unused_characters; }
 
-std::vector<char> Player::get_used_characters() { return used_characters; }
+std::vector<char> Player::get_used_characters() { return _used_characters; }
 
-std::vector<char> Player::get_guessed_word() { return guessed_word; }
+std::vector<char> Player::get_guessed_word() { return _guessed_word; }
 
 Hangman::Hangman(const std::vector<Player_ptr> &players) {
     if (players.empty()) {

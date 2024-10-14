@@ -37,13 +37,13 @@ namespace minesweeper_engine {
      */
     class Minesweeper {
     private:
-        bool is_stated = false; ///< Flag indicating if the game has started.
-        std::array<std::array<int, 2>, 8> offsets{{{1, 0}, {1, 1}, {0, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {-1, 1}}}; ///< Offset directions for neighboring cells.
+        bool _is_stated = false; ///< Flag indicating if the game has started.
+        std::array<std::array<int, 2>, 8> _offsets{{{1, 0}, {1, 1}, {0, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {-1, 1}}}; ///< Offset directions for neighboring cells.
         std::random_device _rd; ///< Random device used for generating random positions.
 
         // 0-8 values represent counts of neighboring mines, 9 - mine, 10 - flag.
-        std::vector<std::vector<char>> board; ///< Internal representation of the Minesweeper board.
-        time_t start_time; ///< Timestamp for the start of the game.
+        std::vector<std::vector<char>> _board; ///< Internal representation of the Minesweeper board.
+        time_t _start_time; ///< Timestamp for the start of the game.
 
         /**
          * @brief Opens all zero-valued squares around the specified position.
