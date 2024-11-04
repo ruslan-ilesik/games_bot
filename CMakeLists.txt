@@ -11,9 +11,9 @@ add_link_options(
         -stdlib=libc++
         -L/usr/lib/llvm-19/lib
         -Wl,-rpath,/usr/lib/llvm-19/lib
-
 )
 
+set(CMAKE_EXE_LINKER_FLAGS "-stdlib=libc++ -L/usr/lib/llvm-19/lib -Wl,-rpath,/usr/lib/llvm-19/lib")
 
 # Add compile options to disable specific warnings
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -26,6 +26,10 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang
             -DDPP_FORMATTERS
     )
 endif ()
+
+set(CMAKE_REQUIRED_FLAGS "${CMAKE_CXX_FLAGS}  -stdlib=libc++ -L/usr/lib/llvm-19/lib -Wl,-rpath,/usr/lib/llvm-19/lib")
+
+
 
 # Include the main directory
 include_directories(.)

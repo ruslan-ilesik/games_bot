@@ -5,6 +5,7 @@
 #pragma once
 #include <src/module/module.hpp>
 #include <src/utils/coro/coro.hpp>
+#include <dpp/dpp.h>
 
 namespace gb {
 
