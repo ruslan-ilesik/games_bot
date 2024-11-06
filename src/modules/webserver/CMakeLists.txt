@@ -2,7 +2,8 @@ add_library(webserver SHARED
         webserver_impl.cpp
         ./utils/validators.cpp
         ./api/index_page.cpp
-        ./utils/type_convertions.cpp
+        ./utils/type_conversions.cpp
+        ./api/commands_page.cpp
         ../../module/module.cpp
 )
 

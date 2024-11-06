@@ -15,7 +15,7 @@ namespace gb {
         Discord_2048_command::init(modules);
         _image_processing->cache_create(Discord_game_2048::get_image_generators());
         _bot->add_pre_requirement([this]() {
-            dpp::slashcommand command("2048", "Command to start rubik's cube game", _bot->get_bot()->me.id);
+            dpp::slashcommand command("2048", "Command to start 2048 game", _bot->get_bot()->me.id);
 
             _command_handler->register_command(_discord->create_discord_command(
                 command,

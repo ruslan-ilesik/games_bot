@@ -10,6 +10,7 @@
 
 #include <src/modules/config/config.hpp>
 #include <src/modules/database/database.hpp>
+#include <src/modules/discord/discord_command_handler/discord_command_handler.hpp>
 
 namespace gb {
 
@@ -18,6 +19,8 @@ namespace gb {
     public:
         Discord_statistics_collector_ptr discord_stats;
         Config_ptr config;
+        Discord_command_handler_ptr commands_handler;
+
         std::vector<std::function<void()>> on_stop;
 
         Database_ptr db;

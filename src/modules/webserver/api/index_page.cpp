@@ -3,7 +3,7 @@
 //
 
 #include "index_page.hpp"
-#include "../utils/type_convertions.hpp"
+#include "../utils/type_conversions.hpp"
 #include "../utils/validators.hpp"
 
 #include <drogon/HttpAppFramework.h>
