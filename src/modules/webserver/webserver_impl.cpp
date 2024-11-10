@@ -5,11 +5,12 @@
 #include "webserver_impl.hpp"
 
 #include "api/commands_page.hpp"
+#include "api/discord_login.hpp"
 #include "api/index_page.hpp"
 
 
 namespace gb {
-    Webserver_impl::Webserver_impl() : Webserver("webserver", {"discord_statistics_collector", "database", "config","discord_command_handler"}) {}
+    Webserver_impl::Webserver_impl() : Webserver("webserver", {"discord_statistics_collector", "database", "config","discord_command_handler","logging"}) {}
     void Webserver_impl::stop() {
         drogon::app().quit();
         for (auto &i: on_stop) {
@@ -20,6 +21,7 @@ namespace gb {
     void Webserver_impl::run() {
         index_page_api(this);
         commands_page_api(this);
+        discord_login_api(this);
         _drogon_thread = std::thread(
             [this]() { drogon::app().addListener("0.0.0.0", std::stoi(config->get_value("webserver_port"))).run(); });
     }
@@ -29,6 +31,7 @@ namespace gb {
         db = std::static_pointer_cast<Database>(modules.at("database"));
         config = std::static_pointer_cast<Config>(modules.at("config"));
         commands_handler = std::static_pointer_cast<Discord_command_handler>(modules.at("discord_command_handler"));
+        log = std::static_pointer_cast<Logging>(modules.at("logging"));
     }
 
     Module_ptr create() { return std::dynamic_pointer_cast<Module>(std::make_shared<Webserver_impl>()); }

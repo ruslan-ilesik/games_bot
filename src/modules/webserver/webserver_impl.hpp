@@ -5,12 +5,15 @@
 #pragma once
 
 #include <drogon/drogon.h>
+#include <jwt/jwt.hpp>
+
 #include <src/modules/discord/discord_statistics_collector/discord_statistics_collector.hpp>
 #include "./webserver.hpp"
 
 #include <src/modules/config/config.hpp>
 #include <src/modules/database/database.hpp>
 #include <src/modules/discord/discord_command_handler/discord_command_handler.hpp>
+#include <src/modules/logging/logging.hpp>
 
 namespace gb {
 
@@ -20,6 +23,7 @@ namespace gb {
         Discord_statistics_collector_ptr discord_stats;
         Config_ptr config;
         Discord_command_handler_ptr commands_handler;
+        Logging_ptr log;
 
         std::vector<std::function<void()>> on_stop;
 

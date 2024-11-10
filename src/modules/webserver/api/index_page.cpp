@@ -51,14 +51,15 @@ namespace gb {
                 std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
                 auto params = req->parameters();
                 int id = validate_number(get_param_or(params, "start_id", "0"), 0);
-                Database_return_t r = co_await server->db->execute_prepared_statement(get_reviews_stmt, id, reviews_bucket_size);
+                Database_return_t r =
+                    co_await server->db->execute_prepared_statement(get_reviews_stmt, id, reviews_bucket_size);
                 if (r.empty() && id != 0) {
                     id = 0;
                     r = co_await server->db->execute_prepared_statement(get_reviews_stmt, id, reviews_bucket_size);
                 }
                 Json::Value ret;
                 ret["data"] = to_json(r);
-                ret["next_id"] = id+reviews_bucket_size+1;
+                ret["next_id"] = id + reviews_bucket_size + 1;
                 auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
                 callback(resp);
                 co_return;
