@@ -143,18 +143,15 @@ namespace gb {
             // renew only if cookie actually exists in db
             if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch())
                     .count() < credentials.soft_expire) {
+                co_await server->delete_cookie(id);
+
                 auto task1 = renew_discord_user_credentials(server,credentials);
-                auto delete_cookie_task = server->delete_cookie(id);
                 std::pair<bool,Discord_user_credentials> result =  co_await task1;
                 if (!result.first) {
-                    co_await delete_cookie_task;
                     co_return std::pair<bool, Authorization_cookie>{false, {}};
                 }
                 credentials = result.second;
                 // renew credentials and make new cookie
-                co_await delete_cookie_task;
-
-
             }
             Authorization_cookie cookie = {user, credentials, user_agent, id};
 
@@ -188,7 +185,6 @@ namespace gb {
             co_return std::pair<bool, Discord_user_credentials>{false, {}};
         };
         auto data = nlohmann::json::parse(body);
-        std::cout << body << std::endl;
         Discord_user_credentials returns_credentials = Discord_user_credentials::from_json(data);
         co_return std::pair<bool, Discord_user_credentials>{true, {returns_credentials}};
 
