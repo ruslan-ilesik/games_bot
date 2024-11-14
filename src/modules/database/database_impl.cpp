@@ -90,6 +90,79 @@ namespace gb {
                               << std::endl;
                 }
             });
+
+        _admin_terminal->add_command(
+            "database_get_prepared_statements", "Shows prepared statements registered in db and their amount",
+            "Arguments: no arguments.", [this](const std::vector<std::string> &arguments) {
+                auto expand_tabs = [](const std::string &str, int tab_width = 4) {
+                    std::string expanded;
+                    for (char ch: str) {
+                        if (ch == '\t') {
+                            int spaces_to_add = tab_width - (expanded.size() % tab_width);
+                            expanded.append(spaces_to_add, ' ');
+                        } else {
+                            expanded += ch;
+                        }
+                    }
+                    return expanded;
+                };
+
+                auto split_lines = [&expand_tabs](const std::string &str) {
+                    std::vector<std::string> lines;
+                    std::istringstream stream(str);
+                    std::string line;
+                    while (std::getline(stream, line)) {
+                        lines.push_back(expand_tabs(line));
+                    }
+                    return lines;
+                };
+                std::shared_lock lk(_prepared_statements_mutex);
+
+                size_t total_size = 0;
+                int id_column_width = 2; // Minimum width for ID
+                int sql_column_width = 4; // Minimum width for SQL Query
+
+                // Calculate maximum column widths based on data
+                for (const auto &[id, sql]: _prepared_statements) {
+                    id_column_width = std::max(id_column_width, static_cast<int>(std::to_string(id).length()));
+                    for (const auto &line: split_lines(sql)) {
+                        sql_column_width = std::max(sql_column_width, static_cast<int>(line.length()));
+                    }
+                    total_size += sizeof(id) + sizeof(sql) + sql.capacity() +
+                                  (sizeof(std::map<Prepared_statement, MYSQL_STMT *>) + sizeof(Prepared_statement) +
+                                  sizeof(MYSQL_STMT *) + sizeof(MYSQL_STMT)) * _mysql_list.size();
+                }
+
+                // Add padding for aesthetics
+                id_column_width += 2;
+                sql_column_width += 2;
+
+                // Print header
+                std::cout << " +" << std::string(id_column_width, '-') << "+" << std::string(sql_column_width, '-')
+                          << "+\n";
+                std::cout << " | " << std::setw(id_column_width - 2) << std::left << "ID"
+                          << " | " << std::setw(sql_column_width - 2) << "SQL Query"
+                          << " |\n";
+                std::cout << " +" << std::string(id_column_width, '=') << "+" << std::string(sql_column_width, '=')
+                          << "+\n";
+
+                // Print each entry with multiline handling and a separator line after each entry
+                for (const auto &[id, sql]: _prepared_statements) {
+                    auto lines = split_lines(sql);
+                    std::cout << " | " << std::setw(id_column_width - 2) << std::left << id << " | "
+                              << std::setw(sql_column_width - 2) << lines[0] << " |\n";
+                    for (size_t i = 1; i < lines.size(); ++i) {
+                        std::cout << " | " << std::setw(id_column_width - 2) << " "
+                                  << " | " << std::setw(sql_column_width - 2) << lines[i] << " |\n";
+                    }
+                    std::cout << " +" << std::string(id_column_width, '-') << "+" << std::string(sql_column_width, '-')
+                              << "+\n";
+                }
+
+                // Print summary
+                std::cout << "\nTotal prepared statements: " << _prepared_statements.size() << "\n";
+                std::cout << "Estimated memory usage: " << total_size << " bytes\n";
+            });
     }
 
     void Database_impl::run() {
@@ -261,7 +334,7 @@ namespace gb {
         auto storage_mutex = std::make_shared<std::mutex>();
         auto evaluated = std::make_shared<bool>(false);
 
-        auto tt = [st,evaluated, &params, this, storage, storage_mutex]() -> Task<Database_return_t> {
+        auto tt = [st, evaluated, &params, this, storage, storage_mutex]() -> Task<Database_return_t> {
             typedef unsigned char my_bool;
 
             std::unique_lock l(*storage_mutex);

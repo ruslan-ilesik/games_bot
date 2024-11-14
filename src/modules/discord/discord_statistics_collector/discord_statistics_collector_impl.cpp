@@ -36,7 +36,7 @@ namespace gb {
         _bot = std::static_pointer_cast<Discord_bot>(modules.at("discord_bot"));
         _db = std::static_pointer_cast<Database>(modules.at("database"));
 
-        _add_guild_stmt = _db->create_prepared_statement("INSERT INTO `guilds_users_data` (`guild_id`,`users_cnt`) "
+        _add_guild_stmt = _db->create_prepared_statement("INSERT INTO `guilds_users_data` (`guild_id`,`users_cnt`) \n"
                                                          "VALUES (?,?) ON DUPLICATE KEY UPDATE `users_cnt`=?;");
         _remove_guild_stmt = _db->create_prepared_statement("DELETE FROM `guilds_users_data` WHERE `guild_id`=?");
 
@@ -47,8 +47,8 @@ namespace gb {
             "UPDATE `guilds_users_data` SET `users_cnt`=`users_cnt`-1 WHERE `guild_id`=?");
 
         _historic_report_stmt = _db->create_prepared_statement(
-            "INSERT INTO `guilds_users_count_history` (`record_time`,`guilds_cnt`,`users_cnt`) VALUES "
-            "(UTC_TIMESTAMP(),(select count(*) from `guilds_users_data`),(select sum(`users_cnt`) from "
+            "INSERT INTO `guilds_users_count_history` (`record_time`,`guilds_cnt`,`users_cnt`) VALUES \n"
+            "(UTC_TIMESTAMP(),(select count(*) from `guilds_users_data`),(select sum(`users_cnt`) from \n"
             "`guilds_users_data`));");
 
         _get_servers_cnt = _db->create_prepared_statement("select count(*) as cnt from `guilds_users_data`");
