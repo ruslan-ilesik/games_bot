@@ -34,7 +34,7 @@ namespace gb {
     }
     Discord_user_credentials::Discord_user_credentials(): expires_in(0), soft_expire(0), hard_expire(0) {}
 
-    nlohmann::json Discord_user_credentials::to_json() {
+    nlohmann::json Discord_user_credentials::to_json() const {
         nlohmann::json data;
         data.emplace("token_type", token_type);
         data.emplace("access_token", access_token);
@@ -56,7 +56,7 @@ namespace gb {
         this->id = id;
     }
 
-    std::string Authorization_cookie::to_cookie_string(Webserver_impl *server) {
+    std::string Authorization_cookie::to_cookie_string(Webserver_impl *server) const {
         jwt::jwt_object obj{jwt::params::algorithm("HS256"),
                             jwt::params::payload({{"id", std::to_string(id)},
                                                   {"discord_user", discord_user.to_json().dump()},
@@ -123,7 +123,7 @@ namespace gb {
 
             bool exist = co_await existance_checker;
             if (!exist) {
-                server->log->error("Cookie does not exist! " +  cookie_string);
+                server->log->error("Cookie does not exist! " + cookie_string);
                 co_return std::pair<bool, Authorization_cookie>{false, {}};
             }
 
@@ -135,7 +135,7 @@ namespace gb {
             if (req->getHeader("User-Agent") != user_agent) {
                 // enforce cookie delete on wrong user agent as someone can try to bruteforce user agent via replay
                 // attacks.
-                server->log->error("Cookie user agent does not match! " +  cookie_string + " " + user_agent);
+                server->log->error("Cookie user agent does not match! " + cookie_string + " " + user_agent);
                 co_await server->delete_cookie(id);
                 co_return std::pair<bool, Authorization_cookie>{false, {}};
             }
@@ -144,8 +144,8 @@ namespace gb {
             if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch())
                     .count() > credentials.soft_expire) {
                 co_await server->delete_cookie(id);
-                auto task1 = renew_discord_user_credentials(server,credentials);
-                std::pair<bool,Discord_user_credentials> result =  co_await task1;
+                auto task1 = renew_discord_user_credentials(server, credentials);
+                std::pair<bool, Discord_user_credentials> result = co_await task1;
                 if (!result.first) {
                     co_return std::pair<bool, Authorization_cookie>{false, {}};
                 }
@@ -160,6 +160,23 @@ namespace gb {
             server->log->error("Error decoding JWT: " + std::string(e.what()) + " Cookie: " + cookie_string);
             co_return std::pair<bool, Authorization_cookie>{false, {}};
         }
+    }
+
+    void set_cookie(Webserver_impl *server, const Authorization_cookie &cookie, drogon::HttpResponsePtr &response,
+                    bool is_clear) {
+        if (!is_clear) {
+            response->addHeader("Set-Cookie", "Authorization=" + cookie.to_cookie_string(server) +
+                                                  "; Path=/;HttpOnly;Secure; Expires=" +
+                                                  drogon::utils::getHttpFullDate(trantor::Date{
+                                                      static_cast<int64_t>(cookie.credentials.hard_expire * 1000000)}));
+        } else {
+            response->addHeader("Set-Cookie",
+                                "Authorization=deleted; Path=/;HttpOnly;Secure; expires=Thu, 01 Jan 1970 00:00:00 GMT");
+        }
+    }
+    void set_cookie(Webserver_impl *server, drogon::HttpResponsePtr &response,
+                    const std::pair<bool, Authorization_cookie>& validation_result) {
+        set_cookie(server,validation_result.second,response,validation_result.first);
     }
 
     drogon::Task<std::pair<bool, Discord_user_credentials>>

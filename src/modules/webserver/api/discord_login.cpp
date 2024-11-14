@@ -7,10 +7,9 @@
 #include <src/modules/webserver/utils/cookie_manager.hpp>
 void gb::discord_login_api(Webserver_impl *server) {
 
-    Prepared_statement insert_cookie = server->db->create_prepared_statement("insert into website_cookies (id,expire_time,renew_time) values (?,from_unixtime(?),from_unixtime(?));");
-    server->on_stop.push_back([=]() {
-        server->db->remove_prepared_statement(insert_cookie);
-    });
+    Prepared_statement insert_cookie = server->db->create_prepared_statement(
+        "insert into website_cookies (id,expire_time,renew_time) values (?,from_unixtime(?),from_unixtime(?));");
+    server->on_stop.push_back([=]() { server->db->remove_prepared_statement(insert_cookie); });
 
     drogon::app().registerHandler("/api/login-with-discord-redirect",
                                   [=](drogon::HttpRequestPtr req,
@@ -21,16 +20,26 @@ void gb::discord_login_api(Webserver_impl *server) {
                                       co_return;
                                   });
 
-    drogon::app().registerHandler("/api/discord/get-display-user-data", [=](drogon::HttpRequestPtr req,
-            std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
-            auto validation = co_await validate_authorization_cookie(server,req);
-    });
+    drogon::app().registerHandler("/api/discord/get-display-user-data",
+                                  [=](drogon::HttpRequestPtr req,
+                                      std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
+                                      std::pair<bool, Authorization_cookie> validation = co_await validate_authorization_cookie(server, req);
+                                      std::string json_string;
+                                      if (validation.first == true) {
+                                          json_string = validation.second.discord_user.to_json().dump();
+                                      }
+                                      auto resp = drogon::HttpResponse::newHttpJsonResponse(json_string);
+                                      if (json_string.empty()) {
+                                          resp->setStatusCode(drogon::k403Forbidden);
+                                      }
+                                      set_cookie(server, resp, validation);
+                                      callback(resp);
+                                  });
 
     drogon::app().registerHandler(
         "/auth/discord",
         [=](drogon::HttpRequestPtr req,
             std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
-
             auto para = req->getParameters();
             std::string code = para.at("code");
             if (code.empty()) {
@@ -79,13 +88,11 @@ void gb::discord_login_api(Webserver_impl *server) {
             Discord_user_credentials credentials = Discord_user_credentials::from_json(data);
 
             dpp::user u = co_await fetch_discord_user_data(credentials);
-            Authorization_cookie cookie = {u,credentials,req->getHeader("User-Agent"),server->current_jwt_id++};
-            co_await server->db->execute_prepared_statement(insert_cookie,cookie.id,cookie.credentials.hard_expire, cookie.credentials.soft_expire);
+            Authorization_cookie cookie = {u, credentials, req->getHeader("User-Agent"), server->current_jwt_id++};
+            co_await server->db->execute_prepared_statement(insert_cookie, cookie.id, cookie.credentials.hard_expire,
+                                                            cookie.credentials.soft_expire);
 
-            resp->addHeader("Set-Cookie", "Authorization=" + cookie.to_cookie_string(server)+
-                                              "; Path=/;HttpOnly;Secure; Expires=" +
-                                              drogon::utils::getHttpFullDate(trantor::Date {static_cast<int64_t>(credentials.hard_expire* 1000000)}));
-            std::cout << resp->getHeader("Set-Cookie") << std::endl;
+            set_cookie(server, cookie, resp);
             callback(resp);
 
             co_return;

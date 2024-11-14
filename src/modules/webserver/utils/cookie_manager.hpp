@@ -28,7 +28,7 @@ namespace gb {
 
         Discord_user_credentials();
 
-        nlohmann::json to_json();
+        nlohmann::json to_json() const;
 
         static inline Discord_user_credentials from_json(const nlohmann::json &data) {
             time_t soft_expire = 0;
@@ -60,7 +60,7 @@ namespace gb {
                              const std::string &user_agent, uint64_t id);
 
 
-        std::string to_cookie_string(Webserver_impl *server);
+        std::string to_cookie_string(Webserver_impl *server) const;
     };
 
 
@@ -70,6 +70,11 @@ namespace gb {
 
     drogon::Task<std::pair<bool, Authorization_cookie>> validate_authorization_cookie(Webserver_impl *server,
                                                                                       drogon::HttpRequestPtr &req);
+
+    void set_cookie(Webserver_impl *server, const Authorization_cookie &cookie, drogon::HttpResponsePtr& response,
+                    bool is_clear = false);
+
+    void set_cookie(Webserver_impl *server,drogon::HttpResponsePtr& response, const std::pair<bool, Authorization_cookie>& validation_result);
 
     drogon::Task<std::pair<bool, Discord_user_credentials>>
     renew_discord_user_credentials(Webserver_impl* server, const Discord_user_credentials &credentials);
