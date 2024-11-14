@@ -19,11 +19,20 @@ namespace gb {
 
     class Webserver_impl : public Webserver {
         std::thread _drogon_thread;
+        std::thread _background_worker;
+        std::condition_variable _cv;                ///< Condition variable to manage background worker sleep and stop behavior.
+        std::mutex _mutex;                          ///< Mutex to synchronize access to shared data between threads.
+        bool _stop = false;
+
+        Prepared_statement _delete_cookie_stmt;
+        Prepared_statement _cookie_exists_stmt;
     public:
         Discord_statistics_collector_ptr discord_stats;
         Config_ptr config;
         Discord_command_handler_ptr commands_handler;
         Logging_ptr log;
+
+        std::atomic_uint64_t current_jwt_id;
 
         std::vector<std::function<void()>> on_stop;
 
@@ -36,6 +45,9 @@ namespace gb {
         void stop() override;
         void run() override;
         void init(const Modules &modules) override;
+
+        Task<void>  delete_cookie(uint64_t id);
+        Task<bool>  check_if_cookie_exists(uint64_t id);
     };
 
     extern "C" Module_ptr create();

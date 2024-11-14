@@ -7,6 +7,11 @@
 #include <src/modules/webserver/utils/cookie_manager.hpp>
 void gb::discord_login_api(Webserver_impl *server) {
 
+    Prepared_statement insert_cookie = server->db->create_prepared_statement("insert into website_cookies (id,expire_time,renew_time) values (?,from_unixtime(?),from_unixtime(?));");
+    server->on_stop.push_back([=]() {
+        server->db->remove_prepared_statement(insert_cookie);
+    });
+
     drogon::app().registerHandler("/api/login-with-discord-redirect",
                                   [=](drogon::HttpRequestPtr req,
                                       std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
@@ -16,19 +21,15 @@ void gb::discord_login_api(Webserver_impl *server) {
                                       co_return;
                                   });
 
+    drogon::app().registerHandler("/api/discord/get-display-user-data", [=](drogon::HttpRequestPtr req,
+            std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
+            auto validation = co_await validate_authorization_cookie(server,req);
+    });
+
     drogon::app().registerHandler(
         "/auth/discord",
         [=](drogon::HttpRequestPtr req,
             std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
-            static auto custom_url_encode = [](const std::string &input) {
-                std::string encoded = drogon::utils::urlEncode(input);
-                size_t pos = 0;
-                while ((pos = encoded.find("/", pos)) != std::string::npos) {
-                    encoded.replace(pos, 1, "%2F");
-                    pos += 3; // Move past the replaced substring
-                }
-                return encoded;
-            };
 
             auto para = req->getParameters();
             std::string code = para.at("code");
@@ -42,8 +43,8 @@ void gb::discord_login_api(Webserver_impl *server) {
             }
 
             std::string website_base = server->config->get_value("website_base_url");
-            std::string post_data = "grant_type=authorization_code&code=" + code +
-                                    "&redirect_uri=" + (website_base + "auth/discord");
+            std::string post_data =
+                "grant_type=authorization_code&code=" + code + "&redirect_uri=" + (website_base + "auth/discord");
 
             std::string auth_string = server->config->get_value("discord_login_client_id") + ":" +
                                       server->config->get_value("discord_login_client_secret");
@@ -63,7 +64,8 @@ void gb::discord_login_api(Webserver_impl *server) {
             std::string body(tmp.begin(), tmp.end());
             if (response->statusCode() != drogon::k200OK || nlohmann::json::parse(body).contains("error")) {
                 auto error_resp = drogon::HttpResponse::newHttpResponse();
-                server->log->error("Login with Discord failed: " + std::to_string(response->statusCode()) + " body: " + body + " post data: " + post_data);
+                server->log->error("Login with Discord failed: " + std::to_string(response->statusCode()) +
+                                   " body: " + body + " post data: " + post_data);
 
                 error_resp->setStatusCode(drogon::k500InternalServerError);
                 error_resp->setBody("LOGIN with Discord failed");
@@ -74,19 +76,16 @@ void gb::discord_login_api(Webserver_impl *server) {
             auto json_data = nlohmann::json::parse(body);
             auto resp = drogon::HttpResponse::newRedirectionResponse("/");
             auto data = nlohmann::json::parse(body);
-            Discord_user_credentials credentials = {
-                .token_type = data["token_type"].get<std::string>(),
-                .access_token = data["access_token"].get<std::string>(),
-                .expires_in =  data["expires_in"].get<uint64_t>(),
-                .refresh_token =  data["refresh_token"].get<std::string>(),
-                .scope =  data["scope"].get<std::string>()
-            };
-            dpp::user u = co_await fetch_user_data(credentials);
-            std::cout << u.get_avatar_url() << std::endl;
-            // jwt::jwt_object obj{jwt::params::algorithm("HS256"), jwt::params::payload({{"discord_id",}})
-            // ,jwt::params::secret(server->config->get_value("jwt_secret"))};
+            Discord_user_credentials credentials = Discord_user_credentials::from_json(data);
 
-            // resp->addHeader("Set-Cookie","")
+            dpp::user u = co_await fetch_discord_user_data(credentials);
+            Authorization_cookie cookie = {u,credentials,req->getHeader("User-Agent"),server->current_jwt_id++};
+            co_await server->db->execute_prepared_statement(insert_cookie,cookie.id,cookie.credentials.hard_expire, cookie.credentials.soft_expire);
+
+            resp->addHeader("Set-Cookie", "Authorization=" + cookie.to_cookie_string(server)+
+                                              "; Path=/;HttpOnly;Secure; Expires=" +
+                                              drogon::utils::getHttpFullDate(trantor::Date {static_cast<int64_t>(credentials.hard_expire* 1000000)}));
+            std::cout << resp->getHeader("Set-Cookie") << std::endl;
             callback(resp);
 
             co_return;
