@@ -28,7 +28,10 @@ void gb::discord_login_api(Webserver_impl *server) {
                                       if (validation.first == true) {
                                           json_string = validation.second.discord_user.to_json().dump();
                                       }
-                                      auto resp = drogon::HttpResponse::newHttpJsonResponse(json_string);
+                                      Json::Reader reader;
+                                      Json::Value value;
+                                      reader.parse( json_string, value );
+                                      auto resp = drogon::HttpResponse::newHttpJsonResponse(value);
                                       if (json_string.empty()) {
                                           resp->setStatusCode(drogon::k403Forbidden);
                                       }

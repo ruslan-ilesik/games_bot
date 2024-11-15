@@ -7,6 +7,7 @@
 #include "api/commands_page.hpp"
 #include "api/discord_login.hpp"
 #include "api/index_page.hpp"
+#include "api/patreon.hpp"
 
 
 namespace gb {
@@ -58,6 +59,7 @@ namespace gb {
         index_page_api(this);
         commands_page_api(this);
         discord_login_api(this);
+        patreon_api(this);
         _drogon_thread = std::thread(
             [this]() { drogon::app().addListener("0.0.0.0", std::stoi(config->get_value("webserver_port"))).run(); });
     }

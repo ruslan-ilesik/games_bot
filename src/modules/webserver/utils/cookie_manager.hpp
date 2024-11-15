@@ -72,7 +72,7 @@ namespace gb {
                                                                                       drogon::HttpRequestPtr &req);
 
     void set_cookie(Webserver_impl *server, const Authorization_cookie &cookie, drogon::HttpResponsePtr& response,
-                    bool is_clear = false);
+                    bool not_clear = true);
 
     void set_cookie(Webserver_impl *server,drogon::HttpResponsePtr& response, const std::pair<bool, Authorization_cookie>& validation_result);
 

@@ -118,7 +118,7 @@ namespace gb {
                 };
                 std::shared_lock lk(_prepared_statements_mutex);
 
-                size_t total_size = 0;
+                size_t total_size = sizeof(std::map<Prepared_statement, MYSQL_STMT *>) * _mysql_list.size() + sizeof(_prepared_statements);
                 int id_column_width = 2; // Minimum width for ID
                 int sql_column_width = 4; // Minimum width for SQL Query
 
@@ -129,7 +129,7 @@ namespace gb {
                         sql_column_width = std::max(sql_column_width, static_cast<int>(line.length()));
                     }
                     total_size += sizeof(id) + sizeof(sql) + sql.capacity() +
-                                  (sizeof(std::map<Prepared_statement, MYSQL_STMT *>) + sizeof(Prepared_statement) +
+                            (sizeof(Prepared_statement) +
                                   sizeof(MYSQL_STMT *) + sizeof(MYSQL_STMT)) * _mysql_list.size();
                 }
 

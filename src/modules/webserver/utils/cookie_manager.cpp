@@ -32,7 +32,7 @@ namespace gb {
         this->soft_expire = soft_expire;
         this->hard_expire = hard_expire;
     }
-    Discord_user_credentials::Discord_user_credentials(): expires_in(0), soft_expire(0), hard_expire(0) {}
+    Discord_user_credentials::Discord_user_credentials() : expires_in(0), soft_expire(0), hard_expire(0) {}
 
     nlohmann::json Discord_user_credentials::to_json() const {
         nlohmann::json data;
@@ -163,8 +163,8 @@ namespace gb {
     }
 
     void set_cookie(Webserver_impl *server, const Authorization_cookie &cookie, drogon::HttpResponsePtr &response,
-                    bool is_clear) {
-        if (!is_clear) {
+                    bool not_clear) {
+        if (not_clear) {
             response->addHeader("Set-Cookie", "Authorization=" + cookie.to_cookie_string(server) +
                                                   "; Path=/;HttpOnly;Secure; Expires=" +
                                                   drogon::utils::getHttpFullDate(trantor::Date{
@@ -175,15 +175,15 @@ namespace gb {
         }
     }
     void set_cookie(Webserver_impl *server, drogon::HttpResponsePtr &response,
-                    const std::pair<bool, Authorization_cookie>& validation_result) {
-        set_cookie(server,validation_result.second,response,validation_result.first);
+                    const std::pair<bool, Authorization_cookie> &validation_result) {
+        set_cookie(server, validation_result.second, response, validation_result.first);
     }
 
     drogon::Task<std::pair<bool, Discord_user_credentials>>
-    renew_discord_user_credentials(Webserver_impl* server, const Discord_user_credentials &credentials) {
+    renew_discord_user_credentials(Webserver_impl *server, const Discord_user_credentials &credentials) {
         std::string post_data = "grant_type=refresh_token&refresh_token=" + credentials.refresh_token;
         std::string auth_string = server->config->get_value("discord_login_client_id") + ":" +
-                          server->config->get_value("discord_login_client_secret");
+                                  server->config->get_value("discord_login_client_secret");
         std::string auth_header = "Basic " + drogon::utils::base64Encode(auth_string);
         drogon::HttpClientPtr client = drogon::HttpClient::newHttpClient("https://discord.com");
         drogon::HttpRequestPtr discord_request = drogon::HttpRequest::newHttpRequest();
@@ -203,6 +203,5 @@ namespace gb {
         auto data = nlohmann::json::parse(body);
         Discord_user_credentials returns_credentials = Discord_user_credentials::from_json(data);
         co_return std::pair<bool, Discord_user_credentials>{true, {returns_credentials}};
-
     }
 } // namespace gb
