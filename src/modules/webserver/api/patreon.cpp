@@ -5,6 +5,19 @@
 #include "patreon.hpp"
 
 namespace gb {
+    enum class SUBSCRIPTION_STATUS { NO_SUBSCRIPTION, BASIC };
+
+    std::string to_string(SUBSCRIPTION_STATUS status) {
+        switch (status) {
+            case SUBSCRIPTION_STATUS::NO_SUBSCRIPTION:
+                return "NO_SUBSCRIPTION";
+            case SUBSCRIPTION_STATUS::BASIC:
+                return "BASIC";
+            default:
+                throw std::runtime_error("Unknown conversion of SUBSCRIPTION_STATUS to string");
+        }
+    }
+
     std::string calculate_hmac_md5(const std::string &data, const std::string &key) {
         // Create a context for the HMAC operation
         EVP_MAC *mac = EVP_MAC_fetch(NULL, "HMAC", NULL);
@@ -58,6 +71,12 @@ namespace gb {
     }
 
     void patreon_api(Webserver_impl *server) {
+        Prepared_statement patreon_webhook_stmt =  server->db->create_prepared_statement("CALL patreon_webhook(?,?,?,?);");
+
+        server->on_stop.push_back([=]() {
+            server->db->remove_prepared_statement(patreon_webhook_stmt);
+        });
+
         drogon::app().registerHandler(
             "/action/patreon/webhook",
             [=](drogon::HttpRequestPtr req,
@@ -67,10 +86,10 @@ namespace gb {
                 try {
                     calculated_signature = calculate_hmac_md5(std::string(req->getBody()),
                                                               server->config->get_value("patreon_webhook_secret"));
-                }
-                catch (std::runtime_error& e) {
-                    server->log->error("Patreon webhook signature verification failed ("+std::string(e.what())+"): " + std::string(req->getBody()) +
-                                       " " + req->getHeader("X-Patreon-Signature"));
+                } catch (std::runtime_error &e) {
+                    server->log->error("Patreon webhook signature verification failed (" + std::string(e.what()) +
+                                       "): " + std::string(req->getBody()) + " " +
+                                       req->getHeader("X-Patreon-Signature"));
                     co_return;
                 }
 
@@ -79,6 +98,35 @@ namespace gb {
                                        " " + req->getHeader("X-Patreon-Signature"));
                     co_return;
                 }
+                nlohmann::json data = nlohmann::json::parse(req->getBody());
+                SUBSCRIPTION_STATUS patron_status;
+
+                if (data["data"]["attributes"]["patron_status"].is_null()) {
+                    patron_status = SUBSCRIPTION_STATUS::NO_SUBSCRIPTION;
+                } else {
+                    patron_status = data["data"]["attributes"]["patron_status"] == "active_patron"
+                                        ? SUBSCRIPTION_STATUS::BASIC
+                                        : SUBSCRIPTION_STATUS::NO_SUBSCRIPTION;
+                }
+                std::string patreon_id =
+                    data["data"]["relationships"]["user"]["data"]["id"].template get<std::string>();
+                std::string nickname = data["data"]["attributes"]["full_name"].template get<std::string>();
+
+                std::string discord_id = "0";
+                for (auto &i: data["included"]) {
+                    if (i["type"].template get<std::string>() == "user" && i["attributes"][
+                            "social_connections"].contains("discord")) {
+                        discord_id = i["attributes"]["social_connections"]["discord"]["user_id"].
+                                template get<std::string>();
+                        break;
+                    }
+                }
+
+                co_await server->db->execute_prepared_statement(patreon_webhook_stmt,patreon_id,discord_id,to_string(patron_status),nickname);
+
+
+                drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
+                callback(resp);
                 co_return;
             });
     }
