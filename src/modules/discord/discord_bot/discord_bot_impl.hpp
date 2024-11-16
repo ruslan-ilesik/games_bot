@@ -10,6 +10,8 @@
 #include "../../config/config.hpp"
 #include "discord_bot.hpp"
 
+#include <src/modules/database/database.hpp>
+
 namespace gb {
 
     /**
@@ -26,9 +28,19 @@ namespace gb {
         Config_ptr _config;
 
         /**
+         * @brief  A shared pointer to the Database module.
+         */
+        Database_ptr _db;
+
+        /**
          * @brief Mutex for synchronization of operations.
          */
         std::mutex _mutex;
+
+        /**
+         * @brief Database backup dpp timer which runs once per day.
+         */
+        dpp::timer _db_backup_timer;
 
         /**
          * @brief A pointer to the object representing the bot.

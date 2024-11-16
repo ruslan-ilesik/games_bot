@@ -146,6 +146,14 @@ namespace gb {
          */
         virtual void remove_prepared_statement(Prepared_statement st) = 0;
 
+
+        /**
+         * @brief Makes a backup of database to specified file
+         *
+         * @param file_path File to write backup into.
+         */
+        virtual void backup(const std::string& file_path) = 0 ;
+
         // Utility function to convert various types to strings
         /**
          * @brief Converts a value to a string.

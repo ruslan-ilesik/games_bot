@@ -269,6 +269,13 @@ namespace gb {
         void stop() override;
 
         /**
+         * @brief Makes a backup of database to specified file
+         *
+         * @param file_path File to write backup into.
+         */
+        void backup(const std::string &file_path) override;
+
+        /**
          * @brief Executes a database query asynchronously.
          *
          * @param sql The SQL query to execute

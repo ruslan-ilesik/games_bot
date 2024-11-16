@@ -71,11 +71,10 @@ namespace gb {
     }
 
     void patreon_api(Webserver_impl *server) {
-        Prepared_statement patreon_webhook_stmt =  server->db->create_prepared_statement("CALL patreon_webhook(?,?,?,?);");
+        Prepared_statement patreon_webhook_stmt =
+            server->db->create_prepared_statement("CALL patreon_webhook(?,?,?,?);");
 
-        server->on_stop.push_back([=]() {
-            server->db->remove_prepared_statement(patreon_webhook_stmt);
-        });
+        server->on_stop.push_back([=]() { server->db->remove_prepared_statement(patreon_webhook_stmt); });
 
         drogon::app().registerHandler(
             "/action/patreon/webhook",
@@ -114,16 +113,16 @@ namespace gb {
 
                 std::string discord_id = "0";
                 for (auto &i: data["included"]) {
-                    if (i["type"].template get<std::string>() == "user" && i["attributes"][
-                            "social_connections"].contains("discord")) {
-                        discord_id = i["attributes"]["social_connections"]["discord"]["user_id"].
-                                template get<std::string>();
+                    if (i["type"].template get<std::string>() == "user" &&
+                        i["attributes"]["social_connections"].contains("discord")) {
+                        discord_id =
+                            i["attributes"]["social_connections"]["discord"]["user_id"].template get<std::string>();
                         break;
                     }
                 }
 
-                co_await server->db->execute_prepared_statement(patreon_webhook_stmt,patreon_id,discord_id,to_string(patron_status),nickname);
-
+                co_await server->db->execute_prepared_statement(patreon_webhook_stmt, patreon_id, discord_id,
+                                                                to_string(patron_status), nickname);
 
                 drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
                 callback(resp);

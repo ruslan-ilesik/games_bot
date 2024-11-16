@@ -186,6 +186,33 @@ namespace gb {
         _bg_thread.join();
     }
 
+    void Database_impl::backup(const std::string &file_path) {
+        auto exec = [](std::string command) -> std::string {
+            char buffer[128];
+            std::string result = "";
+
+            // Open pipe to file
+            FILE* pipe = popen(command.c_str(), "r");
+            if (!pipe) {
+                return "popen failed!";
+            }
+
+            // read till end of process:
+            while (!feof(pipe)) {
+
+                // use buffer to read and add to result
+                if (fgets(buffer, 128, pipe) != NULL)
+                    result += buffer;
+            }
+
+            pclose(pipe);
+            return result;
+        };
+
+        std::string backup_command = "mysqldump -h"+ _config->get_value("mysql_ip") +" -u "+_config->get_value("mysql_user")+" -p"+_config->get_value("mysql_password")+" --single-transaction --routines "+_config->get_value("mysql_db_name")+"> "+file_path;
+        exec(backup_command);
+    }
+
     void Database_impl::new_connection() {
         std::unique_lock lock(_mutex);
         auto c = std::make_unique<Mysql_connection>(_log, _config, this);

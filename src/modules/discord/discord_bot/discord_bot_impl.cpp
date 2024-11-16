@@ -12,13 +12,15 @@ namespace gb {
 
     void Discord_bot_impl::init(const Modules &modules) {
         _config = std::static_pointer_cast<Config>(modules.at("config"));
+        _db = std::static_pointer_cast<Database>(modules.at("database"));
     }
 
     void Discord_bot_impl::run() {
+
         if (_bot != nullptr) {
             throw std::runtime_error("Bot variable is not nullptr, memory leak possible");
         }
-        _bot =  std::make_unique<Discord_cluster>(_config->get_value("discord_bot_token"));
+        _bot = std::make_unique<Discord_cluster>(_config->get_value("discord_bot_token"));
 
         // Run all pre-requirements.
         {
@@ -28,6 +30,15 @@ namespace gb {
             }
             _pre_requirements.clear();
         }
+        auto fp = _config->get_value("db_backup_path");
+        _db->backup(fp);
+        _bot->direct_message_create(_config->get_value("owner_discord_id"),dpp::message("backup").add_file("backup.sql",dpp::utility::read_file(fp)));
+        _db_backup_timer = _bot->start_timer([this](const dpp::timer& timer) {
+            _bot->log(dpp::ll_info,"Doing backup of database");
+            auto fp = _config->get_value("db_backup_path");
+            _db->backup(fp);
+            _bot->direct_message_create(_config->get_value("owner_discord_id"),dpp::message("backup").add_file("backup.sql",dpp::utility::read_file(fp)));
+        },60*60*24); // once per day
 
         _bot->start(dpp::st_return);
     }
@@ -36,6 +47,7 @@ namespace gb {
         if (_bot == nullptr) {
             throw std::runtime_error("Bot is nullptr, no way to stop it");
         }
+        _bot->stop_timer(_db_backup_timer);
         _bot->shutdown();
     }
 
