@@ -4,6 +4,7 @@ add_library(webserver SHARED
         ./api/commands_page.cpp
         ./api/discord_login.cpp
         ./api/patreon.cpp
+        ./api/premium.cpp
         ./utils/type_conversions.cpp
         ./utils/validators.cpp
         ./utils/cookie_manager.cpp

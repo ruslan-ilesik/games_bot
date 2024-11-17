@@ -1,10 +1,10 @@
 //
-// Created by ilesik on 11/15/24.
+// Created by ilesik on 11/17/24.
 //
 
 #pragma once
 #include <src/modules/webserver/webserver_impl.hpp>
 
 namespace gb{
-  void patreon_api(Webserver_impl *server);
+  void premium_api(Webserver_impl *server);
 }

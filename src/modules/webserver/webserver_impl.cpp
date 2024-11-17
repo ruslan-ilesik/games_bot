@@ -8,10 +8,11 @@
 #include "api/discord_login.hpp"
 #include "api/index_page.hpp"
 #include "api/patreon.hpp"
+#include "api/premium.hpp"
 
 
 namespace gb {
-    Webserver_impl::Webserver_impl() : Webserver("webserver", {"discord_statistics_collector", "database", "config","discord_command_handler","logging"}) {}
+    Webserver_impl::Webserver_impl() : Webserver("webserver", {"discord_statistics_collector", "database", "config","discord_command_handler","logging","premium_manager"}) {}
     void Webserver_impl::stop() {
         {
             std::unique_lock lk(_mutex);
@@ -60,6 +61,8 @@ namespace gb {
         commands_page_api(this);
         discord_login_api(this);
         patreon_api(this);
+        premium_api(this);
+
         _drogon_thread = std::thread(
             [this]() { drogon::app().addListener("0.0.0.0", std::stoi(config->get_value("webserver_port"))).run(); });
     }
@@ -70,6 +73,7 @@ namespace gb {
         config = std::static_pointer_cast<Config>(modules.at("config"));
         commands_handler = std::static_pointer_cast<Discord_command_handler>(modules.at("discord_command_handler"));
         log = std::static_pointer_cast<Logging>(modules.at("logging"));
+        premium_manager = std::static_pointer_cast<Premium_manager>(modules.at("premium_manager"));
     }
 
     Task<void> Webserver_impl::delete_cookie(uint64_t id) {
