@@ -5,20 +5,14 @@
 #include "discord_login.hpp"
 
 #include <src/modules/webserver/utils/cookie_manager.hpp>
+#include <src/modules/webserver/utils/other.hpp>
 void gb::discord_login_api(Webserver_impl *server) {
 
     Prepared_statement insert_cookie = server->db->create_prepared_statement(
         "insert into website_cookies (id,expire_time,renew_time) values (?,from_unixtime(?),from_unixtime(?));");
     server->on_stop.push_back([=]() { server->db->remove_prepared_statement(insert_cookie); });
 
-    drogon::app().registerHandler("/api/login-with-discord-redirect",
-                                  [=](drogon::HttpRequestPtr req,
-                                      std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
-                                      auto redirect_url = server->config->get_value("login_with_discord_url");
-                                      auto resp = drogon::HttpResponse::newRedirectionResponse(redirect_url);
-                                      callback(resp);
-                                      co_return;
-                                  });
+    register_config_redirect_handler(server,"/api/login-with-discord-redirect","login_with_discord_url");
 
     drogon::app().registerHandler("/api/discord/get-display-user-data",
                                   [=](drogon::HttpRequestPtr req,

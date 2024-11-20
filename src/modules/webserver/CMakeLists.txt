@@ -8,6 +8,7 @@ add_library(webserver SHARED
         ./utils/type_conversions.cpp
         ./utils/validators.cpp
         ./utils/cookie_manager.cpp
+        ./utils/other.cpp
         ../../module/module.cpp
 )
 

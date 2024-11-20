@@ -5,11 +5,14 @@
 #include "premium.hpp"
 
 #include <src/modules/webserver/utils/cookie_manager.hpp>
+#include <src/modules/webserver/utils/other.hpp>
 
 namespace gb {
 
 
     void premium_api(Webserver_impl *server) {
+        register_config_redirect_handler(server,"/api/buy-premium-redirect","premium_buy_url");
+
 
         drogon::app().registerHandler(
             "/api/get-user-premium-status",
