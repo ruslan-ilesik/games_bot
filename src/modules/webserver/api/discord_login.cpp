@@ -17,7 +17,7 @@ void gb::discord_login_api(Webserver_impl *server) {
     drogon::app().registerHandler("/api/discord/get-display-user-data",
                                   [=](drogon::HttpRequestPtr req,
                                       std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
-                                      std::pair<bool, Authorization_cookie> validation = co_await validate_authorization_cookie(server, req);
+                                      std::pair<bool, Authorization_cookie> validation = co_await validate_authorization_cookie(server, req, true);
                                       std::string json_string;
                                       if (validation.first == true) {
                                           json_string = validation.second.discord_user.to_json().dump();

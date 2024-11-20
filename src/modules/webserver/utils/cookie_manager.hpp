@@ -69,7 +69,7 @@ namespace gb {
     drogon::Task<dpp::user> fetch_discord_user_data(const Discord_user_credentials &credentials);
 
     drogon::Task<std::pair<bool, Authorization_cookie>> validate_authorization_cookie(Webserver_impl *server,
-                                                                                      drogon::HttpRequestPtr &req);
+                                                                                      drogon::HttpRequestPtr &req, bool renew = false);
 
     void set_cookie(Webserver_impl *server, const Authorization_cookie &cookie, drogon::HttpResponsePtr& response,
                     bool not_clear = true);

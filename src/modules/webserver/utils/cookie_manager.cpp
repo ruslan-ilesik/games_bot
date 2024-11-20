@@ -97,7 +97,7 @@ namespace gb {
     }
 
     drogon::Task<std::pair<bool, Authorization_cookie>> validate_authorization_cookie(Webserver_impl *server,
-                                                                                      drogon::HttpRequestPtr &req) {
+                                                                                      drogon::HttpRequestPtr &req, bool renew) {
         std::string cookie_string = req->getCookie("Authorization");
         if (cookie_string.empty()) {
             co_return std::pair<bool, Authorization_cookie>{false, {}};
@@ -142,7 +142,7 @@ namespace gb {
 
             // renew only if cookie actually exists in db
             if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch())
-                    .count() > credentials.soft_expire) {
+                    .count() > credentials.soft_expire && renew) {
                 co_await server->delete_cookie(id);
                 auto task1 = renew_discord_user_credentials(server, credentials);
                 std::pair<bool, Discord_user_credentials> result = co_await task1;
