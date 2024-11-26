@@ -4,7 +4,10 @@
 
 #pragma once
 
+#include <src/modules/webserver/webserver_impl.hpp>
+
 namespace gb{
 
+  void dashboard_page_api(Webserver_impl* server);
 
-    }
+}

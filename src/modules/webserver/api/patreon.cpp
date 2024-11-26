@@ -4,6 +4,9 @@
 
 #include "patreon.hpp"
 
+#include <src/modules/webserver/utils/cookie_manager.hpp>
+#include <src/modules/webserver/utils/type_conversions.hpp>
+
 namespace gb {
     enum class SUBSCRIPTION_STATUS { NO_SUBSCRIPTION, BASIC };
 
@@ -74,7 +77,146 @@ namespace gb {
         Prepared_statement patreon_webhook_stmt =
             server->db->create_prepared_statement("CALL patreon_webhook(?,?,?,?);");
 
-        server->on_stop.push_back([=]() { server->db->remove_prepared_statement(patreon_webhook_stmt); });
+        Prepared_statement patreon_logout_stmt =
+            server->db->create_prepared_statement("update premium join patreon_discord_link on\n"
+                                                  "patreon_discord_link.subscription_id = premium.id\n"
+                                                  "set discord_id = 0, premium.user_id = 0\n"
+                                                  "where discord_id = ?;");
+
+        Prepared_statement patreon_website_login_stmt =
+            server->db->create_prepared_statement("CALL patreon_website_login(?,?,?,?);");
+
+        Prepared_statement patreon_discord_status_stmt = server->db->create_prepared_statement(
+            "select is_from_patreon, user_name from patreon_discord_link where discord_id = ?;");
+
+        server->on_stop.push_back([=]() {
+            server->db->remove_prepared_statement(patreon_webhook_stmt);
+            server->db->remove_prepared_statement(patreon_discord_status_stmt);
+            server->db->remove_prepared_statement(patreon_website_login_stmt);
+            server->db->remove_prepared_statement(patreon_logout_stmt);
+        });
+
+        drogon::app().registerHandler(
+            "/action/patreon/logout",
+            [=](drogon::HttpRequestPtr req,
+                std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
+                std::pair<bool, Authorization_cookie> validation = co_await validate_authorization_cookie(server, req);
+                if (!validation.first) {
+                    server->log->error("Error in log out with patreon: User is not logged in with discord");
+                    callback(drogon::HttpResponse::newRedirectionResponse("/"));
+                    co_return;
+                }
+                co_await server->db->execute_prepared_statement(patreon_logout_stmt, validation.second.discord_user.id);
+                auto dashboard_redirect = drogon::HttpResponse::newRedirectionResponse("/dashboard");
+                callback(dashboard_redirect);
+                co_return;
+            });
+
+
+        drogon::app().registerHandler(
+            "/auth/patreon",
+            [=](drogon::HttpRequestPtr req,
+                std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
+                std::pair<bool, Authorization_cookie> validation = co_await validate_authorization_cookie(server, req);
+                if (!validation.first) {
+                    server->log->error("Error in login with patreon: User is not logged in with discord");
+                    callback(drogon::HttpResponse::newRedirectionResponse("/"));
+                    co_return;
+                }
+                auto para = req->getParameters();
+                std::string code = para.at("code");
+                if (code.empty()) {
+                    server->log->error("Error in login with patreon: Empty code");
+                    callback(drogon::HttpResponse::newRedirectionResponse("/"));
+                    co_return;
+                }
+
+                std::string client_id = server->config->get_value("patreon_client_id");
+                std::string redirect_url = server->config->get_value("patreon_redirect_url");
+                std::string post_data =
+                    std::format("code={}&grant_type=authorization_code&client_id={}&client_secret={}&redirect_uri={}",
+                                code, client_id, server->config->get_value("patreon_client_secret"),
+                                drogon::utils::urlEncode(redirect_url));
+
+                drogon::HttpClientPtr client = drogon::HttpClient::newHttpClient("https://www.patreon.com");
+                drogon::HttpRequestPtr patreon_request = drogon::HttpRequest::newHttpRequest();
+                patreon_request->setPath("/api/oauth2/token");
+                patreon_request->setMethod(drogon::Post);
+                patreon_request->setBody(post_data);
+                patreon_request->setContentTypeString("application/x-www-form-urlencoded");
+                // patreon_request->addHeader("Authorization", auth_header);
+
+                drogon::HttpResponsePtr response = co_await client->sendRequestCoro(patreon_request);
+
+                auto tmp = response->getBody();
+                std::string body(tmp.begin(), tmp.end());
+                if (response->statusCode() != drogon::k200OK || nlohmann::json::parse(body).contains("error")) {
+                    auto error_resp = drogon::HttpResponse::newHttpResponse();
+                    server->log->error("Login with Patreon failed: " + std::to_string(response->statusCode()) +
+                                       " body: " + body + " post data: " + post_data);
+
+                    error_resp->setStatusCode(drogon::k500InternalServerError);
+                    error_resp->setBody("LOGIN with Patreon failed");
+                    callback(error_resp);
+                    co_return;
+                }
+                nlohmann::json json_body = nlohmann::json::parse(body);
+                auto token_type = json_body["token_type"].template get<std::string>();
+                auto token = json_body["access_token"].template get<std::string>();
+                std::string auth_header = token_type + " " + token;
+
+                patreon_request = drogon::HttpRequest::newHttpRequest();
+                patreon_request->setPath("/api/oauth2/v2/identity?fields[user]=full_name,social_connections");
+                patreon_request->setMethod(drogon::Get);
+                patreon_request->setBody(post_data);
+                patreon_request->setContentTypeString("text/plain");
+                patreon_request->addHeader("Authorization", auth_header);
+
+                response = co_await client->sendRequestCoro(patreon_request);
+                tmp = response->getBody();
+                body = {tmp.begin(), tmp.end()};
+                if (response->statusCode() != drogon::k200OK || nlohmann::json::parse(body).contains("error")) {
+                    auto error_resp = drogon::HttpResponse::newHttpResponse();
+                    server->log->error(
+                        "Login with Patreon failed (on getting user data): " + std::to_string(response->statusCode()) +
+                        " body: " + body + " post data: " + post_data);
+
+                    error_resp->setStatusCode(drogon::k500InternalServerError);
+                    error_resp->setBody("LOGIN with Patreon failed");
+                    callback(error_resp);
+                    co_return;
+                }
+                json_body = nlohmann::json::parse(body);
+                dpp::snowflake discord_id = validation.second.discord_user.id;
+                auto patreon_id = json_body["data"]["id"].template get<std::string>();
+                auto nickname = json_body["data"]["attributes"]["full_name"].template get<std::string>();
+                bool is_from_patreon = false;
+                if (json_body["data"]["attributes"]["social_connections"].contains("discord") &&
+                    !json_body["data"]["attributes"]["social_connections"]["discord"].is_null()) {
+                    discord_id = {json_body["data"]["attributes"]["social_connections"]["discord"]["user_id"]
+                                      .template get<std::string>()};
+                    is_from_patreon = true;
+                }
+                co_await server->db->execute_prepared_statement(patreon_website_login_stmt, patreon_id, discord_id,
+                                                                is_from_patreon, nickname);
+                auto dashboard_redirect = drogon::HttpResponse::newRedirectionResponse("/dashboard");
+                callback(dashboard_redirect);
+                co_return;
+            });
+
+        drogon::app().registerHandler(
+            "/api/login-with-patreon-redirect",
+            [=](drogon::HttpRequestPtr req,
+                std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
+                std::string url_base = server->config->get_value("patreon_login_url_base");
+                std::string client_id = server->config->get_value("patreon_client_id");
+                std::string redirect_url = server->config->get_value("patreon_redirect_url");
+                redirect_url = std::vformat(url_base, std::make_format_args(client_id, redirect_url));
+                auto response = drogon::HttpResponse::newRedirectionResponse(redirect_url);
+                callback(response);
+                co_return;
+            });
+
 
         drogon::app().registerHandler(
             "/action/patreon/webhook",
@@ -124,8 +266,27 @@ namespace gb {
                 co_await server->db->execute_prepared_statement(patreon_webhook_stmt, patreon_id, discord_id,
                                                                 to_string(patron_status), nickname);
 
+
                 drogon::HttpResponsePtr resp = drogon::HttpResponse::newHttpResponse();
                 callback(resp);
+                co_return;
+            });
+
+        drogon::app().registerHandler(
+            "/api/patreon-login-status",
+            [=](drogon::HttpRequestPtr req,
+                std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
+                std::pair<bool, Authorization_cookie> validation = co_await validate_authorization_cookie(server, req);
+                Json::Value result;
+                if (!validation.first) {
+                    callback(drogon::HttpResponse::newHttpJsonResponse(result));
+                    co_return;
+                }
+
+                dpp::user &user = validation.second.discord_user;
+                Database_return_t r =
+                    co_await server->db->execute_prepared_statement(patreon_discord_status_stmt, user.id);
+                callback(drogon::HttpResponse::newHttpJsonResponse(to_json(r)));
                 co_return;
             });
     }
