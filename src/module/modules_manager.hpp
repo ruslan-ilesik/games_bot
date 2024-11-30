@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <iostream>
 #include <filesystem>
 #include <shared_mutex>
 #include <thread>

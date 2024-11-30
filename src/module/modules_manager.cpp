@@ -8,10 +8,10 @@
 
 namespace gb {
     Modules_manager::Modules_manager(const std::filesystem::path &modules_path) :
-        Module("module_manager", {}),
+        Module("module_manager", {})
 #if !defined(__FreeBSD__)
-        _watch(modules_path.string(),
-               [this](const std::string &path, const filewatch::Event event) {
+        , _watch(modules_path.string(),
+               [=,this](const std::string &path, const filewatch::Event event) {
                    std::unique_lock<std::shared_mutex> lock(this->_mutex);
                    std::cout << "Modules manager: " << path << ' ' << filewatch::event_to_string(event) << '\n';
                    std::string real_path = this->_modules_path.string() + "/" + path;
@@ -49,7 +49,7 @@ namespace gb {
     {
         this->_modules_path = modules_path;
 #if defined(__FreeBSD__)
-        _monitor_thread = std::thread([this]() {
+        _monitor_thread = std::thread([=,this]() {
         while (_running) {
             std::this_thread::sleep_for(_scan_interval);
 
