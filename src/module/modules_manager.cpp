@@ -50,6 +50,7 @@ namespace gb {
         this->_modules_path = modules_path;
 #if defined(__FreeBSD__)
         _monitor_thread = std::thread([=,this]() {
+            bool fst = true;
             while (_running) {
                 std::this_thread::sleep_for(_scan_interval);
 
@@ -62,12 +63,12 @@ namespace gb {
                         if (_file_states.find(path) == _file_states.end()) {
                             // File added
                             _file_states[path] = current_time;
-                            if (path.ends_with(".so")) {
+                            if (path.ends_with(".so") && !fst) {
                                 auto module_name = do_load_module(path);
                                 do_init_module(module_name);
                                 do_run_module(module_name);
                             }
-                        } else if (_file_states[path] != current_time) {
+                        } else if (_file_states[path] != current_time && !fst) {
                             // File modified
                             _file_states[path] = current_time;
                             auto module_name = do_load_module(path);
@@ -90,6 +91,7 @@ namespace gb {
                         ++it;
                     }
                 }
+                fst = false;
             }
         });
 #endif
