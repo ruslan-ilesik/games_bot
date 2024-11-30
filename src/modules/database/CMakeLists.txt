@@ -1,11 +1,12 @@
 add_library(database SHARED
-    ./database_impl.cpp
-    ../../module/module.cpp
+        ./database_impl.cpp
+        ../../module/module.cpp
 )
 
 if (NOT LINUX)
-    target_link_directories(database PRIVATE /usr/local/lib)
-    target_include_directories(database PRIVATE /usr/local/include/)
+    # Add MySQL library and include paths for FreeBSD
+    target_link_directories(database PRIVATE /usr/local/lib/mysql)
+    target_include_directories(database PRIVATE /usr/local/include/mysql)
 endif()
 
 # Link the MySQL client library
