@@ -3,5 +3,9 @@ add_library(database SHARED
     ../../module/module.cpp
 )
 
+if (NOT LINUX)
+    target_link_directories(database PRIVATE /usr/local/lib)
+endif()
+
 # Link the MySQL client library
 target_link_libraries(database mysqlclient)
