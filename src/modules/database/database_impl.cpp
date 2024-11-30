@@ -440,7 +440,6 @@ namespace gb {
         if (mysql_real_connect(_conn, host.c_str(), user.c_str(), password.c_str(), db_name.c_str(), 0, nullptr, 0) ==
             nullptr) {
             _log->critical("Database ERROR:mysql_real_connect() failed. " + std::string(mysql_error(_conn)));
-            mysql_close(_conn);
             throw std::runtime_error("Database ERROR:mysql_real_connect() failed. " + std::string(mysql_error(_conn)));
         }
         _log->info("Database: new connection established");
