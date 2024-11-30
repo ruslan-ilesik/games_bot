@@ -135,7 +135,7 @@ namespace gb {
                 dpp::message m = win(true);
                 m.id = _event.command.message_id;
                 m.channel_id = _event.command.channel_id;
-                _data.bot->message_edit(m);
+                _data.bot->event_edit_original_response(_event,m);
                 break;
             }
             _event = r.first;

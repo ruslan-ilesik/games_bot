@@ -139,6 +139,7 @@ namespace gb {
             _data.button_click_handler->wait_for(message, {get_current_player()}, 60);
         _data.bot->reply(sevent, message);
         Button_click_return r;
+        dpp::button_click_t event;
         while (true) {
             r = co_await button_click_awaitable;
             if (r.second) {
@@ -147,17 +148,17 @@ namespace gb {
                                                get_current_player()) + " lost his game.\n";
                 message.embeds[0].set_color(dpp::colors::red).set_title("Game Timeout.").set_description(desc);
                 message.components.clear();
-                if (message.id == 0) {
-                    _data.bot->message_edit(message);
+                if (message.id !=0) {
+                    _data.bot->event_edit_original_response(event,message);
                 }
                 else {
-                    _data.bot->message_edit(message);
+                    _data.bot->event_edit_original_response(sevent,message);
                 }
 
                 remove_player(USER_REMOVE_REASON::TIMEOUT, get_current_player());
                 break;
             }
-            dpp::button_click_t event = r.first;
+            event = r.first;
             message.id = event.command.message_id;
             puzzle_15::Direction d;
             switch (event.custom_id[0]) {

@@ -218,10 +218,10 @@ namespace gb {
                 .set_color(dpp::colors::red);
                 message.embeds[0].set_image(add_image(message, create_image()));
                 if (message.id !=0) {
-                    _data.bot->message_edit(message);
+                    _data.bot->event_edit_original_response(event,message);
                 }
                 else {
-                    _data.bot->message_create(message);
+                    _data.bot->event_edit_original_response(sevent,message);
                 }
 
                 remove_player(USER_REMOVE_REASON::TIMEOUT, get_current_player());

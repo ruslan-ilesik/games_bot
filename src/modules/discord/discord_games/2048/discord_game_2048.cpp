@@ -25,6 +25,7 @@ namespace gb {
         Discord_game(_data, players) {}
 
     std::vector<std::pair<std::string, image_generator_t>> Discord_game_2048::get_image_generators() { return {}; }
+
     dpp::task<void> Discord_game_2048::run(dpp::slashcommand_t sevent) {
         game_start(sevent.command.channel_id, sevent.command.guild_id);
         dpp::message message;
@@ -50,15 +51,16 @@ namespace gb {
                 message.embeds[0].set_color(dpp::colors::red).set_title("Game Timeout.").set_description(desc);
                 message.embeds[0].set_image(add_image(message, create_image()));
                 if (message.id !=0) {
-                    _data.bot->message_edit(message);
+                    _data.bot->event_edit_original_response(event,message);
                 }
                 else {
-                    _data.bot->message_create(message);
+                    _data.bot->event_edit_original_response(sevent,message);
                 }
                 remove_player(USER_REMOVE_REASON::TIMEOUT, get_current_player());
                 break;
             }
             event = r.first;
+            message.id = event.command.message_id;
             if (event.custom_id == "up") {
                 up(_board);
             } else if (event.custom_id == "down") {

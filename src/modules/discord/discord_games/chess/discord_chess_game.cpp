@@ -255,7 +255,7 @@ namespace gb {
                 message.embeds[0].set_color(dpp::colors::red).set_title("Game Timeout.").set_description(desc);
                 message.embeds[0].set_image(add_image(message,generate_image()));
                 message.components.clear();
-                _data.bot->message_edit(message);
+                _data.bot->event_edit_original_response(event,message);
                 remove_player(USER_REMOVE_REASON::TIMEOUT,get_current_player());
                 remove_player(USER_REMOVE_REASON::WIN,get_current_player());
                 break;

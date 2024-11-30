@@ -102,6 +102,16 @@ namespace gb {
         _bot->message_create(message_preprocessing(message), callback);
     }
 
+    void Discord_bot_impl::event_edit_original_response(const dpp::slashcommand_t &event, const dpp::message &m,
+                                                        const dpp::command_completion_event_t &callback) {
+        event.edit_original_response(message_preprocessing(m), callback);
+    }
+
+    void Discord_bot_impl::event_edit_original_response(const dpp::button_click_t &event, const dpp::message &m,
+                                                        const dpp::command_completion_event_t &callback) {
+        event.edit_original_response(message_preprocessing(m), callback);
+    }
+
     dpp::task<dpp::confirmation_callback_t> Discord_bot_impl::co_direct_message_create(const dpp::snowflake &user_id,
                                                                                        dpp::message &message) {
         co_return co_await _bot->co_direct_message_create(user_id,message_preprocessing(message));

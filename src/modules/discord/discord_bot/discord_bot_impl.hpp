@@ -204,6 +204,41 @@ namespace gb {
          */
         void message_create(const dpp::message &message,
                             const dpp::command_completion_event_t &callback = dpp::utility::log_error()) override;
+
+        /**
+         * @brief Edits the original response of a slash command interaction.
+         *
+         * This function modifies the original response of a slash command interaction.
+         * You can provide a new message to replace the previous response and optionally
+         * supply a callback to handle the completion of the request.
+         *
+         * @param event The slash command interaction containing details of the command.
+         * @param m The new message content to replace the original response.
+         * @param callback Optional. A callback function to handle the completion of the request.
+         * The default is `dpp::utility::log_error`. You can provide a custom callback
+         * for additional processing or error handling.
+         */
+        void event_edit_original_response(
+            const dpp::slashcommand_t &event, const dpp::message &m,
+            const dpp::command_completion_event_t &callback = dpp::utility::log_error()) override;
+
+        /**
+         * @brief Edits the original response of a button click interaction.
+         *
+         * This function modifies the original response of a button click interaction.
+         * A new message can be supplied to replace the existing response. A callback
+         * function can also be provided to handle the completion of the request.
+         *
+         * @param event The button click interaction containing details of the event.
+         * @param m The new message content to replace the original response.
+         * @param callback Optional. A callback function to handle the completion of the request.
+         * The default is `dpp::utility::log_error`. You can provide a custom callback
+         * for additional processing or error handling.
+         */
+        void event_edit_original_response(
+            const dpp::button_click_t &event, const dpp::message &m,
+            const dpp::command_completion_event_t &callback = dpp::utility::log_error()) override;
+
         /**
          * @brief Sends a direct message to a specified user asynchronously.
          *

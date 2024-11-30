@@ -247,10 +247,11 @@ namespace gb {
                 std::string desc = "If you still want to play, you can create a new game.\nPlayer " +
                                    dpp::utility::user_mention(get_current_player()) + " lost his game.\n";
                 message.embeds[0].set_color(dpp::colors::red).set_title("Game Timeout.").set_description(desc);
-                if (message.id != 0) {
-                    _data.bot->message_edit(message);
-                } else {
-                    _data.bot->message_create(message);
+                if (message.id !=0) {
+                    _data.bot->event_edit_original_response(event,message);
+                }
+                else {
+                    _data.bot->event_edit_original_response(sevent,message);
                 }
                 remove_player(USER_REMOVE_REASON::TIMEOUT, get_current_player());
                 break;

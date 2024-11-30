@@ -104,6 +104,16 @@ namespace gb {
         while (!end) {
             if (r.second) {
                 // timeout
+                next_player();
+                std::string desc = "If you still want to play, you can create new game.\nPlayer"+dpp::utility::user_mention(get_current_player())+" was automatically selected as the winner.\n";
+                next_player();
+                desc += "Player "+dpp::utility::user_mention(get_current_player()) + " should think faster next time.";
+                message.embeds[0].set_color(dpp::colors::red).set_title("Game Timeout.").set_description(desc);
+                message.embeds[0].set_image(add_image(message,generate_image()));
+                message.components.clear();
+                _data.bot->event_edit_original_response(event,message);
+                remove_player(USER_REMOVE_REASON::TIMEOUT,get_current_player());
+                remove_player(USER_REMOVE_REASON::WIN,get_current_player());
                 break;
             }
             event = r.first;
