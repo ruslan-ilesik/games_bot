@@ -21,6 +21,13 @@ else ()
     set(GLOBAL_LINK_LIBRARIES "/usr/local/lib/")
 endif ()
 
+if (DEFINED GLOBAL_INCLUDE_DIRS)
+    include_directories(${GLOBAL_INCLUDE_DIRS})
+endif()
+
+if (DEFINED GLOBAL_LINK_LIBRARIES)
+    link_directories(${GLOBAL_LINK_LIBRARIES})
+endif()
 
 # Add compile options to disable specific warnings
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
