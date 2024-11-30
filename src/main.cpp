@@ -15,7 +15,7 @@ int main() {
     auto m = gb::Modules_manager::create({"./modules"});
     m->run();
     while(true){
-        sleep(10);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10000));
         //m->stop_module("admin_terminal");
         //m->stop_modules();
     }
