@@ -5,6 +5,7 @@ add_library(database SHARED
 
 if (NOT LINUX)
     target_link_directories(database PRIVATE /usr/local/lib)
+    target_include_directories(database PRIVATE /usr/local/include/)
 endif()
 
 # Link the MySQL client library
