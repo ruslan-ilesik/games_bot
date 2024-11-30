@@ -10,7 +10,10 @@
 #include <dlfcn.h>
 
 #include "./module.hpp"
+
+#if !defined(__FreeBSD__)
 #include "../utils/filewatch/FileWatch.hpp"
+#endif
 
 namespace gb {
 
@@ -45,7 +48,6 @@ namespace gb {
          */
         class Internal_module {
         private:
-
             /**
              * @brief Handler for the loaded dynamic library.
              */
@@ -141,7 +143,8 @@ namespace gb {
             /**
              * @brief Innit method to init the module's functionality.
              * @param modules Map of internal modules managed by Modules_manager.
-             * @note It copies all of the modules defined as dependencies to new map and pass them to module + modules_manager
+             * @note It copies all of the modules defined as dependencies to new map and pass them to module +
+             * modules_manager
              */
             void init(const Internal_modules &modules);
 
@@ -167,25 +170,42 @@ namespace gb {
          */
         std::shared_mutex _mutex;
 
+#if !defined(__FreeBSD__)
         /**
          * @brief File watcher for monitoring module file changes.
          */
-        filewatch::FileWatch <std::string> _watch;
+        filewatch::FileWatch<std::string> _watch;
+#else
+        // Mutex to manage filewatcher
+         std::mutex _file_states_mutex;
+
+        // Time interval between checking changes in folder.
+        std::chrono::seconds _scan_interval{5};
+
+        // Map to track the last modified time and existence of files
+        std::unordered_map<std::string, std::filesystem::file_time_type> _file_states;
+
+        // Atomic flag to control the monitoring thread
+        std::atomic<bool> _running{true};
+
+        // Thread for monitoring changes
+        std::thread _monitor_thread;
+#endif
 
         /**
          * @brief Map of loaded internal modules.
-        */
+         */
         std::map<std::string, Internal_module> _modules;
 
         /**
-          * @brief Path to the directory containing module files.
+         * @brief Path to the directory containing module files.
          */
         std::filesystem::path _modules_path;
 
         /**
          * @brief Flag indicating whether module loading is allowed.
          * @note Does not impact modules stopping.
-        */
+         */
         bool _allow_modules_load = true;
 
         /**
@@ -211,12 +231,12 @@ namespace gb {
         /**
          * @brief Virtual destructor for Modules_manager.
          */
-        virtual ~Modules_manager() = default;
+        ~Modules_manager() override;
 
 
         /**
-        * @brief Innit_modules method to init all loaded modules.
-        */
+         * @brief Innit_modules method to init all loaded modules.
+         */
         virtual void init_modules();
 
         /**
@@ -232,13 +252,13 @@ namespace gb {
 
         /**
          * @brief Run method to run all loaded methods.
-        */
+         */
         virtual void run_modules();
 
         /**
          * @brief Run method to be overridden by subclasses.
-         * @param modules Map of all modules managed by the application, including the module manager as "module_manager".
-         *        Any additional dependencies required by the module should also be included in this map.
+         * @param modules Map of all modules managed by the application, including the module manager as
+         * "module_manager". Any additional dependencies required by the module should also be included in this map.
          * @note This method must be overridden by subclasses to define module behavior.
          */
         virtual void init(const Modules &modules);
@@ -256,10 +276,10 @@ namespace gb {
         virtual void run();
 
         /**
-        * @brief Method to run a module by name.
-        * @param name Name of the module to run.
-        */
-        virtual void run_module(const std::string& name);
+         * @brief Method to run a module by name.
+         * @param name Name of the module to run.
+         */
+        virtual void run_module(const std::string &name);
 
         /**
          * @brief Stop method to stop a specific module by name.
@@ -269,8 +289,8 @@ namespace gb {
         virtual void stop_module(const std::string &name);
 
         /**
-        * @brief Load all module dynamically from the default path.
-        */
+         * @brief Load all module dynamically from the default path.
+         */
         virtual void load_modules();
 
         /**
@@ -299,8 +319,6 @@ namespace gb {
         virtual std::vector<std::string> get_module_names();
 
     protected:
-
-
     private:
         /**
          * @brief Get a shared pointer to this Modules_manager instance.
@@ -335,4 +353,4 @@ namespace gb {
         std::string do_load_module(const std::string &path);
     };
 
-}
+} // namespace gb

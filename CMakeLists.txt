@@ -22,6 +22,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang
             -Wno-unused-command-line-argument
             -Wdocumentation
             -Wno-unused-value
+            -Wno-inconsistent-missing-override
             -DDPP_CORO
             -DDPP_FORMATTERS
     )

@@ -8,47 +8,91 @@
 
 namespace gb {
     Modules_manager::Modules_manager(const std::filesystem::path &modules_path) :
-            Module("module_manager", {}),
-            _watch(modules_path.string(),
-                   [this](const std::string &path, const filewatch::Event event) {
-                       std::unique_lock<std::shared_mutex> lock(this->_mutex);
-                       std::cout << "Modules manager: " << path << ' ' << filewatch::event_to_string(event) << '\n';
-                       std::string real_path = this->_modules_path.string() + "/" + path;
-                       std::vector<std::string> keys;
-                       for (const auto &pair: _modules) {
-                           if (pair.second.get_module().get() != this) {
-                               keys.push_back(pair.first);
+        Module("module_manager", {}),
+#if !defined(__FreeBSD__)
+        _watch(modules_path.string(),
+               [this](const std::string &path, const filewatch::Event event) {
+                   std::unique_lock<std::shared_mutex> lock(this->_mutex);
+                   std::cout << "Modules manager: " << path << ' ' << filewatch::event_to_string(event) << '\n';
+                   std::string real_path = this->_modules_path.string() + "/" + path;
+                   std::vector<std::string> keys;
+                   for (const auto &pair: _modules) {
+                       if (pair.second.get_module().get() != this) {
+                           keys.push_back(pair.first);
+                       }
+                   }
+                   for (auto &k: keys) {
+                       auto &v = _modules.at(k);
+                       if (v.get_file_path() == real_path) {
+                           if (event == filewatch::Event::removed) {
+                               auto t = v.get_module()->get_name();
+                               do_stop_module(t);
+                               return;
+                           } else if (event == filewatch::Event::modified) {
+                               auto t = v.get_module()->get_name();
+                               do_stop_module(t);
+                               t = do_load_module(real_path);
+                               do_init_module(t);
+                               do_run_module(t);
+                               return;
                            }
                        }
-                       for (auto& k: keys) {
-                           auto& v = _modules.at(k);
-                           if (v.get_file_path() == real_path) {
-                               if (event == filewatch::Event::removed) {
-                                   auto t = v.get_module()->get_name();
-                                   do_stop_module(t);
-                                   return;
-                               }
-                               else if (event == filewatch::Event::modified){
-                                   auto t = v.get_module()->get_name();
-                                   do_stop_module(t);
-                                   t = do_load_module(real_path);
-                                   do_init_module(t);
-                                   do_run_module(t);
-                                   return;
-                               }
-
-                           }
-                       }
-                       if (( real_path.ends_with(".so")) && (event == filewatch::Event::added || (event == filewatch::Event::modified))){
-                           auto t = do_load_module(real_path);
-                           do_init_module(t);
-                           do_run_module(t);
-                       }
-                   }) {
-
+                   }
+                   if ((real_path.ends_with(".so")) &&
+                       (event == filewatch::Event::added || (event == filewatch::Event::modified))) {
+                       auto t = do_load_module(real_path);
+                       do_init_module(t);
+                       do_run_module(t);
+                   }
+               })
+#endif
+    {
         this->_modules_path = modules_path;
-        std::cout << "Modules_manager starting watching directory: " << modules_path << '\n';
+#if defined(__FreeBSD__)
+        _monitor_thread = std::thread([this]() {
+        while (_running) {
+            std::this_thread::sleep_for(_scan_interval);
 
+            std::lock_guard<std::mutex> lock(_file_states_mutex);
+            for (const auto &entry : std::filesystem::directory_iterator(_modules_path)) {
+                try {
+                    auto current_time = std::filesystem::last_write_time(entry);
+                    const auto &path = entry.path().string();
+
+                    if (_file_states.find(path) == _file_states.end()) {
+                        // File added
+                        _file_states[path] = current_time;
+                        if (path.ends_with(".so")) {
+                            auto module_name = do_load_module(path);
+                            do_init_module(module_name);
+                            do_run_module(module_name);
+                        }
+                    } else if (_file_states[path] != current_time) {
+                        // File modified
+                        _file_states[path] = current_time;
+                        auto module_name = do_load_module(path);
+                        do_stop_module(module_name);
+                        do_init_module(module_name);
+                        do_run_module(module_name);
+                    }
+                } catch (const std::filesystem::filesystem_error &e) {
+                    std::cerr << "Filesystem error: " << e.what() << std::endl;
+                }
+            }
+
+            // Check for removed files
+            for (auto it = _file_states.begin(); it != _file_states.end();) {
+                if (!std::filesystem::exists(it->first)) {
+                    auto module_name = it->first;
+                    do_stop_module(module_name);
+                    it = _file_states.erase(it);
+                } else {
+                    ++it;
+                }
+            }
+        }
+#endif
+        std::cout << "Modules_manager starting watching directory: " << modules_path << '\n';
     }
 
     std::string Modules_manager::load_module(const std::string &path) {
@@ -71,7 +115,8 @@ namespace gb {
         }
         void *thing = (dlsym(libraryHandle, "create"));
         if (!thing) {
-            std::cout << "Modules_manager ERROR loading getting module symbol: " << path << ' ' << dlerror() << std::endl;
+            std::cout << "Modules_manager ERROR loading getting module symbol: " << path << ' ' << dlerror()
+                      << std::endl;
             dlclose(libraryHandle);
             return "";
         }
@@ -92,14 +137,22 @@ namespace gb {
     Modules_manager_ptr Modules_manager::create(const std::filesystem::path &modules_path) {
         return std::shared_ptr<Modules_manager>(new Modules_manager(modules_path));
     }
+    Modules_manager::~Modules_manager() {
+#if defined(__FreeBSD__)
+        _running = false;
+        if (_monitor_thread.joinable()) {
+            _monitor_thread.join();
+        }
+#endif
+    }
 
     void Modules_manager::init_modules() {
         std::unique_lock<std::shared_mutex> lock(this->_mutex);
         _running_order.clear();
         std::cout << "Modules_manager start modules init\n";
         size_t iteration = 1;
-        auto not_running = std::ranges::count_if(std::views::values(_modules),
-                                                 [](Internal_module &v) { return !v.is_initialized(); });
+        auto not_running =
+            std::ranges::count_if(std::views::values(_modules), [](Internal_module &v) { return !v.is_initialized(); });
         while (not_running > 0) {
             std::cout << "________________________________________\n";
             std::cout << "Modules_manager module init iteration " << iteration << "\n";
@@ -110,7 +163,8 @@ namespace gb {
                     this->do_init_module(m.get_module()->get_name());
                     cnt++;
                     modules_ran += std::format("\n{}) {}", cnt, m.get_module()->get_name());
-                    std::cout << "Modules_manager module " << m.get_module()->get_name() << " is initialized" << std::endl;
+                    std::cout << "Modules_manager module " << m.get_module()->get_name() << " is initialized"
+                              << std::endl;
                 }
             }
             std::cout << "Modules_manager module init iteration " << iteration << " ended\nModules: " << modules_ran
@@ -140,13 +194,9 @@ namespace gb {
                                                 [](Internal_module &v) { return !v.is_initialized(); });
             iteration++;
         }
-
-
     }
 
-    Module_ptr Modules_manager::getptr() {
-        return shared_from_this();
-    }
+    Module_ptr Modules_manager::getptr() { return shared_from_this(); }
 
     void Modules_manager::run() {
         load_modules();
@@ -183,7 +233,7 @@ namespace gb {
         }
     }
 
-    void Modules_manager::init(const Modules &modules) {};
+    void Modules_manager::init(const Modules &modules){};
 
     void Modules_manager::stop_modules() {
         std::unique_lock<std::shared_mutex> lock(this->_mutex);
@@ -216,7 +266,7 @@ namespace gb {
         }
         std::cout << "Modules_manager closing module " << name << std::endl;
         auto &m = _modules.at(name);
-        auto e = std::ranges::remove(_running_order,m.get_module());
+        auto e = std::ranges::remove(_running_order, m.get_module());
         _running_order.erase(e.begin(), e.end());
         if (m.get_module().get() == this) {
             std::cout << "Module_manager closing error: Module_manager can not close itself!!!" << std::endl;
@@ -253,16 +303,15 @@ namespace gb {
     void Modules_manager::stop() {}
 
     void Modules_manager::do_run_module(const std::string &name) {
-        std::cout << "Modules_manager running module "<< name << std::endl;
-        if (_modules.at(name).get_module().get() != this){
+        std::cout << "Modules_manager running module " << name << std::endl;
+        if (_modules.at(name).get_module().get() != this) {
             this->_modules.at(name).run();
         }
-
     }
 
     void Modules_manager::run_modules() {
         std::unique_lock<std::shared_mutex> lock(_mutex);
-        for(auto& v : _running_order){
+        for (auto &v: _running_order) {
             do_run_module(v->get_name());
         }
     }
@@ -275,7 +324,7 @@ namespace gb {
     std::vector<std::string> Modules_manager::get_module_names() {
         std::shared_lock<std::shared_mutex> lock(_mutex);
         auto kv = std::views::keys(_modules);
-        return {kv.begin(),kv.end()};
+        return {kv.begin(), kv.end()};
     }
 
     void Modules_manager::load_modules() {
@@ -286,7 +335,9 @@ namespace gb {
 
         std::cout << "Modules_manager running initial modules loading...\n";
         for (const auto &dirEntry: std::filesystem::recursive_directory_iterator(_modules_path)) {
-            if (dirEntry.path().extension() != ".so") { continue; }
+            if (dirEntry.path().extension() != ".so") {
+                continue;
+            }
             this->do_load_module(dirEntry.path());
         }
         std::string output = "";
@@ -298,13 +349,9 @@ namespace gb {
         std::cout << "Modules_manager initial modules loading done.\nLoaded modules: " << output << std::endl;
     }
 
-    void *Modules_manager::Internal_module::get_library_handler() const {
-        return _library_handler;
-    }
+    void *Modules_manager::Internal_module::get_library_handler() const { return _library_handler; }
 
-    Module_ptr Modules_manager::Internal_module::get_module() const {
-        return _module;
-    }
+    Module_ptr Modules_manager::Internal_module::get_module() const { return _module; }
 
     std::vector<std::string> Modules_manager::Internal_module::get_module_dependent() const {
         return _module_dependent;
@@ -338,7 +385,6 @@ namespace gb {
         }
         _module->init(deps);
         _is_initialized = true;
-
     }
 
     bool Modules_manager::Internal_module::is_initialized() const { return _is_initialized; }
@@ -360,20 +406,16 @@ namespace gb {
         _is_initialized = false;
     }
 
-    std::string Modules_manager::Internal_module::get_file_path() {
-        return _file_path;
-    }
+    std::string Modules_manager::Internal_module::get_file_path() { return _file_path; }
 
-    bool Modules_manager::Internal_module::is_running() const {
-        return _is_running;
-    }
+    bool Modules_manager::Internal_module::is_running() const { return _is_running; }
 
     void Modules_manager::Internal_module::run() {
-        if (_is_running || !_is_initialized){
+        if (_is_running || !_is_initialized) {
             return;
         }
         _module->run();
         _is_running = true;
     }
 
-}// gb
+} // namespace gb
