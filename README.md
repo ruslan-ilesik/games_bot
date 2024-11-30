@@ -33,8 +33,8 @@ and full redesign of architecture.
 - [X] website
 - [X] reports to websites like top.gg
 - [X] statistics collection
-- [] port to freebsd
-
+- [X] port to freebsd
+- [] RELEASE!!!
 
 # Implementation details
 
