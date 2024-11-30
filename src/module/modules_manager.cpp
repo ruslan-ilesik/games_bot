@@ -91,7 +91,7 @@ namespace gb {
                     }
                 }
             }
-        }
+        });
 #endif
         std::cout << "Modules_manager starting watching directory: " << modules_path << '\n';
     }
