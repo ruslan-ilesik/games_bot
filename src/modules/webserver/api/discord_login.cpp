@@ -10,21 +10,23 @@ void gb::discord_login_api(Webserver_impl *server) {
 
     Prepared_statement insert_cookie = server->db->create_prepared_statement(
         "insert into website_cookies (id,expire_time,renew_time) values (?,from_unixtime(?),from_unixtime(?));");
+
     server->on_stop.push_back([=]() { server->db->remove_prepared_statement(insert_cookie); });
 
-    register_config_redirect_handler(server,"/api/login-with-discord-redirect","login_with_discord_url");
+    register_config_redirect_handler(server, "/api/login-with-discord-redirect", "login_with_discord_url");
 
     drogon::app().registerHandler("/api/discord/get-display-user-data",
                                   [=](drogon::HttpRequestPtr req,
                                       std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
-                                      std::pair<bool, Authorization_cookie> validation = co_await validate_authorization_cookie(server, req, true);
+                                      std::pair<bool, Authorization_cookie> validation =
+                                          co_await validate_authorization_cookie(server, req, true);
                                       std::string json_string;
                                       if (validation.first == true) {
                                           json_string = validation.second.discord_user.to_json().dump();
                                       }
                                       Json::Reader reader;
                                       Json::Value value;
-                                      reader.parse( json_string, value );
+                                      reader.parse(json_string, value);
                                       auto resp = drogon::HttpResponse::newHttpJsonResponse(value);
                                       if (json_string.empty()) {
                                           resp->setStatusCode(drogon::k403Forbidden);
@@ -32,6 +34,57 @@ void gb::discord_login_api(Webserver_impl *server) {
                                       set_cookie(server, resp, validation);
                                       callback(resp);
                                   });
+    drogon::app().registerHandler(
+        "/action/discord/logout",
+        [=](drogon::HttpRequestPtr req,
+            std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
+            std::pair<bool, Authorization_cookie> validation =
+                co_await validate_authorization_cookie(server, req, true);
+            if (!validation.first) {
+                callback(drogon::HttpResponse::newHttpResponse());
+                co_return;
+            }
+            co_await server->delete_cookie(validation.second.id);
+            std::string post_data = "token_type_hint=access_token&token=" + validation.second.credentials.access_token;
+
+
+            std::string auth_string = server->config->get_value("discord_login_client_id") + ":" +
+                                      server->config->get_value("discord_login_client_secret");
+
+            std::string auth_header = "Basic " + drogon::utils::base64Encode(auth_string);
+
+            drogon::HttpClientPtr client = drogon::HttpClient::newHttpClient("https://discord.com");
+            drogon::HttpRequestPtr discord_request = drogon::HttpRequest::newHttpRequest();
+            discord_request->setPath("/api/oauth2/token/revoke"); // Set the API endpoint path
+            discord_request->setMethod(drogon::Post); // Set HTTP method
+            discord_request->setBody(post_data); // Attach POST data
+            discord_request->setContentTypeString("application/x-www-form-urlencoded"); // Specify content type
+            discord_request->addHeader("Authorization", auth_header); // Add authorization header
+
+            drogon::HttpResponsePtr response = co_await client->sendRequestCoro(discord_request); // Send request
+            std::string body = std::string(response->getBody());
+            if (response->getStatusCode() != drogon::k200OK) {
+                server->log->error("Failed to revoke Discord token: " + body + " Post data: " + post_data);
+                auto resp = drogon::HttpResponse::newRedirectionResponse("/");
+                set_cookie(server, validation.second, resp, false);
+                callback(resp);
+                co_return; // Handle error
+            }
+            nlohmann::json json_response = nlohmann::json::parse(response->getBody());
+            if (json_response.contains("error")) {
+                server->log->error("Failed to revoke Discord token: " + body + " Post data: " + post_data);
+                auto resp = drogon::HttpResponse::newRedirectionResponse("/");
+                set_cookie(server, validation.second, resp, false);
+                callback(resp);
+                co_return; // Handle error
+            }
+
+            auto resp = drogon::HttpResponse::newRedirectionResponse("/");
+            set_cookie(server, validation.second, resp, false);
+            callback(resp);
+            co_return;
+        });
+
 
     drogon::app().registerHandler(
         "/auth/discord",
