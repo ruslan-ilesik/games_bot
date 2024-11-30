@@ -50,44 +50,45 @@ namespace gb {
         this->_modules_path = modules_path;
 #if defined(__FreeBSD__)
         _monitor_thread = std::thread([=,this]() {
-        while (_running) {
-            std::this_thread::sleep_for(_scan_interval);
+            while (_running) {
+                std::this_thread::sleep_for(_scan_interval);
 
-            std::lock_guard<std::mutex> lock(_file_states_mutex);
-            for (const auto &entry : std::filesystem::directory_iterator(_modules_path)) {
-                try {
-                    auto current_time = std::filesystem::last_write_time(entry);
-                    const auto &path = entry.path().string();
+                std::lock_guard<std::mutex> lock(_file_states_mutex);
+                for (const auto &entry : std::filesystem::directory_iterator(_modules_path)) {
+                    try {
+                        auto current_time = std::filesystem::last_write_time(entry);
+                        const auto &path = entry.path().string();
 
-                    if (_file_states.find(path) == _file_states.end()) {
-                        // File added
-                        _file_states[path] = current_time;
-                        if (path.ends_with(".so")) {
+                        if (_file_states.find(path) == _file_states.end()) {
+                            // File added
+                            _file_states[path] = current_time;
+                            if (path.ends_with(".so")) {
+                                auto module_name = do_load_module(path);
+                                do_init_module(module_name);
+                                do_run_module(module_name);
+                            }
+                        } else if (_file_states[path] != current_time) {
+                            // File modified
+                            _file_states[path] = current_time;
                             auto module_name = do_load_module(path);
+                            do_stop_module(module_name);
                             do_init_module(module_name);
                             do_run_module(module_name);
                         }
-                    } else if (_file_states[path] != current_time) {
-                        // File modified
-                        _file_states[path] = current_time;
-                        auto module_name = do_load_module(path);
-                        do_stop_module(module_name);
-                        do_init_module(module_name);
-                        do_run_module(module_name);
+                    } catch (const std::filesystem::filesystem_error &e) {
+                        std::cerr << "Filesystem error: " << e.what() << std::endl;
                     }
-                } catch (const std::filesystem::filesystem_error &e) {
-                    std::cerr << "Filesystem error: " << e.what() << std::endl;
                 }
-            }
 
-            // Check for removed files
-            for (auto it = _file_states.begin(); it != _file_states.end();) {
-                if (!std::filesystem::exists(it->first)) {
-                    auto module_name = it->first;
-                    do_stop_module(module_name);
-                    it = _file_states.erase(it);
-                } else {
-                    ++it;
+                // Check for removed files
+                for (auto it = _file_states.begin(); it != _file_states.end();) {
+                    if (!std::filesystem::exists(it->first)) {
+                        auto module_name = it->first;
+                        do_stop_module(module_name);
+                        it = _file_states.erase(it);
+                    } else {
+                        ++it;
+                    }
                 }
             }
         }
