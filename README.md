@@ -30,7 +30,7 @@ and full redesign of architecture.
 - [X] rubiks_cube
 - [X] sudoku
 - [X] tic_tac_toe
-- [ ] website
+- [X] website
 - [X] reports to websites like top.gg
 - [X] statistics collection
 - [] port to freebsd
