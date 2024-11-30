@@ -16,6 +16,9 @@ add_link_options(
 
  set(CMAKE_EXE_LINKER_FLAGS "-stdlib=libc++ -L/usr/lib/llvm-19/lib -Wl,-rpath,/usr/lib/llvm-19/lib")
  set(CMAKE_REQUIRED_FLAGS "${CMAKE_CXX_FLAGS}  -stdlib=libc++ -L/usr/lib/llvm-19/lib -Wl,-rpath,/usr/lib/llvm-19/lib")
+else ()
+    set(GLOBAL_INCLUDE_DIRS "/usr/local/include/")
+    set(GLOBAL_LINK_LIBRARIES "/usr/local/lib/")
 endif ()
 
 
