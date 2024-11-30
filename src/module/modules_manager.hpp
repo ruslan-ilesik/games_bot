@@ -6,6 +6,8 @@
 
 #include <filesystem>
 #include <shared_mutex>
+#include <thread>
+#include <chrono>
 
 #include <dlfcn.h>
 
