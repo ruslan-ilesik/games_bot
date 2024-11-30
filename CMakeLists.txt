@@ -5,16 +5,19 @@ set(CMAKE_CXX_STANDARD 20)
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin/")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/modules")
 
+if (LINUX)
+ #Set custom compilation flags
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc++ -I/usr/lib/llvm-19/include/c++/v1/")
+add_link_options(
+        -stdlib=libc++
+        -L/usr/lib/llvm-19/lib
+        -Wl,-rpath,/usr/lib/llvm-19/lib
+)
 
-# Set custom compilation flags
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc++ -I/usr/lib/llvm-19/include/c++/v1/")
-#add_link_options(
-#        -stdlib=libc++
-#        -L/usr/lib/llvm-19/lib
-#        -Wl,-rpath,/usr/lib/llvm-19/lib
-#)
+ set(CMAKE_EXE_LINKER_FLAGS "-stdlib=libc++ -L/usr/lib/llvm-19/lib -Wl,-rpath,/usr/lib/llvm-19/lib")
+ set(CMAKE_REQUIRED_FLAGS "${CMAKE_CXX_FLAGS}  -stdlib=libc++ -L/usr/lib/llvm-19/lib -Wl,-rpath,/usr/lib/llvm-19/lib")
+endif ()
 
-#set(CMAKE_EXE_LINKER_FLAGS "-stdlib=libc++ -L/usr/lib/llvm-19/lib -Wl,-rpath,/usr/lib/llvm-19/lib")
 
 # Add compile options to disable specific warnings
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -29,7 +32,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang
     )
 endif ()
 
-#set(CMAKE_REQUIRED_FLAGS "${CMAKE_CXX_FLAGS}  -stdlib=libc++ -L/usr/lib/llvm-19/lib -Wl,-rpath,/usr/lib/llvm-19/lib")
+
 
 
 
