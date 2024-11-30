@@ -38,6 +38,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang
             -Wno-unused-value
             -Wno-deprecated
             -Wno-documentation-deprecated-sync
+            -Wno-documentation
             -Wno-inconsistent-missing-override
             -DDPP_CORO
             -DDPP_FORMATTERS
