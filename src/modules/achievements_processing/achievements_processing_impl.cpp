@@ -3,7 +3,7 @@
 //
 
 #include "achievements_processing_impl.hpp"
-
+#include <fstream>
 
 namespace gb {
     Achievements_processing_impl::Achievements_processing_impl() :
