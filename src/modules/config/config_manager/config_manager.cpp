@@ -4,6 +4,8 @@
 
 #include <format>
 #include <iostream>
+#include <mutex>
+#include <ranges>
 #include "config_manager.hpp"
 
 namespace gb {

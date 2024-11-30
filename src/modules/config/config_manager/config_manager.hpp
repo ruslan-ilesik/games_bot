@@ -4,6 +4,7 @@
 
 #pragma once
 #include <shared_mutex>
+#include <memory>
 #include "../config.hpp"
 
 namespace gb {

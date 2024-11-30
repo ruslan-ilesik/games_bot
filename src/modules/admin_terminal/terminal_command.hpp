@@ -5,6 +5,8 @@
 #pragma once
 
 #include <functional>
+#include <shared_mutex>
+#include <memory>
 #include <string>
 #include <vector>
 

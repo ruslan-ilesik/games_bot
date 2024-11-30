@@ -63,6 +63,8 @@ function(add_all_subdirectories base_dir)
     endforeach ()
 endfunction()
 
+find_package(Threads REQUIRED)
+target_link_libraries(games_bot PRIVATE Threads::Threads)
 
 # Call the function with the base directory
 add_all_subdirectories(${CMAKE_SOURCE_DIR}/src)

@@ -12,6 +12,7 @@
 #include <iostream>
 #include <list>
 #include <memory>
+#include <queue>
 #include <mysql/mysql.h>
 #include <shared_mutex>
 #include <thread>
