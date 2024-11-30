@@ -33,6 +33,8 @@ and full redesign of architecture.
 - [ ] website
 - [X] reports to websites like top.gg
 - [X] statistics collection
+- [] port to freebsd
+- [] optimize discord api calls
 
 
 # Implementation details
