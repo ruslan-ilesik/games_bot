@@ -26,7 +26,7 @@ namespace gb {
         std::mt19937 _rng;
 
         /// Uniform distribution for generating random IDs.
-        std::uniform_int_distribution<std::mt19937::result_type> _dist{0, std::numeric_limits<uint64_t>::max()};
+        std::uniform_int_distribution<uint64_t> _dist{0, std::numeric_limits<uint64_t>::max()};
 
         /// Mutex for thread-safe access to _ids_map.
         std::shared_mutex _mutex;
