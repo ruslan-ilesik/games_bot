@@ -12,6 +12,7 @@
 
 #include <src/modules/config/config.hpp>
 #include <src/modules/database/database.hpp>
+#include <src/modules/discord/discord_achievements_processing/discord_achievements_processing.hpp>
 #include <src/modules/discord/discord_command_handler/discord_command_handler.hpp>
 #include <src/modules/discord/premium_manager/premium_manager.hpp>
 #include <src/modules/logging/logging.hpp>
@@ -33,6 +34,7 @@ namespace gb {
         Discord_command_handler_ptr commands_handler;
         Logging_ptr log;
         Premium_manager_ptr premium_manager;
+        Discord_achievements_processing_ptr achievements_manager;
 
         std::atomic_uint64_t current_jwt_id;
 

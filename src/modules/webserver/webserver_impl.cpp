@@ -13,7 +13,9 @@
 
 
 namespace gb {
-    Webserver_impl::Webserver_impl() : Webserver("webserver", {"discord_statistics_collector", "database", "config","discord_command_handler","logging","premium_manager"}) {}
+    Webserver_impl::Webserver_impl() : Webserver("webserver", {"discord_statistics_collector", "database", "config","discord_command_handler","logging","premium_manager","discord_achievements_processing"}) {}
+
+
     void Webserver_impl::stop() {
         {
             std::unique_lock lk(_mutex);
@@ -76,6 +78,7 @@ namespace gb {
         commands_handler = std::static_pointer_cast<Discord_command_handler>(modules.at("discord_command_handler"));
         log = std::static_pointer_cast<Logging>(modules.at("logging"));
         premium_manager = std::static_pointer_cast<Premium_manager>(modules.at("premium_manager"));
+        achievements_manager = std::static_pointer_cast<Discord_achievements_processing>(modules.at("discord_achievements_processing"));
     }
 
     Task<void> Webserver_impl::delete_cookie(uint64_t id) {

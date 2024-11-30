@@ -81,3 +81,70 @@ Json::Value to_json(const dpp::slashcommand &data) {
 
     return value;
 }
+
+
+Json::Value to_json(const std::vector<int> &rows_cnt) {
+    Json::Value json_array(Json::arrayValue);
+    for (const auto &count : rows_cnt) {
+        json_array.append(count);
+    }
+    return json_array;
+}
+
+Json::Value to_json(const std::vector<std::string> &order_by) {
+    Json::Value json_array(Json::arrayValue);
+    for (const auto value: order_by) {
+        Json::Value json_object(Json::objectValue);
+        json_array.append(value);
+    }
+    return json_array;
+}
+
+Json::Value to_json(const gb::Achievements_report &achievements_report) {
+    Json::Value json;
+
+    // Helper lambda to serialize a vector of Achievement pairs (with timestamps)
+    auto serialize_unlocked = [](const std::vector<std::pair<gb::Achievement, std::time_t>> &achievements) {
+        Json::Value json_array(Json::arrayValue);
+        for (const auto &entry : achievements) {
+            Json::Value achievement_json = to_json(entry.first);
+            achievement_json["unlocked_at"] = entry.second;
+            json_array.append(achievement_json);
+        }
+        return json_array;
+    };
+
+    // Helper lambda to serialize a vector of Achievements
+    auto serialize_locked = [](const std::vector<gb::Achievement> &achievements) {
+        Json::Value json_array(Json::arrayValue);
+        for (const auto &achievement : achievements) {
+            json_array.append(to_json(achievement));
+        }
+        return json_array;
+    };
+
+    // Serialize each field
+    json["unlocked_usual"] = serialize_unlocked(achievements_report.unlocked_usual);
+    json["unlocked_secret"] = serialize_unlocked(achievements_report.unlocked_secret);
+    json["locked_usual"] = serialize_locked(achievements_report.locked_usual);
+    json["locked_secret"] = achievements_report.locked_secret.size();
+
+    return json;
+}
+
+Json::Value to_json(const gb::Achievement &achievements_report) {
+    Json::Value json;
+
+    json["name"] = achievements_report.name;
+    json["description"] = achievements_report.description;
+    json["image_url"] = achievements_report.image_url;
+    json["is_secret"] = achievements_report.is_secret;
+
+    Json::Value discord_emoji_json;
+    discord_emoji_json["name"] = achievements_report.discord_emoji.first;
+    discord_emoji_json["id"] = achievements_report.discord_emoji.second;
+
+    json["discord_emoji"] = discord_emoji_json;
+
+    return json;
+}
