@@ -97,3 +97,21 @@ Interaction handlers implement way to await interactions on specific message usi
 
 ### Additional
 As advantage now the length of our custom ids basically has no limit (discord limits custom component ids to 100 bytes) in size so we can store as much data as we want there.
+
+# Webserver
+The webserver module is directly integrated into the bot and serves as the REST API provider for web pages. It supports the use of cookies and JSON Web Tokens (JWT) for authentication and session management.
+
+### Key Features
+- REST API Integration: The webserver implements various REST API endpoints to interact with the bot's functionality, providing seamless integration between the web interface and bot modules.
+- Cookies and JWT Authentication: The webserver uses cookies to store session information securely and JWTs for user authentication, ensuring both scalability and security.
+- Direct Integration: By being a core module, the webserver can directly access and interact with other bot modules, such as the database or interaction handlers, without additional middleware.
+- Asynchronous Requests: Built using coroutines, the webserver ensures high performance and responsiveness even under heavy load.
+- OAuth2 Integration for Discord and Patreon: The webserver provides OAuth2 authentication for Discord and Patreon, enabling users to log in securely and access personalized features based on their accounts.
+
+### Handling Patreon Webhooks
+The webserver includes support for handling Patreon webhooks to synchronize user data and membership details in real time.
+
+- Webhook Listener: The server listens for webhook events from Patreon, such as new pledges, pledge updates, or cancellations.
+- Real-Time Updates: Upon receiving a webhook, the server processes the event and updates user data, including membership tiers and benefits, in the database.
+- Secure Verification: All incoming webhook requests are verified using Patreon's signature headers to ensure authenticity and prevent unauthorized requests.
+- Customizable Actions: Different webhook events trigger specific actions within the bot, such as granting premium features or revoking access if a pledge is canceled.
