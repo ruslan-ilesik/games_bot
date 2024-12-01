@@ -5,6 +5,7 @@
 #include "modules_manager.hpp"
 
 #include <ranges>
+#include <format>
 
 namespace gb {
     Modules_manager::Modules_manager(const std::filesystem::path &modules_path) :
