@@ -139,9 +139,10 @@ namespace gb {
                                 drogon::utils::urlEncode(redirect_url));
 
                 drogon::HttpResponsePtr response ;
+                drogon::HttpRequestPtr patreon_request;
                 try{
                     drogon::HttpClientPtr client = drogon::HttpClient::newHttpClient("https://www.patreon.com");
-                    drogon::HttpRequestPtr patreon_request = drogon::HttpRequest::newHttpRequest();
+                    patreon_request = drogon::HttpRequest::newHttpRequest();
                     patreon_request->setPath("/api/oauth2/token");
                     patreon_request->setMethod(drogon::Post);
                     patreon_request->setBody(post_data);
