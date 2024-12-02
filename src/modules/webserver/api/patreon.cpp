@@ -20,6 +20,29 @@ namespace gb {
                 throw std::runtime_error("Unknown conversion of SUBSCRIPTION_STATUS to string");
         }
     }
+    // stupid solution to overcome limitations of my server.
+    std::string resolve_ipv4_address_using_ping(const std::string &hostname) {
+        // Prepare the command for the system's ping command
+        std::string command = "ping -c 1 " + hostname + " | grep -oP '(?<=\()(.*?)(?=\))'";
+
+        // Open the process for the ping command
+        std::array<char, 128> buffer;
+        std::string result = "";
+        std::shared_ptr<FILE> pipe(popen(command.c_str(), "r"), pclose);
+        if (!pipe) {
+            throw std::runtime_error("Failed to run ping command");
+        }
+
+        // Read the output of the ping command
+        while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+            result += buffer.data();
+        }
+
+        // Clean up the result (remove any extraneous whitespace)
+        result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
+
+        return result;
+    }
 
     std::string calculate_hmac_md5(const std::string &data, const std::string &key) {
         // Create a context for the HMAC operation
@@ -142,7 +165,12 @@ namespace gb {
                 drogon::HttpRequestPtr patreon_request;
                 drogon::HttpClientPtr client;
                 try{
+#if defined(LINUX)
                     client = drogon::HttpClient::newHttpClient("https://www.patreon.com");
+#else()
+                    client = drogon::HttpClient::newHttpClient("https://"+ resolve_ipv4_address_using_ping("www.patreon.com"));
+#endif
+
                     patreon_request = drogon::HttpRequest::newHttpRequest();
                     patreon_request->setPath("/api/oauth2/token");
                     patreon_request->setMethod(drogon::Post);
