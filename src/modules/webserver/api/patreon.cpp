@@ -140,8 +140,9 @@ namespace gb {
 
                 drogon::HttpResponsePtr response ;
                 drogon::HttpRequestPtr patreon_request;
+                drogon::HttpClientPtr client;
                 try{
-                    drogon::HttpClientPtr client = drogon::HttpClient::newHttpClient("https://www.patreon.com");
+                    client = drogon::HttpClient::newHttpClient("https://www.patreon.com");
                     patreon_request = drogon::HttpRequest::newHttpRequest();
                     patreon_request->setPath("/api/oauth2/token");
                     patreon_request->setMethod(drogon::Post);
@@ -151,7 +152,7 @@ namespace gb {
 
                     response = co_await client->sendRequestCoro(patreon_request);
                 }
-                catch(const std::exception& ex){
+                catch(const std::exception& e   ){
                     server->log->error("Error in sending data to patreon: post: " + post_data + " error: " + std::string(e.what()));
                     auto error_resp = drogon::HttpResponse::newHttpResponse();
                     
