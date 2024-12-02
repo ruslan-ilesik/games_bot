@@ -3,7 +3,7 @@
 //
 
 #include "patreon.hpp"
-
+#include <trantor/net/EventLoop.h>
 #include <src/modules/webserver/utils/cookie_manager.hpp>
 #include <src/modules/webserver/utils/type_conversions.hpp>
 
@@ -19,35 +19,6 @@ namespace gb {
             default:
                 throw std::runtime_error("Unknown conversion of SUBSCRIPTION_STATUS to string");
         }
-    }
-    // stupid solution to overcome limitations of my server.
-    std::string resolve_ipv4_address_using_ping(const std::string &hostname) {
-        // Prepare the command for the system's ping command
-        std::string command = "ping -c 1 " + hostname;
-
-        // Open the process for the ping command
-        std::array<char, 128> buffer;
-        std::string result = "";
-        std::shared_ptr<FILE> pipe(popen(command.c_str(), "r"), pclose);
-        if (!pipe) {
-            throw std::runtime_error("Failed to run ping command");
-        }
-
-        // Read the output of the ping command
-        while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-            result += buffer.data();
-        }
-
-        // Look for the IP address in the output by finding the substring "(IP_ADDRESS)"
-        size_t start_pos = result.find("(");
-        size_t end_pos = result.find(")", start_pos);
-
-        if (start_pos != std::string::npos && end_pos != std::string::npos) {
-            // Extract the IP address between the parentheses
-            return result.substr(start_pos + 1, end_pos - start_pos - 1);
-        }
-
-        return ""; // Return empty if no IP address was found
     }
 
     std::string calculate_hmac_md5(const std::string &data, const std::string &key) {
@@ -170,21 +141,15 @@ namespace gb {
                 drogon::HttpResponsePtr response;
                 drogon::HttpRequestPtr patreon_request;
                 drogon::HttpClientPtr client;
+                auto loop = trantor::EventLoop();
                 try {
-#if defined(LINUX)
                     client = drogon::HttpClient::newHttpClient("https://www.patreon.com");
-#else
-                    client = drogon::HttpClient::newHttpClient("https://" +
-                                                               resolve_ipv4_address_using_ping("www.patreon.com"));
-#endif
-
                     patreon_request = drogon::HttpRequest::newHttpRequest();
                     patreon_request->setPath("/api/oauth2/token");
                     patreon_request->setMethod(drogon::Post);
                     patreon_request->setBody(post_data);
                     patreon_request->setContentTypeString("application/x-www-form-urlencoded");
                     // patreon_request->addHeader("Authorization", auth_header);
-                    patreon_request->addHeader("Host", "www.patreon.com");
 
                     response = co_await client->sendRequestCoro(patreon_request);
                 } catch (const std::exception &e) {
