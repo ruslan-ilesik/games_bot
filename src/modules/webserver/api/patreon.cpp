@@ -173,7 +173,7 @@ namespace gb {
                 try {
 #if defined(LINUX)
                     client = drogon::HttpClient::newHttpClient("https://www.patreon.com");
-#else()
+#else
                     client = drogon::HttpClient::newHttpClient("https://" +
                                                                resolve_ipv4_address_using_ping("www.patreon.com"));
 #endif
@@ -184,6 +184,7 @@ namespace gb {
                     patreon_request->setBody(post_data);
                     patreon_request->setContentTypeString("application/x-www-form-urlencoded");
                     // patreon_request->addHeader("Authorization", auth_header);
+                    patreon_request->addHeader("Host", "www.patreon.com");
 
                     response = co_await client->sendRequestCoro(patreon_request);
                 } catch (const std::exception &e) {
