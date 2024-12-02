@@ -152,6 +152,12 @@ namespace gb {
                 }
                 catch(const std::exception& ex){
                     server->log->error("Error in sending data to patreon: post: " + post_data + " error: " + std::string(e.what()));
+                    auto error_resp = drogon::HttpResponse::newHttpResponse();
+                    
+                    error_resp->setStatusCode(drogon::k500InternalServerError);
+                    error_resp->setBody("LOGIN with Patreon failed");
+                    callback(error_resp);
+                    co_return;
                 }
 
 
