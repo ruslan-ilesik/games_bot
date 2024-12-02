@@ -3,7 +3,6 @@
 //
 
 #include "patreon.hpp"
-#include <trantor/net/EventLoop.h>
 #include <src/modules/webserver/utils/cookie_manager.hpp>
 #include <src/modules/webserver/utils/type_conversions.hpp>
 
@@ -141,7 +140,6 @@ namespace gb {
                 drogon::HttpResponsePtr response;
                 drogon::HttpRequestPtr patreon_request;
                 drogon::HttpClientPtr client;
-                auto loop = trantor::EventLoop();
                 try {
                     client = drogon::HttpClient::newHttpClient("https://www.patreon.com");
                     patreon_request = drogon::HttpRequest::newHttpRequest();
