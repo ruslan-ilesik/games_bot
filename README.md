@@ -33,6 +33,7 @@ The bot features an **admin terminal**, which runs as an executable. This allows
 - **Load/stop modules** manually
 - **Restrict module loading**
 - **Add new database connections**
+- **And more**
 
 The terminal provides a powerful and flexible way to manage your bot during runtime.
 
@@ -40,7 +41,6 @@ The terminal provides a powerful and flexible way to manage your bot during runt
 The bot uses a **connection pool** and **C++20 coroutines** for efficient database interaction. It supports:
 - **Prepared statements** for flexibility and performance
 - **Background queries** to avoid blocking user requests
-- **And more**. U can define any commands
 
 ### 🚀 Basic Principle (Coroutines + Connection Pool)
 SQL requests are queued up and automatically picked by one of the available database connections. When you call `co_await`, the task is already handled in the background, making awaiting **instant** and more efficient.
