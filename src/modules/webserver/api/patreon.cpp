@@ -142,7 +142,7 @@ namespace gb {
                 drogon::HttpRequestPtr patreon_request;
                 drogon::HttpClientPtr client;
                 try{
-                    client = drogon::HttpClient::newHttpClient("https://www.patreon.com");
+                    client = drogon::HttpClient::newHttpClient("https://www.patreon.com",drogon::HttpClient::kIPV4Only);
                     patreon_request = drogon::HttpRequest::newHttpRequest();
                     patreon_request->setPath("/api/oauth2/token");
                     patreon_request->setMethod(drogon::Post);
