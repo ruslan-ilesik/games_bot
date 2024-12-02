@@ -23,7 +23,7 @@ namespace gb {
     // stupid solution to overcome limitations of my server.
     std::string resolve_ipv4_address_using_ping(const std::string &hostname) {
         // Prepare the command for the system's ping command
-        std::string command = "ping -c 1 " + hostname + " | grep -oP '(?<=\()(.*?)(?=\))'";
+        std::string command = "ping -c 1 " + hostname;
 
         // Open the process for the ping command
         std::array<char, 128> buffer;
@@ -38,10 +38,16 @@ namespace gb {
             result += buffer.data();
         }
 
-        // Clean up the result (remove any extraneous whitespace)
-        result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
+        // Look for the IP address in the output by finding the substring "(IP_ADDRESS)"
+        size_t start_pos = result.find("(");
+        size_t end_pos = result.find(")", start_pos);
 
-        return result;
+        if (start_pos != std::string::npos && end_pos != std::string::npos) {
+            // Extract the IP address between the parentheses
+            return result.substr(start_pos + 1, end_pos - start_pos - 1);
+        }
+
+        return ""; // Return empty if no IP address was found
     }
 
     std::string calculate_hmac_md5(const std::string &data, const std::string &key) {
@@ -161,14 +167,15 @@ namespace gb {
                                 code, client_id, server->config->get_value("patreon_client_secret"),
                                 drogon::utils::urlEncode(redirect_url));
 
-                drogon::HttpResponsePtr response ;
+                drogon::HttpResponsePtr response;
                 drogon::HttpRequestPtr patreon_request;
                 drogon::HttpClientPtr client;
-                try{
+                try {
 #if defined(LINUX)
                     client = drogon::HttpClient::newHttpClient("https://www.patreon.com");
 #else()
-                    client = drogon::HttpClient::newHttpClient("https://"+ resolve_ipv4_address_using_ping("www.patreon.com"));
+                    client = drogon::HttpClient::newHttpClient("https://" +
+                                                               resolve_ipv4_address_using_ping("www.patreon.com"));
 #endif
 
                     patreon_request = drogon::HttpRequest::newHttpRequest();
@@ -179,11 +186,11 @@ namespace gb {
                     // patreon_request->addHeader("Authorization", auth_header);
 
                     response = co_await client->sendRequestCoro(patreon_request);
-                }
-                catch(const std::exception& e   ){
-                    server->log->error("Error in sending data to patreon: post: " + post_data + " error: " + std::string(e.what()));
+                } catch (const std::exception &e) {
+                    server->log->error("Error in sending data to patreon: post: " + post_data +
+                                       " error: " + std::string(e.what()));
                     auto error_resp = drogon::HttpResponse::newHttpResponse();
-                    
+
                     error_resp->setStatusCode(drogon::k500InternalServerError);
                     error_resp->setBody("LOGIN with Patreon failed");
                     callback(error_resp);
