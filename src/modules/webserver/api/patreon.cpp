@@ -138,15 +138,22 @@ namespace gb {
                                 code, client_id, server->config->get_value("patreon_client_secret"),
                                 drogon::utils::urlEncode(redirect_url));
 
-                drogon::HttpClientPtr client = drogon::HttpClient::newHttpClient("https://www.patreon.com");
-                drogon::HttpRequestPtr patreon_request = drogon::HttpRequest::newHttpRequest();
-                patreon_request->setPath("/api/oauth2/token");
-                patreon_request->setMethod(drogon::Post);
-                patreon_request->setBody(post_data);
-                patreon_request->setContentTypeString("application/x-www-form-urlencoded");
-                // patreon_request->addHeader("Authorization", auth_header);
+                drogon::HttpResponsePtr response ;
+                try{
+                    drogon::HttpClientPtr client = drogon::HttpClient::newHttpClient("https://www.patreon.com");
+                    drogon::HttpRequestPtr patreon_request = drogon::HttpRequest::newHttpRequest();
+                    patreon_request->setPath("/api/oauth2/token");
+                    patreon_request->setMethod(drogon::Post);
+                    patreon_request->setBody(post_data);
+                    patreon_request->setContentTypeString("application/x-www-form-urlencoded");
+                    // patreon_request->addHeader("Authorization", auth_header);
 
-                drogon::HttpResponsePtr response = co_await client->sendRequestCoro(patreon_request);
+                    response = co_await client->sendRequestCoro(patreon_request);
+                }
+                catch(const std::exception& ex){
+                    server->log->error("Error in sending data to patreon: post: " + post_data + " error: " + std::string(e.what()));
+                }
+
 
                 auto tmp = response->getBody();
                 std::string body(tmp.begin(), tmp.end());
