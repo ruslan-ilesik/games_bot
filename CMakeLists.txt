@@ -32,6 +32,7 @@ endif()
 # Add compile options to disable specific warnings
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(
+            -fPIC
             -Wno-return-type-c-linkage
             -Wno-unused-command-line-argument
             -Wdocumentation
@@ -43,6 +44,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang
             -DDPP_CORO
             -DDPP_FORMATTERS
     )
+    add_link_options(-fPIC)
+
 endif ()
 set(CMAKE_CXX_FLAGS_RELEASE_INIT "-O3")
 

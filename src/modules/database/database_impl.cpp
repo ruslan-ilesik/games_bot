@@ -208,7 +208,7 @@ namespace gb {
             pclose(pipe);
             return result;
         };
-
+    
         std::string backup_command = "mysqldump -h"+ _config->get_value("mysql_ip") +" -u "+_config->get_value("mysql_user")+" -p"+_config->get_value("mysql_password")+" --single-transaction --routines "+_config->get_value("mysql_db_name")+"> "+file_path;
         exec(backup_command);
     }
