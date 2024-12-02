@@ -1,7 +1,6 @@
 # 🎮 Open Source Version of [Games Bot](https://gamesbot.lesikr.com/)
 
 ## ⚠️ NOTE:
-### General
 This repository contains only the **source code**. It is **not** a complete, ready-to-run bot as it lacks:
 - Database setup
 - Config templates
