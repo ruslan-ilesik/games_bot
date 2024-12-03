@@ -278,6 +278,7 @@ namespace gb {
             } else if (_choose_figure) {
                 _next = false;
                 _selected_figure = "";
+               // std::cout << event.custom_id << '\n';
                 _board.push(chess::Move::from_uci(event.custom_id));
 
                 if (!_board.legal_moves().count()) {
