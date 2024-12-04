@@ -194,7 +194,7 @@ ORDER BY dr.day asc;
             "/api/dashboard/get-games-history-cvs",
             [=](drogon::HttpRequestPtr req,
                 std::function<void(const drogon::HttpResponsePtr &)> callback) -> drogon::Task<> {
-                static const int rows_per_query = 1;
+                static const int rows_per_query = 100;
 
                 // Validate the authorization cookie
                 auto validation = co_await validate_authorization_cookie(server, req);
@@ -205,15 +205,21 @@ ORDER BY dr.day asc;
                     co_return;
                 }
 
+                bool has_premium = co_await server->premium_manager->get_users_premium_status(
+                                       validation.second.discord_user.id) != PREMIUM_STATUS::NO_SUBSCRIPTION;
+                if (!has_premium) {
+                    auto response = drogon::HttpResponse::newHttpResponse();
+                   response->setStatusCode(drogon::k403Forbidden);
+                   callback(response);
+                   co_return;
+                }
                 auto stream_response = drogon::HttpResponse::newAsyncStreamResponse(
-                    [=](drogon::ResponseStreamPtr stream) mutable -> drogon::Task<> {
-                        std::cout << "Starting CSV streaming" << std::endl;
-
+                    [=](drogon::ResponseStreamPtr stream) mutable {
                         // Add CSV headers
                         if (!stream->send("game_name, start_time, time_played, result\n")) {
                             std::cerr << "Failed to send headers" << std::endl;
                             stream->close();
-                            co_return;
+                            return;
                         }
 
                         int r_cnt = 0;
@@ -221,16 +227,15 @@ ORDER BY dr.day asc;
 
                         while (true) {
                             // Fetch a chunk of rows
-                            Database_return_t rows = co_await server->db->execute_prepared_statement(
-                                prepared_stmt, validation.second.discord_user.id, rows_per_query * r_cnt,
-                                rows_per_query);
+                            Database_return_t rows = sync_wait(
+                                server->db->execute_prepared_statement(prepared_stmt, validation.second.discord_user.id,
+                                                                       rows_per_query * r_cnt, rows_per_query));
 
                             r_cnt++;
 
                             if (rows.empty()) {
-                                std::cout << "No more rows to stream. Closing stream." << std::endl;
                                 stream->close();
-                                co_return;
+                                return;
                             }
 
                             // Prepare CSV data for the chunk
@@ -247,7 +252,7 @@ ORDER BY dr.day asc;
                             if (!stream->send(csvData.str())) {
                                 std::cerr << "Stream closed by client or error sending chunk" << std::endl;
                                 stream->close();
-                                co_return;
+                                return;
                             }
                         }
                     },
@@ -256,9 +261,6 @@ ORDER BY dr.day asc;
                 // Set headers for file download
                 stream_response->addHeader("Content-Type", "text/csv");
                 stream_response->addHeader("Content-Disposition", "attachment; filename=\"history.csv\"");
-
-                // Debug: Confirm headers set
-                std::cout << "Sending headers and initiating stream." << std::endl;
 
                 callback(stream_response);
                 co_return;
