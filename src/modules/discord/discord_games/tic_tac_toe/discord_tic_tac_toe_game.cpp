@@ -56,12 +56,14 @@ namespace gb {
             remove_player(USER_REMOVE_REASON::TIMEOUT, get_current_player());
             remove_player(USER_REMOVE_REASON::WIN, get_current_player());
         } else {
-            _data.achievements_processing->activate_achievement("Blind opponent => your win", get_current_player(),
-                                                                _event.command.channel_id);
-            next_player();
-            _data.achievements_processing->activate_achievement("Blindness happens", get_current_player(),
-                                                                _event.command.channel_id);
-            next_player();
+            if (_img_cnt <= 6) {
+                _data.achievements_processing->activate_achievement("Blind opponent => your win", get_current_player(),
+                                                    _event.command.channel_id);
+                next_player();
+                _data.achievements_processing->activate_achievement("Blindness happens", get_current_player(),
+                                                                    _event.command.channel_id);
+                next_player();
+            }
 
             embed.set_description(std::format("Player {} won the game!\n{} will be luckier next time.",
                                               dpp::utility::user_mention(get_current_player()),

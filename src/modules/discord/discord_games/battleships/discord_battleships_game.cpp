@@ -487,6 +487,7 @@ namespace gb {
     void Discord_battleships_game::end_of_game_timeout(bool is_both_timeout) {
         dpp::snowflake loser_id = get_current_player();
         next_player();
+        _message.components.clear();
         if (is_both_timeout) {
             _message.embeds[0]
                 .set_title("Game over")
