@@ -44,7 +44,10 @@ namespace gb {
                                      " cannot be removed as it does not exist");
         }
         try {
-            _discord_bot->get_bot()->global_command_delete_sync(_commands.at(name)->get_command().id);
+            sync_wait([&]() -> Task<void> {
+                co_await _discord_bot->get_bot()->co_global_command_delete(_commands.at(name)->get_command().id);
+                co_return;
+            }());
         } catch (const dpp::rest_exception &e) {
         }
         _commands.erase(name);
@@ -60,7 +63,11 @@ namespace gb {
         // remove handler before locking, so new command calls will not appear
         _discord_bot->get_bot()->on_slashcommand.detach(_on_slashcommand_handler);
         try {
-            _discord_bot->get_bot()->global_bulk_command_delete_sync();
+            sync_wait([&]() -> Task<void> {
+                co_await _discord_bot->get_bot()->co_global_bulk_command_delete();
+                co_return;
+            }());
+
         } catch (const dpp::rest_exception &e) {
         }
         // this will ensure all commands currently running will finish their job
@@ -99,7 +106,7 @@ namespace gb {
                         co_return;
                     }
 
-                    //generate full command name, including subcommand groups
+                    // generate full command name, including subcommand groups
                     std::function<std::string(dpp::command_data_option)> get_full_command_name;
                     get_full_command_name = [&get_full_command_name](auto cmd_data) -> std::string {
                         if (cmd_data.options.size()) {
@@ -120,9 +127,8 @@ namespace gb {
                         name += " " + data.options[0].name + get_full_command_name(data.options[0]);
                     }
 
-                    co_await _db->execute_prepared_statement(_insert_command_use_stmt, name,
-                                                             event.command.usr.id, event.command.channel_id,
-                                                             event.command.guild_id);
+                    co_await _db->execute_prepared_statement(_insert_command_use_stmt, name, event.command.usr.id,
+                                                             event.command.channel_id, event.command.guild_id);
                     co_await _commands.at(event.command.get_command_name())->get_handler()(event);
                     co_return;
                 });
@@ -220,7 +226,10 @@ namespace gb {
     }
 
     void Discord_command_handler_impl::remove_commands() {
-        _discord_bot->get_bot()->global_bulk_command_delete_sync();
+        sync_wait([&]() -> Task<void> {
+            co_await _discord_bot->get_bot()->co_global_bulk_command_delete();
+            co_return;
+        }());
         std::unique_lock<std::shared_mutex> lock(_mutex);
         _commands.clear();
     }

@@ -60,8 +60,8 @@ namespace gb {
         _bot->add_pre_requirement([this]() {
             sync_wait(_db->execute("DELETE FROM `guilds_users_data`;"));
             _on_guild_create_handler = _bot->get_bot()->on_guild_create([this](const dpp::guild_create_t &event) {
-                _db->execute_prepared_statement(_add_guild_stmt, event.created->id, event.created->member_count,
-                                                event.created->member_count);
+                _db->execute_prepared_statement(_add_guild_stmt, event.created.id, event.created.member_count,
+                                                event.created.member_count);
             });
 
             _on_guild_delete_handler = _bot->get_bot()->on_guild_delete([this](const dpp::guild_delete_t &event) {
@@ -70,12 +70,12 @@ namespace gb {
 
             _on_guild_member_add_handler =
                 _bot->get_bot()->on_guild_member_add([this](const dpp::guild_member_add_t &event) {
-                    _db->execute_prepared_statement(_add_user_stmt, event.adding_guild->id);
+                    _db->execute_prepared_statement(_add_user_stmt, event.adding_guild.id);
                 });
 
             _on_guild_member_remove_handler =
                 _bot->get_bot()->on_guild_member_remove([this](const dpp::guild_member_remove_t &event) {
-                    _db->execute_prepared_statement(_remove_user_stmt, event.removing_guild->id);
+                    _db->execute_prepared_statement(_remove_user_stmt, event.removing_guild.id);
                 });
         });
     }
