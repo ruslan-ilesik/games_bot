@@ -65,7 +65,7 @@ namespace gb {
             });
 
             _on_guild_delete_handler = _bot->get_bot()->on_guild_delete([this](const dpp::guild_delete_t &event) {
-                _db->execute_prepared_statement(_add_user_stmt, event.guild_id);
+                _db->execute_prepared_statement(_remove_guild_stmt, event.guild_id);
             });
 
             _on_guild_member_add_handler =
