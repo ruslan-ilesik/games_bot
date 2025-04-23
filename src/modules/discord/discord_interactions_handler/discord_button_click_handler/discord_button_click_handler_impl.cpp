@@ -21,6 +21,18 @@ namespace gb {
         } else {
             ids = _cache.get_ids(m);
         }
+        std::string users_list ;
+        if (!users.empty()) {
+            users_list = std::accumulate(
+                users.begin(), users.end(), std::string{},
+                [](const std::string &acc, dpp::snowflake u) {
+                    return acc.empty()
+                        ? std::to_string(u)
+                        : acc + ", " + std::to_string(u);
+                }
+            );
+        }
+        _bot->get_bot()->log(dpp::ll_info,"Button click awaiter created with timeout: " + std::to_string(timeout)+"\nWaiting for users: "+users_list);
         auto result = co_await dpp::when_any{
             _bot->get_bot()->on_button_click.when([this,&ids,&to_uint64,users](const dpp::button_click_t &b) {
                 bool res = std::ranges::find(ids, to_uint64(b.custom_id)) != ids.end() &&
@@ -42,10 +54,14 @@ namespace gb {
         if (result.index() == 0) {
             dpp::button_click_t click_event = result.get<0>();
             click_event.custom_id = _cache.get_value(to_uint64(click_event.custom_id));
+            _bot->get_bot()->log(dpp::ll_info,"Button click event: " + click_event.custom_id +"\nuser ID: " + std::to_string(click_event.command.member.user_id));
             if (clear_ids) {
                 _cache.clear_ids(ids);
             }
             co_return {click_event, false};
+        }
+        else {
+            _bot->get_bot()->log(dpp::ll_info,"Button click event timeout");
         }
 
         _cache.clear_ids(ids);

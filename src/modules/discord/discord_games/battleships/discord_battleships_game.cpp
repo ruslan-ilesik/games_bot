@@ -396,14 +396,11 @@ namespace gb {
 
                     button_click_awaiter = _data.button_click_handler->wait_for(
                         _message, {get_current_player()},
-                        _place_timeout - (std::chrono::duration_cast<std::chrono::seconds>(
-                                              std::chrono::system_clock::now().time_since_epoch())
-                                              .count() -
-                                          _game_start_time));
+                       60);
                     if (event.custom_id == "FIRST_TURN") {
                         _data.bot->message_edit(_message);
                     } else {
-                        _data.bot->reply(event, _message);
+                        _data.bot->event_edit_original_response(event, _message);
                     }
                     r = co_await button_click_awaiter;
 
@@ -413,6 +410,7 @@ namespace gb {
                         break;
                     }
                     event = r.first;
+                    event.reply(dpp::ir_update_message,"loading");
                     if (event.custom_id == "back") {
                         _states[_user_to_player_id[get_current_player()]]--;
                         continue;
@@ -465,7 +463,7 @@ namespace gb {
                                                 static_cast<int>(_sector_size)},
                                                player2.get_field(), player2.get_ships());
                             _message.embeds[0].set_image(add_image(_message, img));
-                            _data.bot->reply(event, _message);
+                            _data.bot->event_edit_original_response(event, _message);
 
                             remove_player(USER_REMOVE_REASON::WIN, winner_id);
                             remove_player(USER_REMOVE_REASON::LOSE, get_current_player());
@@ -627,6 +625,7 @@ namespace gb {
                 break;
             }
             event = r.first;
+            event.reply(dpp::ir_update_message,"loading");
             std::string game_state = "";
             auto back_row = dpp::component().set_type(dpp::cot_action_row);
             back_row.add_component(dpp::component()
@@ -655,7 +654,7 @@ namespace gb {
                                           std::chrono::system_clock::now().time_since_epoch())
                                           .count() -
                                       _game_start_time));
-                _data.bot->reply(event, m);
+                _data.bot->event_edit_original_response(event, m);
                 lk.unlock();
                 r = co_await button_click_awaiter;
                 lk.lock();
@@ -668,14 +667,14 @@ namespace gb {
                                                  "\n Time left for opponent to press ready: <t:{}:R>",
                                                  _message.guild_id, _message.channel_id, _message.id,
                                                  _game_start_time + _place_timeout));
-                _data.bot->reply(event, m);
+                _data.bot->event_edit_original_response(event, m);
                 break;
             } else if (event.custom_id == "shuffle") {
                 if (p.get_placed_ships().empty()) {
                     p.random_place_ships();
                     _states[_user_to_player_id[player]] = 0;
                     co_await prepare_message();
-                    _data.bot->reply(event, m);
+                    _data.bot->event_edit_original_response(event, m);
                     lk.unlock();
                     r = co_await button_click_awaiter;
                     lk.lock();
@@ -697,7 +696,7 @@ namespace gb {
                                               std::chrono::system_clock::now().time_since_epoch())
                                               .count() -
                                           _game_start_time));
-                    _data.bot->reply(event, m);
+                    _data.bot->event_edit_original_response(event, m);
                     lk.unlock();
                     r = co_await button_click_awaiter;
                     lk.lock();
@@ -707,7 +706,7 @@ namespace gb {
                 p.random_place_ships();
                 _states[_user_to_player_id[player]] = 0;
                 co_await prepare_message();
-                _data.bot->reply(event, m);
+                _data.bot->event_edit_original_response(event, m);
                 lk.unlock();
                 r = co_await button_click_awaiter;
                 lk.lock();
@@ -716,7 +715,7 @@ namespace gb {
                 _temp_ships[_user_to_player_id[player]]->unplace(p.get_field());
                 _states[_user_to_player_id[player]] = 0;
                 co_await prepare_message();
-                _data.bot->reply(event, m);
+                _data.bot->event_edit_original_response(event, m);
                 lk.unlock();
                 r = co_await button_click_awaiter;
                 lk.lock();
@@ -733,7 +732,7 @@ namespace gb {
                 if (_states[_user_to_player_id[player]] <= 0) {
                     _states[_user_to_player_id[player]] = 0;
                     co_await prepare_message();
-                    _data.bot->reply(event, m);
+                    _data.bot->event_edit_original_response(event, m);
                     lk.unlock();
                     r = co_await button_click_awaiter;
                     lk.lock();
@@ -795,7 +794,7 @@ namespace gb {
                                           std::chrono::system_clock::now().time_since_epoch())
                                           .count() -
                                       _game_start_time));
-                _data.bot->reply(event, m);
+                _data.bot->event_edit_original_response(event, m);
                 lk.unlock();
                 r = co_await button_click_awaiter;
                 lk.lock();
@@ -878,7 +877,7 @@ namespace gb {
                                                                {_temp_pos[_user_to_player_id[player]]});
                 _states[_user_to_player_id[player]] = 0;
                 co_await prepare_message();
-                _data.bot->reply(event, m);
+                _data.bot->event_edit_original_response(event, m);
                 lk.unlock();
                 r = co_await button_click_awaiter;
                 lk.lock();
@@ -889,7 +888,7 @@ namespace gb {
                 .set_description(
                     std::format("State: {}\nTimeout: <t:{}:R>", game_state, _game_start_time + _place_timeout));
             m.embeds[0].set_image(add_image(m, image));
-            _data.bot->reply(event, m);
+            _data.bot->event_edit_original_response(event, m);
             _img_cnt++;
             lk.unlock();
             r = co_await button_click_awaiter;

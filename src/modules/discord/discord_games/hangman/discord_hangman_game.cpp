@@ -367,6 +367,7 @@ namespace gb {
                 break;
             }
             event = r.first;
+            event.reply(dpp::ir_update_message,"loading");
             _messages.at(player).id = event.command.message_id;
             auto &p = _hangman_rel.at(player);
             if (event.custom_id == "next") {
@@ -379,11 +380,11 @@ namespace gb {
             }
             prepare_message(_messages.at(player), player);
             if (_hangman_rel.at(player)->is_finished()) {
-                _data.bot->reply(event, _messages.at(player));
+                _data.bot->event_edit_original_response(event, _messages.at(player));
                 break;
             } else {
                 button_click_awaitable = _data.button_click_handler->wait_for(_messages.at(player), {player}, 60);
-                _data.bot->reply(event, _messages.at(player));
+                _data.bot->event_edit_original_response(event, _messages.at(player));
             }
         }
         co_return;

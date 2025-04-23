@@ -197,12 +197,13 @@ namespace gb {
             }
             event = r.first;
             message.id = event.command.message_id;
+            event.reply(dpp::ir_update_message,"loading");
             if (event.custom_id == "back") {
                 _state--;
                 prepare_message(message);
                 button_click_awaitable =
                     _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout);
-                _data.bot->reply(event, message);
+                _data.bot->event_edit_original_response(event, message);
                 r = co_await button_click_awaitable;
                 continue;
             }
@@ -213,7 +214,7 @@ namespace gb {
                 prepare_message(message);
                 button_click_awaitable =
                     _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout);
-                _data.bot->reply(event, message);
+                _data.bot->event_edit_original_response(event, message);
                 r = co_await button_click_awaitable;
                 continue;
 
@@ -232,7 +233,7 @@ namespace gb {
                                                          dpp::utility::user_mention(get_current_player())))
                             .set_color(dpp::colors::red);
                         message.embeds[0].set_image(add_image(message, create_image()));
-                        _data.bot->reply(event, message);
+                        _data.bot->event_edit_original_response(event, message);
                         remove_player(USER_REMOVE_REASON::LOSE, get_current_player());
                         break;
                     }
@@ -240,7 +241,7 @@ namespace gb {
                     prepare_message(message);
                     button_click_awaitable =
                         _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout);
-                    _data.bot->reply(event, message);
+                    _data.bot->event_edit_original_response(event, message);
                     r = co_await button_click_awaitable;
                     continue;
                 } else if (_engine.check_win()) {
@@ -258,14 +259,14 @@ namespace gb {
                     }
 
                     message.embeds[0].set_image(add_image(message, create_image()));
-                    _data.bot->reply(event, message);
+                    _data.bot->event_edit_original_response(event, message);
                     remove_player(USER_REMOVE_REASON::WIN, get_current_player());
                     break;
                 }
                 prepare_message(message);
                 button_click_awaitable =
                     _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout);
-                _data.bot->reply(event, message);
+                _data.bot->event_edit_original_response(event, message);
                 r = co_await button_click_awaitable;
                 continue;
             }

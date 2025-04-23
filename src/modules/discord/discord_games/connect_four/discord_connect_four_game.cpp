@@ -60,7 +60,7 @@ namespace gb {
             desc += "player "+dpp::utility::user_mention(get_current_player())+ "in **Connect four**.\n"+dpp::utility::user_mention(get_current_player())+" you will be luckier next time";
             message.embeds[0].set_title("Game over").set_description(desc).set_color(dpp::colors::blue);
             message.embeds[0].set_image(add_image(message, generate_image()));
-            _data.bot->reply(event, message);
+            _data.bot->event_edit_original_response(event, message);
             remove_player(USER_REMOVE_REASON::LOSE,get_current_player());
             remove_player(USER_REMOVE_REASON::WIN,get_current_player());
         };
@@ -95,11 +95,13 @@ namespace gb {
 
             message.embeds[0].set_image(add_image(message, generate_image()));
             button_click_awaitable = _data.button_click_handler->wait_for(message, {get_current_player()}, 60);
-            _data.bot->reply(event, message);
+            _data.bot->event_edit_original_response(event, message);
             r = co_await button_click_awaitable;
             co_return;
         };
+        event.reply(dpp::ir_update_message,"loading");
         co_await send_message();
+
         bool end = false;
         while (!end) {
             if (r.second) {
@@ -117,7 +119,7 @@ namespace gb {
                 break;
             }
             event = r.first;
-
+            event.reply(dpp::ir_update_message,"loading");
             // place object
             for (int i = static_cast<int>(std::size(_board) - 1); i >= 0; i--) {
                 if (_board[i][std::stoi(event.custom_id)] == " ") {
@@ -192,7 +194,7 @@ namespace gb {
                 .set_color(dpp::colors::yellow);
 
             message.embeds[0].set_image(add_image(message, generate_image()));
-            _data.bot->reply(event, message);
+            _data.bot->event_edit_original_response(event, message);
             remove_player(USER_REMOVE_REASON::DRAW,get_current_player());
             remove_player(USER_REMOVE_REASON::DRAW,get_current_player());
             break;

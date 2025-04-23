@@ -152,7 +152,7 @@ namespace gb {
                 button_click_awaitable = _data.button_click_handler->wait_for(
                     message, {get_current_player()},
                     (clock - time(nullptr)));
-                _data.bot->reply(event, message);
+                _data.bot->event_edit_original_response(event, message);
                 r = co_await button_click_awaitable;
             } else {
                 message.embeds[0].set_description(
@@ -237,12 +237,12 @@ namespace gb {
                 button_click_awaitable = _data.button_click_handler->wait_for(
                     message, {get_current_player()},
                     (clock - time(nullptr)));
-                _data.bot->reply(event, message);
+                _data.bot->event_edit_original_response(event, message);
                 r = co_await button_click_awaitable;
             }
             co_return;
         };
-
+        event.reply(dpp::ir_update_message,"loading");
         co_await send_message();
 
         while (1) {
@@ -261,6 +261,7 @@ namespace gb {
                 break;
             }
             event = r.first;
+            event.reply(dpp::ir_update_message,"loading");
 
             if (event.custom_id == "back") {
                 if (_next) {
@@ -291,7 +292,7 @@ namespace gb {
                                              dpp::utility::user_mention(get_players()[1]) +
                                              " tried their best, but the game ended in a *DRAW!!!*")
                             .set_color(dpp::colors::yellow);
-                        _data.bot->reply(event, message);
+                        _data.bot->event_edit_original_response(event, message);
                         remove_player(USER_REMOVE_REASON::DRAW, get_current_player());
                         remove_player(USER_REMOVE_REASON::DRAW, get_current_player());
                         break;
@@ -308,7 +309,7 @@ namespace gb {
                         desc += "\nPlayer "+dpp::utility::user_mention(get_current_player())+" will be luckier next time";
                         message.embeds[0].set_title("Game over").set_description(desc).set_color(dpp::colors::blue);
                         message.embeds[0].set_image(add_image(message,generate_image()));
-                        _data.bot->reply(event,message);
+                        _data.bot->event_edit_original_response(event,message);
                         remove_player(USER_REMOVE_REASON::LOSE,get_current_player());
                         remove_player(USER_REMOVE_REASON::WIN,get_current_player());
                         break;
@@ -323,7 +324,7 @@ namespace gb {
                                          " tried their best, but the game ended in a *DRAW!!!*")
                         .set_color(dpp::colors::yellow);
                     message.embeds[0].set_image(add_image(message,generate_image()));
-                    _data.bot->reply(event, message);
+                    _data.bot->event_edit_original_response(event, message);
                     remove_player(USER_REMOVE_REASON::DRAW, get_current_player());
                     remove_player(USER_REMOVE_REASON::DRAW, get_current_player());
                     break;

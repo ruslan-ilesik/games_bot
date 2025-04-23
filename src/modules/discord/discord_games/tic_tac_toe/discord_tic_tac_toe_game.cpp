@@ -114,6 +114,7 @@ namespace gb {
     dpp::task<void> Discord_tic_tac_toe_game::run(const dpp::button_click_t &event) {
         game_start(event.command.channel_id,event.command.guild_id);
         _event = event;
+        _event.reply(dpp::ir_update_message,"loading");
         while (1) {
             dpp::message m;
             dpp::embed embed;
@@ -131,7 +132,7 @@ namespace gb {
             create_components(m);
             m.add_embed(embed);
             auto button_click_awaiter = _data.button_click_handler->wait_for(m, {get_current_player()}, 60);
-            _data.bot->reply(_event, m);
+            _data.bot->event_edit_original_response(_event, m);
             Button_click_return r = co_await button_click_awaiter;
             if (r.second) {
                 dpp::message m = win(true);
@@ -141,6 +142,7 @@ namespace gb {
                 break;
             }
             _event = r.first;
+            _event.reply(dpp::ir_update_message,"loading");
 
             std::string id = _event.custom_id;
             if (!std::isdigit(_event.custom_id[0]) || !std::isdigit(_event.custom_id[1])) {
@@ -152,7 +154,7 @@ namespace gb {
             for (auto i: board) {
                 if (i[0] == i[1] && i[1] == i[2] && i[0] != SIGNS::EMPTY) {
                     // won
-                    _data.bot->reply(_event, win());
+                    _data.bot->event_edit_original_response(_event, win());
                     ended = true;
                     break;
                 }
@@ -160,7 +162,7 @@ namespace gb {
             for (int i = 0; i < static_cast<int>(std::size(board)) && !ended; i++) {
                 if (board[0][i] == board[1][i] && board[1][i] == board[2][i] && board[2][i] != SIGNS::EMPTY) {
                     // won
-                    _data.bot->reply(_event, win());
+                    _data.bot->event_edit_original_response(_event, win());
                     ended = true;
                     break;
                 }
@@ -170,7 +172,7 @@ namespace gb {
                             (board[0][2] == board[1][1] && board[0][2] == board[2][0])) &&
                            board[1][1] != SIGNS::EMPTY)) {
                 // won
-                _data.bot->reply(_event, win());
+                _data.bot->event_edit_original_response(_event, win());
                 ended = true;
                 break;
             }
@@ -184,7 +186,7 @@ namespace gb {
                 }
                 if (!has_empty) {
                     // draw
-                    _data.bot->reply(_event, draw());
+                    _data.bot->event_edit_original_response(_event, draw());
                     ended = true;
                     break;
                 }

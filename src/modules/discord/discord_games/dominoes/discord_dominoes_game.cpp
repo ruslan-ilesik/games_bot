@@ -187,6 +187,7 @@ namespace gb {
                     }
                 }
                 click_event = r.first;
+                click_event.reply(dpp::ir_update_message,"loading");
                 _hidden_deck_images.erase(get_current_player());
                 if (click_event.custom_id == "take") {
                     std::uniform_int_distribution<size_t> random_int{0, _local_list_of_domino.size() - 1};
@@ -207,7 +208,7 @@ namespace gb {
                                        this->_messages[get_current_player()].embeds[0]);
                         button_click_awaiter = _data.button_click_handler->wait_for(this->_messages[get_current_player()],
                                                                                     {get_current_player()}, 60);
-                        _data.bot->reply(click_event, this->_messages[get_current_player()]);
+                        _data.bot->event_edit_original_response(click_event, this->_messages[get_current_player()]);
                         r = co_await button_click_awaiter;
                         continue;
                     }
@@ -233,7 +234,6 @@ namespace gb {
                         if (is_continue) {
                             continue;
                         }
-                        click_event.reply();
                         end_game_custom_condition();
                         break;
                     }
@@ -276,7 +276,7 @@ namespace gb {
                             _to_place = piece;
                             button_click_awaiter = _data.button_click_handler->wait_for(_messages[get_current_player()],
                                                                                         {get_current_player()}, 60);
-                            _data.bot->reply(click_event, _messages[get_current_player()]);
+                            _data.bot->event_edit_original_response(click_event, _messages[get_current_player()]);
                             r = co_await button_click_awaiter;
                             continue;
                         }
@@ -297,7 +297,7 @@ namespace gb {
                                 .set_color(dpp::colors::green)
                                 .set_title("Dominoes game over!")
                                 .set_description("Congratulations! You won the game."));
-                        _data.bot->reply(click_event,_messages[get_current_player()]);
+                        _data.bot->event_edit_original_response(click_event,_messages[get_current_player()]);
                         remove_player(USER_REMOVE_REASON::WIN, get_current_player());
                         std::vector<dpp::snowflake> losers;
                         for (auto& i : get_players()) {
@@ -318,7 +318,7 @@ namespace gb {
 
                         break;
                     }
-                    _data.bot->reply(
+                    _data.bot->event_edit_original_response(
                         click_event,
                         dpp::message().add_embed(dpp::embed()
                                                      .set_color(dpp::colors::blue)
@@ -359,7 +359,6 @@ namespace gb {
                     if (is_continue) {
                         continue;
                     }
-                    click_event.reply();
                     end_game_custom_condition();
                     break;
                 }

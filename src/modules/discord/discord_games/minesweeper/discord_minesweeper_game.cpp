@@ -258,6 +258,7 @@ namespace gb {
             }
             event = r.first;
             message.id = event.command.message_id;
+            event.reply(dpp::ir_update_message,"loading");
 
             if (_state == SELECT_COL) {
                 if (event.custom_id == "next") {
@@ -265,7 +266,7 @@ namespace gb {
                     prepare_message(message);
                     button_click_awaitable =
                         _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
-                    _data.bot->reply(event, message);
+                    _data.bot->event_edit_original_response(event, message);
                     continue;
                 }
                 if (event.custom_id == "back") {
@@ -273,7 +274,7 @@ namespace gb {
                     prepare_message(message);
                     button_click_awaitable =
                         _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
-                    _data.bot->reply(event, message);
+                    _data.bot->event_edit_original_response(event, message);
                     continue;
                 }
                 _action_position[0] = std::stoi(event.custom_id);
@@ -282,7 +283,7 @@ namespace gb {
                 prepare_message(message);
                 button_click_awaitable =
                     _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
-                _data.bot->reply(event, message);
+                _data.bot->event_edit_original_response(event, message);
             } else if (_state == SELECT_ROW) {
                 if (event.custom_id == "back") {
                     _next_btn = false;
@@ -290,7 +291,7 @@ namespace gb {
                     prepare_message(message);
                     button_click_awaitable =
                         _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
-                    _data.bot->reply(event, message);
+                    _data.bot->event_edit_original_response(event, message);
                     continue;
                 }
                 _action_position[1] = std::stoi(event.custom_id);
@@ -299,7 +300,7 @@ namespace gb {
                 prepare_message(message);
                 button_click_awaitable =
                     _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
-                _data.bot->reply(event, message);
+                _data.bot->event_edit_original_response(event, message);
             }
 
             else if (_state == SELECT_ACTION) {
@@ -310,7 +311,7 @@ namespace gb {
                     prepare_message(message);
                     button_click_awaitable =
                         _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
-                    _data.bot->reply(event, message);
+                    _data.bot->event_edit_original_response(event, message);
                     continue;
                 } else if (event.custom_id == "dig") {
                     if (_is_fst_move) {
@@ -344,7 +345,7 @@ namespace gb {
                                          " marked all mines and **won** the game.");
 
                     message.embeds[0].set_image(add_image(message, create_image()));
-                    _data.bot->reply(event, message);
+                    _data.bot->event_edit_original_response(event, message);
                     remove_player(USER_REMOVE_REASON::WIN, get_current_player());
                     break;
                 } else if (state == minesweeper_engine::LOSE) {
@@ -358,7 +359,7 @@ namespace gb {
                                          "opened a mine and **lost** the game. You will be more lucky next time");
 
                     message.embeds[0].set_image(add_image(message, create_image()));
-                    _data.bot->reply(event, message);
+                    _data.bot->event_edit_original_response(event, message);
                     remove_player(USER_REMOVE_REASON::LOSE, get_current_player());
                     break;
                 }
@@ -368,7 +369,7 @@ namespace gb {
                 prepare_message(message);
                 button_click_awaitable =
                     _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
-                _data.bot->reply(event, message);
+                _data.bot->event_edit_original_response(event, message);
             }
         }
         game_stop("{\"level\":"+std::to_string(_level)+"}");

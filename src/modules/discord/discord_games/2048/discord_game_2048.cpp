@@ -61,6 +61,7 @@ namespace gb {
             }
             event = r.first;
             message.id = event.command.message_id;
+            event.reply(dpp::ir_update_message,"loading");
             if (event.custom_id == "up") {
                 up(_board);
             } else if (event.custom_id == "down") {
@@ -118,7 +119,7 @@ namespace gb {
             prepare_message(message);
             button_click_awaitable =
                 _data.button_click_handler->wait_for(message, {get_current_player()}, 60);
-            _data.bot->reply(event, message);
+            _data.bot->event_edit_original_response(event, message);
             r = co_await button_click_awaitable;
         }
 
