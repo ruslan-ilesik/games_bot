@@ -38,7 +38,7 @@ namespace gb {
         this->get_possible_moves();
         prepare_message(message);
         dpp::task<Button_click_return> button_click_awaitable =
-            _data.button_click_handler->wait_for(message, {get_current_player()}, 60);
+            _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, 60);
         _data.bot->reply(sevent, message);
         Button_click_return r = co_await button_click_awaitable;
         dpp::button_click_t event;
@@ -61,7 +61,6 @@ namespace gb {
             }
             event = r.first;
             message.id = event.command.message_id;
-            event.reply(dpp::ir_update_message,"loading");
             if (event.custom_id == "up") {
                 up(_board);
             } else if (event.custom_id == "down") {
@@ -118,7 +117,7 @@ namespace gb {
             }
             prepare_message(message);
             button_click_awaitable =
-                _data.button_click_handler->wait_for(message, {get_current_player()}, 60);
+                _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, 60);
             _data.bot->event_edit_original_response(event, message);
             r = co_await button_click_awaitable;
         }

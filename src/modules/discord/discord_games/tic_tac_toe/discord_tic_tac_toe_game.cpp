@@ -114,7 +114,7 @@ namespace gb {
     dpp::task<void> Discord_tic_tac_toe_game::run(const dpp::button_click_t &event) {
         game_start(event.command.channel_id,event.command.guild_id);
         _event = event;
-        _event.reply(dpp::ir_update_message,"loading");
+        _event.reply(dpp::ir_update_message,"Game is starting");
         while (1) {
             dpp::message m;
             dpp::embed embed;
@@ -131,7 +131,7 @@ namespace gb {
             create_image(m, embed);
             create_components(m);
             m.add_embed(embed);
-            auto button_click_awaiter = _data.button_click_handler->wait_for(m, {get_current_player()}, 60);
+            auto button_click_awaiter = _data.button_click_handler->wait_for_with_reply(m, {get_current_player()}, 60);
             _data.bot->event_edit_original_response(_event, m);
             Button_click_return r = co_await button_click_awaiter;
             if (r.second) {
@@ -142,7 +142,6 @@ namespace gb {
                 break;
             }
             _event = r.first;
-            _event.reply(dpp::ir_update_message,"loading");
 
             std::string id = _event.custom_id;
             if (!std::isdigit(_event.custom_id[0]) || !std::isdigit(_event.custom_id[1])) {

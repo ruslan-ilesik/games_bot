@@ -234,7 +234,7 @@ namespace gb {
         message.id = 0;
         message.add_embed(dpp::embed());
         prepare_message(message);
-        button_click_awaitable = _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
+        button_click_awaitable = _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout_time);
         _data.bot->reply(sevent, message);
         dpp::button_click_t event;
         while (1) {
@@ -258,14 +258,13 @@ namespace gb {
             }
             event = r.first;
             message.id = event.command.message_id;
-            event.reply(dpp::ir_update_message,"loading");
 
             if (_state == SELECT_COL) {
                 if (event.custom_id == "next") {
                     _next_btn = true;
                     prepare_message(message);
                     button_click_awaitable =
-                        _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
+                        _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout_time);
                     _data.bot->event_edit_original_response(event, message);
                     continue;
                 }
@@ -273,7 +272,7 @@ namespace gb {
                     _next_btn = false;
                     prepare_message(message);
                     button_click_awaitable =
-                        _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
+                        _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout_time);
                     _data.bot->event_edit_original_response(event, message);
                     continue;
                 }
@@ -282,7 +281,7 @@ namespace gb {
                 _next_btn = false;
                 prepare_message(message);
                 button_click_awaitable =
-                    _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
+                    _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout_time);
                 _data.bot->event_edit_original_response(event, message);
             } else if (_state == SELECT_ROW) {
                 if (event.custom_id == "back") {
@@ -290,7 +289,7 @@ namespace gb {
                     _state = SELECT_COL;
                     prepare_message(message);
                     button_click_awaitable =
-                        _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
+                        _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout_time);
                     _data.bot->event_edit_original_response(event, message);
                     continue;
                 }
@@ -299,7 +298,7 @@ namespace gb {
                 _next_btn = false;
                 prepare_message(message);
                 button_click_awaitable =
-                    _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
+                    _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout_time);
                 _data.bot->event_edit_original_response(event, message);
             }
 
@@ -310,7 +309,7 @@ namespace gb {
                     _state = SELECT_ROW;
                     prepare_message(message);
                     button_click_awaitable =
-                        _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
+                        _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout_time);
                     _data.bot->event_edit_original_response(event, message);
                     continue;
                 } else if (event.custom_id == "dig") {
@@ -368,7 +367,7 @@ namespace gb {
                 _next_btn = false;
                 prepare_message(message);
                 button_click_awaitable =
-                    _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout_time);
+                    _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout_time);
                 _data.bot->event_edit_original_response(event, message);
             }
         }

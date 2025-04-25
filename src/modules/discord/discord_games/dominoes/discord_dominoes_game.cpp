@@ -135,7 +135,7 @@ namespace gb {
             make_message();
             generate_image(this->_messages[get_current_player()], this->_messages[get_current_player()].embeds[0]);
             auto button_click_awaiter =
-                _data.button_click_handler->wait_for(this->_messages[get_current_player()], {get_current_player()}, 60);
+                _data.button_click_handler->wait_for_with_reply(this->_messages[get_current_player()], {get_current_player()}, 60);
             _data.bot->message_edit(this->_messages[get_current_player()]);
             Button_click_return r = co_await button_click_awaiter;
             while (true) {
@@ -179,7 +179,7 @@ namespace gb {
                         make_message();
                         generate_image(this->_messages[get_current_player()],
                                        this->_messages[get_current_player()].embeds[0]);
-                        button_click_awaiter = _data.button_click_handler->wait_for(
+                        button_click_awaiter = _data.button_click_handler->wait_for_with_reply(
                             this->_messages[get_current_player()], {get_current_player()}, 60);
                         _data.bot->message_edit(this->_messages[get_current_player()]);
                         r = co_await button_click_awaiter;
@@ -187,7 +187,6 @@ namespace gb {
                     }
                 }
                 click_event = r.first;
-                click_event.reply(dpp::ir_update_message,"loading");
                 _hidden_deck_images.erase(get_current_player());
                 if (click_event.custom_id == "take") {
                     std::uniform_int_distribution<size_t> random_int{0, _local_list_of_domino.size() - 1};
@@ -206,7 +205,7 @@ namespace gb {
                         make_message();
                         generate_image(this->_messages[get_current_player()],
                                        this->_messages[get_current_player()].embeds[0]);
-                        button_click_awaiter = _data.button_click_handler->wait_for(this->_messages[get_current_player()],
+                        button_click_awaiter = _data.button_click_handler->wait_for_with_reply(this->_messages[get_current_player()],
                                                                                     {get_current_player()}, 60);
                         _data.bot->event_edit_original_response(click_event, this->_messages[get_current_player()]);
                         r = co_await button_click_awaiter;
@@ -222,7 +221,7 @@ namespace gb {
                                 make_message();
                                 generate_image(this->_messages[get_current_player()],
                                                this->_messages[get_current_player()].embeds[0]);
-                                button_click_awaiter = _data.button_click_handler->wait_for(
+                                button_click_awaiter = _data.button_click_handler->wait_for_with_reply(
                                     this->_messages[get_current_player()], {get_current_player()}, 60);
                                 _data.bot->message_edit(this->_messages[get_current_player()]);
                                 r = co_await button_click_awaiter;
@@ -274,7 +273,7 @@ namespace gb {
                                                        .set_id("right")
                                                        .set_emoji("➡️")));
                             _to_place = piece;
-                            button_click_awaiter = _data.button_click_handler->wait_for(_messages[get_current_player()],
+                            button_click_awaiter = _data.button_click_handler->wait_for_with_reply(_messages[get_current_player()],
                                                                                         {get_current_player()}, 60);
                             _data.bot->event_edit_original_response(click_event, _messages[get_current_player()]);
                             r = co_await button_click_awaiter;
@@ -332,7 +331,7 @@ namespace gb {
                     make_message();
                     generate_image(this->_messages[get_current_player()],
                                    this->_messages[get_current_player()].embeds[0]);
-                    button_click_awaiter = _data.button_click_handler->wait_for(this->_messages[get_current_player()],
+                    button_click_awaiter = _data.button_click_handler->wait_for_with_reply(this->_messages[get_current_player()],
                                                                                 {get_current_player()}, 60);
                     _data.bot->message_edit(this->_messages[get_current_player()]);
                     r = co_await button_click_awaiter;
@@ -347,7 +346,7 @@ namespace gb {
                             make_message();
                             generate_image(this->_messages[get_current_player()],
                                            this->_messages[get_current_player()].embeds[0]);
-                            button_click_awaiter = _data.button_click_handler->wait_for(
+                            button_click_awaiter = _data.button_click_handler->wait_for_with_reply(
                                 this->_messages[get_current_player()], {get_current_player()}, 60);
                             _data.bot->message_edit(this->_messages[get_current_player()]);
                             r = co_await button_click_awaiter;

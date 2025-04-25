@@ -394,7 +394,7 @@ namespace gb {
 
                     _message.embeds[0].set_image(add_image(_message, img));
 
-                    button_click_awaiter = _data.button_click_handler->wait_for(
+                    button_click_awaiter = _data.button_click_handler->wait_for_with_reply(
                         _message, {get_current_player()},
                        60);
                     if (event.custom_id == "FIRST_TURN") {
@@ -410,7 +410,6 @@ namespace gb {
                         break;
                     }
                     event = r.first;
-                    event.reply(dpp::ir_update_message,"loading");
                     if (event.custom_id == "back") {
                         _states[_user_to_player_id[get_current_player()]]--;
                         continue;
@@ -592,7 +591,7 @@ namespace gb {
             draw_private_field(img, {static_cast<int>(_sector_size), static_cast<int>(_sector_size)}, p.get_field(),
                                p.get_ships());
             m.embeds[0].set_image(add_image(m, img));
-            button_click_awaiter = _data.button_click_handler->wait_for(
+            button_click_awaiter = _data.button_click_handler->wait_for_with_reply(
                 m, {player},
                 _place_timeout - (std::chrono::duration_cast<std::chrono::seconds>(
                                       std::chrono::system_clock::now().time_since_epoch())
@@ -625,7 +624,6 @@ namespace gb {
                 break;
             }
             event = r.first;
-            event.reply(dpp::ir_update_message,"loading");
             std::string game_state = "";
             auto back_row = dpp::component().set_type(dpp::cot_action_row);
             back_row.add_component(dpp::component()
@@ -648,7 +646,7 @@ namespace gb {
                                            .set_style(dpp::cos_success));
                 m.add_component(back_row);
                 _states[_user_to_player_id[player]] = -1;
-                button_click_awaiter = _data.button_click_handler->wait_for(
+                button_click_awaiter = _data.button_click_handler->wait_for_with_reply(
                     m, {player},
                     _place_timeout - (std::chrono::duration_cast<std::chrono::seconds>(
                                           std::chrono::system_clock::now().time_since_epoch())
@@ -690,7 +688,7 @@ namespace gb {
                                                .set_style(dpp::cos_success));
                     m.add_component(back_row);
                     _states[_user_to_player_id[player]] = -1;
-                    button_click_awaiter = _data.button_click_handler->wait_for(
+                    button_click_awaiter = _data.button_click_handler->wait_for_with_reply(
                         m, {player},
                         _place_timeout - (std::chrono::duration_cast<std::chrono::seconds>(
                                               std::chrono::system_clock::now().time_since_epoch())
@@ -788,7 +786,7 @@ namespace gb {
                 }
                 m.add_component(row).add_component(back_row);
 
-                button_click_awaiter = _data.button_click_handler->wait_for(
+                button_click_awaiter = _data.button_click_handler->wait_for_with_reply(
                     m, {player},
                     _place_timeout - (std::chrono::duration_cast<std::chrono::seconds>(
                                           std::chrono::system_clock::now().time_since_epoch())
@@ -820,7 +818,7 @@ namespace gb {
                 }
                 m.add_component(row).add_component(back_row);
 
-                button_click_awaiter = _data.button_click_handler->wait_for(
+                button_click_awaiter = _data.button_click_handler->wait_for_with_reply(
                     m, {player},
                     _place_timeout - (std::chrono::duration_cast<std::chrono::seconds>(
                                           std::chrono::system_clock::now().time_since_epoch())
@@ -866,7 +864,7 @@ namespace gb {
                                        .set_disabled(!_temp_ships[_user_to_player_id[player]]->can_be_placed(
                                            p.get_ships(), {_temp_pos[_user_to_player_id[player]]})));
                 m.add_component(back_row);
-                button_click_awaiter = _data.button_click_handler->wait_for(
+                button_click_awaiter = _data.button_click_handler->wait_for_with_reply(
                     m, {player},
                     _place_timeout - (std::chrono::duration_cast<std::chrono::seconds>(
                                           std::chrono::system_clock::now().time_since_epoch())

@@ -30,7 +30,8 @@ namespace gb {
          *
          * Initializes the handler with the necessary dependencies.
          */
-        Discord_button_click_handler_impl();;
+        Discord_button_click_handler_impl();
+        ;
 
         /**
          * @brief Destructor for Discord_button_click_handler_impl.
@@ -38,26 +39,50 @@ namespace gb {
         virtual ~Discord_button_click_handler_impl() = default;
 
         /**
-        * @brief Waits for a user interaction with a button within a specified timeout.
-        *
-        * This function waits for an interaction with a button in a Discord message. If an interaction
-        * occurs within the timeout period, it returns the interaction event; otherwise, it times out.
-        *
-        * @param m The DPP message containing the button component.
-        * @param users A list of user IDs that are allowed to interact with the button.
-        * @param timeout The maximum time to wait for an interaction.
-        * @param generate_ids Flag to make hides ids of message or not (for example if we need await same message second time we will not hide id).
-        * @param clear_ids Flag to clear ids after event awaiting finished (should note that in case of timeouts ids cleared anyway).
-        * @return A dpp::task<Button_click_return> containing the result of the interaction.
-        */
-        dpp::task<Button_click_return> wait_for(dpp::message& m, const std::vector<dpp::snowflake>& users, time_t timeout, bool generate_ids = true, bool clear_ids = true) override;
+         * @brief Waits for a user interaction with a button within a specified timeout.
+         *
+         * This function waits for an interaction with a button in a Discord message. If an interaction
+         * occurs within the timeout period, it returns the interaction event; otherwise, it times out.
+         *
+         * @param m The DPP message containing the button component.
+         * @param users A list of user IDs that are allowed to interact with the button.
+         * @param timeout The maximum time to wait for an interaction.
+         * @param generate_ids Flag to make hides ids of message or not (for example if we need await same message
+         * second time we will not hide id).
+         * @param clear_ids Flag to clear ids after event awaiting finished (should note that in case of timeouts ids
+         * cleared anyway).
+         * @return A dpp::task<Button_click_return> containing the result of the interaction.
+         */
+        dpp::task<Button_click_return> wait_for(dpp::message &m, const std::vector<dpp::snowflake> &users,
+                                                time_t timeout, bool generate_ids = true,
+                                                bool clear_ids = true) override;
 
         /**
-        * @brief Clears ids from hash in specific message.
-        *
-        * @param m message which ids should be removed from cache.
-        */
-        void clear_ids(const dpp::message& m) override;
+         * @brief Waits for a user interaction with the select menu within a specified timeout and automatically replies
+         * to message if not timeout ensuring event will be valid. In case reply failed, it retries awaiting.
+         *
+         * This function waits for an interaction with a button in a Discord message. If an interaction
+         * occurs within the timeout period, it returns the interaction event; otherwise, it times out.
+         *
+         * @param m The DPP message containing the button component.
+         * @param users A list of user IDs that are allowed to interact with the button.
+         * @param timeout The maximum time to wait for an interaction.
+         * @param generate_ids Flag to make hides ids of message or not (for example if we need await same message
+         * second time we will not hide id).
+         * @param clear_ids Flag to clear ids after event awaiting finished (should note that in case of timeouts ids
+         * cleared anyway).
+         * @return A dpp::task<Button_click_return> containing the result of the interaction.
+         */
+        dpp::task<Button_click_return> wait_for_with_reply(dpp::message &m, const std::vector<dpp::snowflake> &users,
+                                                           time_t timeout, bool generate_ids = true,
+                                                           bool clear_ids = true) override;
+
+        /**
+         * @brief Clears ids from hash in specific message.
+         *
+         * @param m message which ids should be removed from cache.
+         */
+        void clear_ids(const dpp::message &m) override;
 
         /**
          * @brief Starts the handler's operation.
@@ -69,7 +94,7 @@ namespace gb {
          *
          * @param modules A map of module names to their shared pointers.
          */
-        void init(const Modules& modules) override;
+        void init(const Modules &modules) override;
 
         /**
          * @brief Stops the handler's operation.
@@ -86,4 +111,4 @@ namespace gb {
      */
     extern "C" Module_ptr create();
 
-} // gb
+} // namespace gb

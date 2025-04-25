@@ -160,6 +160,7 @@ namespace gb {
         dpp::message message;
         message.add_embed(dpp::embed());
         message.channel_id = sevent.command.channel_id;
+        message.channel_id = sevent.command.channel_id;
         message.guild_id = sevent.command.guild_id;
         message.id = 0;
 
@@ -168,7 +169,7 @@ namespace gb {
         _engine.gen_puzzle();
         prepare_message(message);
         dpp::task<Button_click_return> button_click_awaitable =
-            _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout);
+            _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout);
         _data.bot->reply(sevent, message);
         r = co_await button_click_awaitable;
         dpp::button_click_t event;
@@ -197,12 +198,11 @@ namespace gb {
             }
             event = r.first;
             message.id = event.command.message_id;
-            event.reply(dpp::ir_update_message,"loading");
             if (event.custom_id == "back") {
                 _state--;
                 prepare_message(message);
                 button_click_awaitable =
-                    _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout);
+                    _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout);
                 _data.bot->event_edit_original_response(event, message);
                 r = co_await button_click_awaitable;
                 continue;
@@ -213,7 +213,7 @@ namespace gb {
                 _state++;
                 prepare_message(message);
                 button_click_awaitable =
-                    _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout);
+                    _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout);
                 _data.bot->event_edit_original_response(event, message);
                 r = co_await button_click_awaitable;
                 continue;
@@ -240,7 +240,7 @@ namespace gb {
                     _is_mistake = true;
                     prepare_message(message);
                     button_click_awaitable =
-                        _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout);
+                        _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout);
                     _data.bot->event_edit_original_response(event, message);
                     r = co_await button_click_awaitable;
                     continue;
@@ -265,7 +265,7 @@ namespace gb {
                 }
                 prepare_message(message);
                 button_click_awaitable =
-                    _data.button_click_handler->wait_for(message, {get_current_player()}, _timeout);
+                    _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, _timeout);
                 _data.bot->event_edit_original_response(event, message);
                 r = co_await button_click_awaitable;
                 continue;

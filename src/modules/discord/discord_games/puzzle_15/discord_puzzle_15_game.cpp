@@ -136,7 +136,7 @@ namespace gb {
         message.guild_id = sevent.command.guild_id;
         prepare_message(message);
         dpp::task<Button_click_return> button_click_awaitable =
-            _data.button_click_handler->wait_for(message, {get_current_player()}, 60);
+            _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, 60);
         _data.bot->reply(sevent, message);
         Button_click_return r;
         dpp::button_click_t event;
@@ -160,7 +160,6 @@ namespace gb {
             }
             event = r.first;
             message.id = event.command.message_id;
-            event.reply(dpp::ir_update_message,"loading");
             puzzle_15::Direction d;
             switch (event.custom_id[0]) {
                 case 'u':
@@ -191,7 +190,7 @@ namespace gb {
             }
             prepare_message(message);
             button_click_awaitable =
-                _data.button_click_handler->wait_for(message, {get_current_player()}, 60);
+                _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, 60);
             _data.bot->event_edit_original_response(event, message);
         }
 

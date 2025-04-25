@@ -94,12 +94,12 @@ namespace gb {
             message.add_component(row);
 
             message.embeds[0].set_image(add_image(message, generate_image()));
-            button_click_awaitable = _data.button_click_handler->wait_for(message, {get_current_player()}, 60);
+            button_click_awaitable = _data.button_click_handler->wait_for_with_reply(message, {get_current_player()}, 60);
             _data.bot->event_edit_original_response(event, message);
             r = co_await button_click_awaitable;
             co_return;
         };
-        event.reply(dpp::ir_update_message,"loading");
+        event.reply(dpp::ir_update_message,"Game is starting");
         co_await send_message();
 
         bool end = false;
@@ -119,7 +119,7 @@ namespace gb {
                 break;
             }
             event = r.first;
-            event.reply(dpp::ir_update_message,"loading");
+
             // place object
             for (int i = static_cast<int>(std::size(_board) - 1); i >= 0; i--) {
                 if (_board[i][std::stoi(event.custom_id)] == " ") {

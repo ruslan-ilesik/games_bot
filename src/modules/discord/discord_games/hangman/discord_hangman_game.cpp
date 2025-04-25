@@ -367,7 +367,6 @@ namespace gb {
                 break;
             }
             event = r.first;
-            event.reply(dpp::ir_update_message,"loading");
             _messages.at(player).id = event.command.message_id;
             auto &p = _hangman_rel.at(player);
             if (event.custom_id == "next") {
@@ -383,7 +382,7 @@ namespace gb {
                 _data.bot->event_edit_original_response(event, _messages.at(player));
                 break;
             } else {
-                button_click_awaitable = _data.button_click_handler->wait_for(_messages.at(player), {player}, 60);
+                button_click_awaitable = _data.button_click_handler->wait_for_with_reply(_messages.at(player), {player}, 60);
                 _data.bot->event_edit_original_response(event, _messages.at(player));
             }
         }
@@ -399,7 +398,7 @@ namespace gb {
         _messages.insert({sevent.command.usr.id, _message});
         prepare_message(_messages.at(get_current_player()), get_current_player());
         dpp::task<Button_click_return> button_click_awaitable =
-            _data.button_click_handler->wait_for(_messages.at(get_current_player()), {get_current_player()}, 60);
+            _data.button_click_handler->wait_for_with_reply(_messages.at(get_current_player()), {get_current_player()}, 60);
         _data.bot->reply(sevent, _messages.at(get_current_player()));
         co_await per_player_run(get_current_player(), button_click_awaitable);
         game_stop(results_json());
@@ -455,7 +454,7 @@ namespace gb {
             _messages = messages.second;
             for (size_t i = 0; i < get_players().size(); i++) {
                 prepare_message(_messages.at(get_current_player()), get_current_player());
-                temp.push_back(_data.button_click_handler->wait_for(_messages.at(get_current_player()),
+                temp.push_back(_data.button_click_handler->wait_for_with_reply(_messages.at(get_current_player()),
                                                                     {get_current_player()}, 60));
                 list.push_back(per_player_run(get_current_player(), temp.back()));
                 _data.bot->message_edit(_messages.at(get_current_player()));

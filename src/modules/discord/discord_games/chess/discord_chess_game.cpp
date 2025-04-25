@@ -149,7 +149,7 @@ namespace gb {
 
                 }
                 message.embeds[0].set_image(add_image(message, generate_image()));
-                button_click_awaitable = _data.button_click_handler->wait_for(
+                button_click_awaitable = _data.button_click_handler->wait_for_with_reply(
                     message, {get_current_player()},
                     (clock - time(nullptr)));
                 _data.bot->event_edit_original_response(event, message);
@@ -234,7 +234,7 @@ namespace gb {
                     message.add_component(row);
                 }
                 message.embeds[0].set_image(add_image(message, generate_image()));
-                button_click_awaitable = _data.button_click_handler->wait_for(
+                button_click_awaitable = _data.button_click_handler->wait_for_with_reply(
                     message, {get_current_player()},
                     (clock - time(nullptr)));
                 _data.bot->event_edit_original_response(event, message);
@@ -242,7 +242,7 @@ namespace gb {
             }
             co_return;
         };
-        event.reply(dpp::ir_update_message,"loading");
+        event.reply(dpp::ir_update_message,"Game is starting");
         co_await send_message();
 
         while (1) {
@@ -261,7 +261,7 @@ namespace gb {
                 break;
             }
             event = r.first;
-            event.reply(dpp::ir_update_message,"loading");
+
 
             if (event.custom_id == "back") {
                 if (_next) {
