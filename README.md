@@ -7,7 +7,7 @@ This repository contains only the **source code**. It is **not** a complete, rea
 - Images
 - Dependencies
 
-It is **for reference purposes only** and **does not include support**.
+It is **for reference purposes only** and **does not include support on how to run it**, but if you have any **questions reguarding how code works, feel free to ask**. 
 
 ## 🛠️ Implementation Details
 
