@@ -253,6 +253,7 @@ namespace gb {
                                        " " + req->getHeader("X-Patreon-Signature"));
                     co_return;
                 }
+                server->log->info("Patreon webhook data: " + std::string{req->getBody()});
                 nlohmann::json data = nlohmann::json::parse(req->getBody());
                 SUBSCRIPTION_STATUS patron_status;
 
@@ -267,15 +268,24 @@ namespace gb {
                     data["data"]["relationships"]["user"]["data"]["id"].template get<std::string>();
                 std::string nickname = data["data"]["attributes"]["full_name"].template get<std::string>();
 
-                std::string discord_id = "0";
-                for (auto &i: data["included"]) {
-                    if (i["type"].template get<std::string>() == "user" &&
-                        i["attributes"]["social_connections"].contains("discord")) {
-                        discord_id =
-                            i["attributes"]["social_connections"]["discord"]["user_id"].template get<std::string>();
-                        break;
+            std::string discord_id = "0";
+            for (auto &i : data["included"]) {
+                if (i["type"].get<std::string>() == "user" &&
+                    i["attributes"]["social_connections"].contains("discord") &&
+                    !i["attributes"]["social_connections"]["discord"].is_null()) 
+                {
+                    auto &discord = i["attributes"]["social_connections"]["discord"];
+            
+                    if (discord.contains("user_id")) {
+                        if (discord["user_id"].is_string()) {
+                            discord_id = discord["user_id"].get<std::string>();
+                        } else if (discord["user_id"].is_number_integer()) {
+                            discord_id = std::to_string(discord["user_id"].get<int64_t>());
+                        }
                     }
+                    break;
                 }
+            }
 
                 co_await server->db->execute_prepared_statement(patreon_webhook_stmt, patreon_id, discord_id,
                                                                 to_string(patron_status), nickname);
