@@ -3,6 +3,8 @@
 //
 
 #include "database_impl.hpp"
+#include <mysql/mysql.h>
+#include <mysql/errmsg.h>
 
 namespace gb {
     Database_impl::Database_impl() : Database("database", {"config", "logging", "admin_terminal"}) {
@@ -587,10 +589,10 @@ namespace gb {
                     auto bindings = std::make_unique<MYSQL_BIND[]>(num_fields);
                     auto string_buffers = std::make_unique<std::unique_ptr<char[]>[]>(num_fields);
                     auto lengths = std::make_unique<unsigned long[]>(num_fields);
-                    auto is_null = std::make_unique<bool[]>(num_fields);
+                    auto is_null = std::make_unique<my_bool[]>(num_fields);
 
                     std::memset(bindings.get(), 0, sizeof(MYSQL_BIND) * num_fields);
-                    std::memset(is_null.get(), 0, sizeof(bool) * num_fields);
+                    std::memset(is_null.get(), 0, sizeof(my_bool) * num_fields);
                     std::memset(lengths.get(), 0, sizeof(unsigned long) * num_fields);
 
                     for (size_t i = 0; i < num_fields; i++) {

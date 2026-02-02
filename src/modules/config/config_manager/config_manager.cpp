@@ -6,6 +6,7 @@
 #include <iostream>
 #include <mutex>
 #include <ranges>
+#include <algorithm>
 #include "config_manager.hpp"
 
 namespace gb {

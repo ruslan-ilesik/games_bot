@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <thread>
+#include <format>
 
 #include "test_module_2.hpp"
 #include "../test_module_1/test_module_1.hpp"

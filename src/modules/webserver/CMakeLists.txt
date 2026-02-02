@@ -1,3 +1,5 @@
+include(FetchContent)
+
 add_library(webserver SHARED
         webserver_impl.cpp
         ./api/index_page.cpp

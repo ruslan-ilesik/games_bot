@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include <ctime>
 #include <src/module/module.hpp>
 
 namespace gb {

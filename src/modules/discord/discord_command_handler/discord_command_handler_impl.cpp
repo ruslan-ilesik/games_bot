@@ -17,10 +17,10 @@ namespace gb {
                                [this](const std::string &c) { return _commands.at(c)->get_command(); });
 
         _discord_bot->get_bot()->global_bulk_command_create(
-            slash_cmds, [this](const dpp::confirmation_callback_t &event) {
+            slash_cmds, [this,slash_cmds](const dpp::confirmation_callback_t &event) {
                 std::unique_lock<std::shared_mutex> lock(_mutex);
                 if (event.is_error()) {
-                    _discord_bot->get_bot()->log(dpp::ll_error, "bulk command create failed");
+                    _discord_bot->get_bot()->log(dpp::ll_error, "bulk command create failed, "+ std::to_string(slash_cmds.size()));
                     return;
                 }
                 for (auto &[k, v]: event.get<dpp::slashcommand_map>()) {
@@ -241,10 +241,10 @@ namespace gb {
                                [](const Discord_command_ptr &command) { return command->get_command(); });
 
         _discord_bot->get_bot()->global_bulk_command_create(
-            slash_cmds, [this](const dpp::confirmation_callback_t &event) {
+            slash_cmds, [this,slash_cmds](const dpp::confirmation_callback_t &event) {
                 std::unique_lock<std::shared_mutex> lock(_mutex);
                 if (event.is_error()) {
-                    _discord_bot->get_bot()->log(dpp::ll_error, "bulk command create failed");
+                    _discord_bot->get_bot()->log(dpp::ll_error, "bulk command create failed, "+ std::to_string(slash_cmds.size()));
                     return;
                 }
                 for (auto &[k, v]: event.get<dpp::slashcommand_map>()) {
