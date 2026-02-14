@@ -33,7 +33,7 @@ Discord_game::~Discord_game() {
     }
 
     std::vector<std::string> Discord_game::get_basic_game_dependencies() {
-        return {"database","discord_bot","discord_games_manager","image_processing","discord_button_click_handler","discord_achievements_processing"};
+        return {"database","logging","discord_bot","discord_games_manager","image_processing","discord_button_click_handler","discord_achievements_processing"};
     }
 
     Discord_game::Discord_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players): _game_create_req({}) {

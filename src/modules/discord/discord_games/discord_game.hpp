@@ -13,6 +13,7 @@
 #include "src/modules/database/database.hpp"
 #include "src/modules/discord/discord_bot/discord_bot.hpp"
 #include "src/modules/image_processing/image_processing.hpp"
+#include "src/modules/logging/logging.hpp"
 
 namespace gb {
 
@@ -50,6 +51,7 @@ namespace gb {
         Image_processing_ptr image_processing; ///< Pointer to the image processing module.
         Discord_button_click_handler_ptr button_click_handler; ///< Pointer to the button click handler module.
         Discord_achievements_processing_ptr achievements_processing; ///< Pointer to the achievements processing module.
+        Logging_ptr log;
     };
 
     /**

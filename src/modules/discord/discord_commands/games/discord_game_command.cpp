@@ -30,7 +30,7 @@ namespace gb {
 
     Game_data_initialization Discord_game_command::get_game_data_initialization(const std::string &game_name) const {
         return {
-            game_name, _db, _bot, _games_manager, _image_processing, _button_click_handler, _achievements_processing};
+            game_name, _db, _bot, _games_manager, _image_processing, _button_click_handler, _achievements_processing, _log};
     }
 
 

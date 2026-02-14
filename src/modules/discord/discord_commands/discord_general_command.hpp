@@ -8,6 +8,8 @@
 #include <src/modules/discord/discord_bot/discord_bot.hpp>
 #include <src/modules/discord/discord_command_handler/discord_command_handler.hpp>
 
+#include "src/modules/logging/logging.hpp"
+
 namespace gb {
 
     /**
@@ -44,6 +46,11 @@ namespace gb {
          * @brief Shared pointer to the Discord bot.
          */
         Discord_bot_ptr _bot;
+
+        /**
+         * @brief Shared pointer to logger.
+         */
+        Logging_ptr _log;
 
     public:
         /**
