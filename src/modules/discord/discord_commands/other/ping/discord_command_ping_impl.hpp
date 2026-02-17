@@ -18,6 +18,13 @@ namespace gb {
      * the bot and various components, and provides a response with the latency information.
      */
     class Discord_command_ping_impl : public Discord_command_ping {
+    protected:
+        /**
+         * Overrides command callback with proper handler.
+         * @param event slashcommand event forwarded to handler.
+         * @return nothing
+         */
+        dpp::task<void> _command_callback(const dpp::slashcommand_t &event) override;
     public:
         /**
          * @brief Constructor for Discord_command_ping_impl.

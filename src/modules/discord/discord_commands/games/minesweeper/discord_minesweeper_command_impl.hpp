@@ -18,6 +18,14 @@ namespace gb {
      */
     class Discord_minesweeper_command_impl : public Discord_minesweeper_command {
 
+    protected:
+        /**
+         * Overrides command callback with proper handler.
+         * @param event slashcommand event forwarded to handler.
+         * @return nothing
+         */
+        dpp::task<void> _command_callback(const dpp::slashcommand_t &event) override;
+
     public:
         /**
          * @brief Constructs a Discord_minesweeper_command_impl object.

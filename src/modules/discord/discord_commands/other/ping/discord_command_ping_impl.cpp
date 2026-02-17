@@ -6,6 +6,16 @@
 #include "../../../discord/discord.hpp"
 
 namespace gb {
+    dpp::task<void> Discord_command_ping_impl::_command_callback(const dpp::slashcommand_t &event) {
+        double discord_api_ping = _bot->get_bot()->rest_ping * 1000;
+        dpp::embed embed =
+            dpp::embed()
+                .set_color(dpp::colors::green)
+                .set_description(std::format(":ping_pong:| Pong! -> {:.02f} ms", discord_api_ping));
+        _bot->reply(event, dpp::message().add_embed(embed));
+        co_return;
+    }
+
     Discord_command_ping_impl::Discord_command_ping_impl() : Discord_command_ping("discord_command_ping",{}){}
 
 
@@ -21,18 +31,7 @@ namespace gb {
                                       _bot->get_bot()->me.id);
 
             _command_handler->register_command(_discord->create_discord_command(
-                command,
-                [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                    command_start();
-                    double discord_api_ping = _bot->get_bot()->rest_ping * 1000;
-                    dpp::embed embed =
-                        dpp::embed()
-                            .set_color(dpp::colors::green)
-                            .set_description(std::format(":ping_pong:| Pong! -> {:.02f} ms", discord_api_ping));
-                    _bot->reply(event, dpp::message().add_embed(embed));
-                    command_end();
-                    co_return;
-                },
+                command, _command_executor,
                 {"Nothing special, just do what description states :)", {"other"}}));
         });
     }

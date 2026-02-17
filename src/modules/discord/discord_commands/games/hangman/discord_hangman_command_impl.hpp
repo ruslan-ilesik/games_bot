@@ -18,6 +18,14 @@ namespace gb {
     class Discord_hangman_command_impl : public Discord_hangman_command {
       Premium_manager_ptr _premium; /**< A pointer to the Premium Manager for handling premium features. */
 
+    protected:
+        /**
+         * Overrides command callback with proper handler.
+         * @param event slashcommand event forwarded to handler.
+         * @return nothing
+         */
+        dpp::task<void> _command_callback(const dpp::slashcommand_t &event) override;
+
     public:
         /**
          * @brief Constructor for Discord_hangman_command_impl.

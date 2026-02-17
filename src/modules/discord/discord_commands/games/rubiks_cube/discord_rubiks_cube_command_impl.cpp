@@ -7,6 +7,13 @@
 #include <src/modules/discord/discord_games/rubiks_cube/discord_rubiks_cube_game.hpp>
 
 namespace gb {
+    dpp::task<void> Discord_rubiks_cube_command_impl::_command_callback(const dpp::slashcommand_t &event) {
+        auto d = get_game_data_initialization("rubiks_cube");
+        auto game = std::make_unique<Discord_rubiks_cube_game>(d, std::vector<dpp::snowflake>{event.command.usr.id});
+        co_await game->run(event);
+        co_return;
+    }
+
     Discord_rubiks_cube_command_impl::Discord_rubiks_cube_command_impl() :
         Discord_rubiks_cube_command("discord_rubiks_cube_command", {}) {
         lobby_title = "Rubik's cube";
@@ -24,14 +31,7 @@ namespace gb {
 
             _command_handler->register_command(_discord->create_discord_command(
                 command,
-                [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                    this->command_start();
-                    auto d = get_game_data_initialization("rubiks_cube");
-                    auto game = std::make_unique<Discord_rubiks_cube_game>(d, std::vector<dpp::snowflake>{event.command.usr.id});
-                    co_await game->run(event);
-                    this->command_end();
-                    co_return;
-                },
+                _command_executor,
                 {"__**Rules**__:\n[External link](http://www.rubiksplace.com/)"
                  "\n\n\n__**How does it works in bot?**__\n"
                  "Bot will give you buttons to rotate sides of cube. There will be icons which shows directions of "

@@ -34,6 +34,14 @@ namespace gb {
          */
         dpp::task<void> help_command(const dpp::slashcommand_t &event);
 
+    protected:
+        /**
+         * Overrides command callback with proper handler.
+         * @param event slashcommand event forwarded to handler.
+         * @return nothing
+         */
+        dpp::task<void> _command_callback(const dpp::slashcommand_t &event) override;
+
     public:
         /**
          * @brief Constructor for Discord_command_help_impl.

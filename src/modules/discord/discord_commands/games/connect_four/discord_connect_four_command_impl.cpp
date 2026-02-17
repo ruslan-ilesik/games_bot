@@ -7,6 +7,22 @@
 #include <src/modules/discord/discord_games/connect_four/discord_connect_four_game.hpp>
 
 namespace gb {
+    dpp::task<void> Discord_connect_four_command_impl::_command_callback(const dpp::slashcommand_t &event) {
+
+        std::vector<dpp::snowflake> players = {};
+        auto parameter = event.get_parameter("player");
+        if (std::holds_alternative<dpp::snowflake>(parameter)) {
+            players.push_back(std::get<dpp::snowflake>(parameter));
+        }
+        Lobby_return r = co_await this->lobby(event, players, event.command.usr.id, 2);
+        if (!r.is_timeout) {
+            auto d = get_game_data_initialization("connect_four");
+            auto game = std::make_unique<Discord_connect_four_game>(d, r.players);
+            co_await game->run(r.event);
+        }
+        co_return;
+    }
+
     Discord_connect_four_command_impl::Discord_connect_four_command_impl() :
         Discord_connect_four_command("discord_connect_four_command", {}) {
         lobby_title = "Connect four";
@@ -22,23 +38,7 @@ namespace gb {
             dpp::slashcommand command("connect_four", "Command to start connect four game", _bot->get_bot()->me.id);
             command.add_option(dpp::command_option(dpp::co_user, "player", "Player to play with.", false));
             _command_handler->register_command(_discord->create_discord_command(
-                command,
-                [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                    command_start();
-                    std::vector<dpp::snowflake> players = {};
-                    auto parameter = event.get_parameter("player");
-                    if (std::holds_alternative<dpp::snowflake>(parameter)) {
-                        players.push_back(std::get<dpp::snowflake>(parameter));
-                    }
-                    Lobby_return r = co_await this->lobby(event, players, event.command.usr.id, 2);
-                    if (!r.is_timeout) {
-                        auto d = get_game_data_initialization("connect_four");
-                        auto game = std::make_unique<Discord_connect_four_game>(d, r.players);
-                        co_await game->run(r.event);
-                    }
-                    command_end();
-                    co_return;
-                },
+                command, _command_executor,
                 {"__**Rules**__:\n1.On your turn, drop one of your checkers down any of the slots in the top of the "
                  "grid.\n\n2.Players alternates until one player gets 4 checkers of his color in a row."
                  "\n\n\n__**How does it works in bot?**__\n"

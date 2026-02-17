@@ -16,7 +16,7 @@ namespace gb {
             std::string command_name = "%"; // MYSQL Like will match any string
             for (auto &parameter: cmd_data.options[0].options) {
                 if (parameter.name == "time_from" && std::holds_alternative<std::string>(parameter.value)) {
-                    struct tm tm {};
+                    struct tm tm{};
                     time_from = std::get<std::string>(parameter.value);
                     if (strptime(time_from.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL) {
                         dpp::message m = dpp::message()
@@ -28,7 +28,7 @@ namespace gb {
                         co_return;
                     }
                 } else if (parameter.name == "time_to" && std::holds_alternative<std::string>(parameter.value)) {
-                    struct tm tm {};
+                    struct tm tm{};
                     time_to = std::get<std::string>(parameter.value);
                     if (strptime(time_to.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL) {
                         dpp::message m = dpp::message()
@@ -81,7 +81,7 @@ namespace gb {
 
             for (auto &parameter: cmd_data.options[0].options) {
                 if (parameter.name == "time_from_start" && std::holds_alternative<std::string>(parameter.value)) {
-                    struct tm tm {};
+                    struct tm tm{};
                     time_from_start = std::get<std::string>(parameter.value);
                     if (strptime(time_from_start.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL) {
                         dpp::message m = dpp::message()
@@ -93,7 +93,7 @@ namespace gb {
                         co_return;
                     }
                 } else if (parameter.name == "time_to_start" && std::holds_alternative<std::string>(parameter.value)) {
-                    struct tm tm {};
+                    struct tm tm{};
                     time_to_start = std::get<std::string>(parameter.value);
                     if (strptime(time_to_start.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL) {
                         dpp::message m = dpp::message()
@@ -105,7 +105,7 @@ namespace gb {
                         co_return;
                     }
                 } else if (parameter.name == "time_from_end" && std::holds_alternative<std::string>(parameter.value)) {
-                    struct tm tm {};
+                    struct tm tm{};
                     time_from_end = std::get<std::string>(parameter.value);
                     if (strptime(time_from_end.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL) {
                         dpp::message m = dpp::message()
@@ -117,7 +117,7 @@ namespace gb {
                         co_return;
                     }
                 } else if (parameter.name == "time_to_end" && std::holds_alternative<std::string>(parameter.value)) {
-                    struct tm tm {};
+                    struct tm tm{};
                     time_to_end = std::get<std::string>(parameter.value);
                     if (strptime(time_to_end.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL) {
                         dpp::message m = dpp::message()
@@ -184,7 +184,7 @@ namespace gb {
             std::string command_name = "%"; // MYSQL Like will match any string
             for (auto &parameter: cmd_data.options[0].options) {
                 if (parameter.name == "time_from" && std::holds_alternative<std::string>(parameter.value)) {
-                    struct tm tm {};
+                    struct tm tm{};
                     time_from = std::get<std::string>(parameter.value);
                     if (strptime(time_from.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL) {
                         dpp::message m = dpp::message()
@@ -196,7 +196,7 @@ namespace gb {
                         co_return;
                     }
                 } else if (parameter.name == "time_to" && std::holds_alternative<std::string>(parameter.value)) {
-                    struct tm tm {};
+                    struct tm tm{};
                     time_to = std::get<std::string>(parameter.value);
                     if (strptime(time_to.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL) {
                         dpp::message m = dpp::message()
@@ -252,7 +252,7 @@ namespace gb {
 
             for (auto parameter: cmd_data.options[0].options) {
                 if (parameter.name == "time_from_start" && std::holds_alternative<std::string>(parameter.value)) {
-                    struct tm tm {};
+                    struct tm tm{};
                     time_from_start = std::get<std::string>(parameter.value);
                     if (strptime(time_from_start.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL) {
                         dpp::message m = dpp::message()
@@ -264,7 +264,7 @@ namespace gb {
                         co_return;
                     }
                 } else if (parameter.name == "time_to_start" && std::holds_alternative<std::string>(parameter.value)) {
-                    struct tm tm {};
+                    struct tm tm{};
                     time_to_start = std::get<std::string>(parameter.value);
                     if (strptime(time_to_start.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL) {
                         dpp::message m = dpp::message()
@@ -276,7 +276,7 @@ namespace gb {
                         co_return;
                     }
                 } else if (parameter.name == "time_from_end" && std::holds_alternative<std::string>(parameter.value)) {
-                    struct tm tm {};
+                    struct tm tm{};
                     time_from_end = std::get<std::string>(parameter.value);
                     if (strptime(time_from_end.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL) {
                         dpp::message m = dpp::message()
@@ -288,7 +288,7 @@ namespace gb {
                         co_return;
                     }
                 } else if (parameter.name == "time_to_end" && std::holds_alternative<std::string>(parameter.value)) {
-                    struct tm tm {};
+                    struct tm tm{};
                     time_to_end = std::get<std::string>(parameter.value);
                     if (strptime(time_to_end.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL) {
                         dpp::message m = dpp::message()
@@ -364,7 +364,7 @@ namespace gb {
                 total_calls += amount;
 
                 // calculate win percentage using formula https://en.wikipedia.org/wiki/Winning_percentage
-                double percentage = ((draw * 0.5 + win) / amount)*100;
+                double percentage = ((draw * 0.5 + win) / amount) * 100;
 
                 emb.add_field(
                     std::format("{}) {}", total_cmd, game_row.at("game_name")),
@@ -377,13 +377,23 @@ namespace gb {
             }
 
             // calculate win percentage using formula https://en.wikipedia.org/wiki/Winning_percentage
-            double percentage = ((draw_cnt * 0.5 + win_cnt) / total_calls)*100;
+            double percentage = ((draw_cnt * 0.5 + win_cnt) / total_calls) * 100;
             emb.set_title(
                 std::format("There is {} different games. They were played {} time(s). There is {} game(s) active.\n"
                             "You won {} time(s). You played in draw {} time(s). You lost {} time(s).\n"
                             "Win rate: {:.2f}%",
                             total_cmd, total_calls, active_games, win_cnt, draw_cnt, lose_cnt, percentage));
-            _bot->reply(event,dpp::message().add_embed(emb));
+            _bot->reply(event, dpp::message().add_embed(emb));
+        }
+        co_return;
+    }
+    dpp::task<void> Discord_command_global_stats_impl::_command_callback(const dpp::slashcommand_t &event) {
+        auto command = event.command;
+        dpp::command_interaction cmd_data = command.get_command_interaction();
+        if (cmd_data.options[0].name == "bot") {
+            co_await select_bot(event);
+        } else {
+            co_await select_me(event);
         }
         co_return;
     }
@@ -562,23 +572,11 @@ ORDER BY
                                 "User id you want to see stats with (if you cant use \"user\" option).", false))));
 
 
-            _command_handler->register_command(_discord->create_discord_command(
-                command,
-                [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                    command_start();
-                    auto command = event.command;
-                    dpp::command_interaction cmd_data = command.get_command_interaction();
-                    if (cmd_data.options[0].name == "bot") {
-                        co_await select_bot(event);
-                    } else {
-                        co_await select_me(event);
-                    }
-                    command_end();
-                    co_return;
-                },
-                {"Shows global statistics for user/bot games/commands across all "
-                 "servers providing a lot filtering abilities",
-                 {"statistics"}}));
+            _command_handler->register_command(
+                _discord->create_discord_command(command, _command_executor,
+                                                 {"Shows global statistics for user/bot games/commands across all "
+                                                  "servers providing a lot filtering abilities",
+                                                  {"statistics"}}));
         });
     }
 

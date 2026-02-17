@@ -53,6 +53,14 @@ namespace gb {
          */
         dpp::task<void> select_me(const dpp::slashcommand_t &event);
 
+    protected:
+        /**
+         * Overrides command callback with proper handler.
+         * @param event slashcommand event forwarded to handler.
+         * @return nothing
+         */
+        dpp::task<void> _command_callback(const dpp::slashcommand_t &event) override;
+
     public:
         /**
          * @brief Constructor for Discord_command_global_stats_impl.

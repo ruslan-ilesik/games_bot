@@ -17,6 +17,15 @@ namespace gb {
      * the bot to manage lobby creation and gameplay.
      */
     class Discord_dominoes_command_impl : public Discord_dominoes_command {
+
+    protected:
+        /**
+         * Overrides command callback with proper handler.
+         * @param event slashcommand event forwarded to handler.
+         * @return nothing
+         */
+        dpp::task<void> _command_callback(const dpp::slashcommand_t &event) override;
+
     public:
         /**
          * @brief Constructor for Discord_dominoes_command_impl.

@@ -21,6 +21,14 @@ namespace gb {
 
         Premium_manager_ptr _premium; /**< Pointer to the premium manager, used for premium features. */
 
+    protected:
+        /**
+         * Overrides command callback with proper handler.
+         * @param event slashcommand event forwarded to handler.
+         * @return nothing
+         */
+        dpp::task<void> _command_callback(const dpp::slashcommand_t &event) override;
+
     public:
         /**
          * @brief Constructs a Discord_puzzle_15_command_impl object.

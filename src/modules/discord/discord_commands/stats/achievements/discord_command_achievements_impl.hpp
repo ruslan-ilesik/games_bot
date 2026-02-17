@@ -20,6 +20,14 @@ namespace gb {
     class Discord_command_achievements_impl : public Discord_command_achievements {
         Discord_achievements_processing_ptr _achievements_processing; ///< Pointer to achievements processing module.
 
+    protected:
+        /**
+         * Overrides command callback with proper handler.
+         * @param event slashcommand event forwarded to handler.
+         * @return nothing
+         */
+        dpp::task<void> _command_callback(const dpp::slashcommand_t &event) override;
+
     public:
         /**
          * @brief Constructs the implementation, initializing dependencies.

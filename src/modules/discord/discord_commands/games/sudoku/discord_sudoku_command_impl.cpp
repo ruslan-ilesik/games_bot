@@ -7,6 +7,14 @@
 #include "src/modules/discord/discord_games/sudoku/discord_sudoku_game.hpp"
 
 namespace gb {
+    dpp::task<void> Discord_sudoku_command_impl::_command_callback(const dpp::slashcommand_t &event) {
+
+        auto d = get_game_data_initialization("sudoku");
+        auto game = std::make_unique<Discord_sudoku_game>(d, std::vector<dpp::snowflake>{event.command.usr.id});
+        co_await game->run(event);
+        co_return;
+    }
+
     Discord_sudoku_command_impl::Discord_sudoku_command_impl() : Discord_sudoku_command("discord_sudoku_command", {}) {
         lobby_title = "Sudoku";
         lobby_description = "The sudoku a puzzle in which missing numbers are to be filled into a 9 by 9 grid of "
@@ -31,16 +39,7 @@ namespace gb {
             dpp::slashcommand command("sudoku", "Command to start sudoku game", _bot->get_bot()->me.id);
 
             _command_handler->register_command(_discord->create_discord_command(
-                command,
-                [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                    this->command_start();
-                    auto d = get_game_data_initialization("sudoku");
-                    auto game =
-                        std::make_unique<Discord_sudoku_game>(d, std::vector<dpp::snowflake>{event.command.usr.id});
-                    co_await game->run(event);
-                    this->command_end();
-                    co_return;
-                },
+                command, _command_executor,
                 {"__**Rules**__:\n[External link](https://www.sudokuonline.io/tips/sudoku-rules)"
                  "\n\n\n__**How does it works in bot?**__\n"
                  "Bot will give you buttons to choose column, then buttons to choose row, after that it will show you "

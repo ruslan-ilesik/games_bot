@@ -8,6 +8,29 @@
 
 namespace gb {
 
+    dpp::task<void> Discord_minesweeper_command_impl::_command_callback(const dpp::slashcommand_t &event) {
+        auto parameter = event.get_parameter("difficulty");
+        long difficulty = 1;
+        if (std::holds_alternative<long>(parameter)) {
+            difficulty = std::get<long>(parameter);
+        }
+
+        if (difficulty < 1 || difficulty > 3) {
+            dpp::embed embed;
+            embed.set_color(dpp::colors::red)
+                .set_title("Error!")
+                .set_description("Difficulty should be between 1 and 3, while you gave " + std::to_string(difficulty));
+
+            _bot->reply(event, dpp::message().add_embed(embed).set_flags(dpp::m_ephemeral));
+        } else {
+            auto d = get_game_data_initialization("minesweeper");
+            auto game = std::make_unique<Discord_minesweeper_game>(d, std::vector<dpp::snowflake>{event.command.usr.id},
+                                                                   difficulty);
+            co_await game->run(event);
+        }
+        co_return;
+    }
+
     Discord_minesweeper_command_impl::Discord_minesweeper_command_impl() :
         Discord_minesweeper_command("discord_minesweeper_command", {}) {
         lobby_title = "Minesweeper";
@@ -35,32 +58,7 @@ namespace gb {
             command.add_option(
                 dpp::command_option(dpp::co_integer, "difficulty", "Difficulty of the game between 1 and 3", false));
             _command_handler->register_command(_discord->create_discord_command(
-                command,
-                [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                    this->command_start();
-                    auto parameter = event.get_parameter("difficulty");
-                    long difficulty = 1;
-                    if (std::holds_alternative<long>(parameter)) {
-                        difficulty = std::get<long>(parameter);
-                    }
-
-                    if (difficulty < 1 || difficulty > 3) {
-                        dpp::embed embed;
-                        embed.set_color(dpp::colors::red)
-                            .set_title("Error!")
-                            .set_description("Difficulty should be between 1 and 3, while you gave " +
-                                             std::to_string(difficulty));
-
-                        _bot->reply(event, dpp::message().add_embed(embed).set_flags(dpp::m_ephemeral));
-                    } else {
-                        auto d = get_game_data_initialization("minesweeper");
-                        auto game = std::make_unique<Discord_minesweeper_game>(
-                            d, std::vector<dpp::snowflake>{event.command.usr.id}, difficulty);
-                        co_await game->run(event);
-                    }
-                    this->command_end();
-                    co_return;
-                },
+                command, _command_executor,
                 {"__**Rules**__:\n[External link](https://minesweepergame.com/strategy/how-to-play-minesweeper.php)"
                  "\n\n\n__**How does it works in bot?**__\n"
                  "Bot will give you buttons to choose column, then buttons to choose row, after that it will show you "

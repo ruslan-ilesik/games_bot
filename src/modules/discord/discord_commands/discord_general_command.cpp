@@ -15,9 +15,9 @@ namespace gb {
         }
     }
 
-    void Discord_general_command::command_start() { ++_cnt; }
+    void Discord_general_command::_command_start() { ++_cnt; }
 
-    void Discord_general_command::command_end() {
+    void Discord_general_command::_command_end() {
         --_cnt;
         _cv.notify_all();
     }

@@ -16,6 +16,14 @@ namespace gb {
      * user interaction, and command registration in Discord.
      */
     class Discord_2048_command_impl : public Discord_2048_command {
+    protected:
+        /**
+         * Overrides command callback with proper handler.
+         * @param event slashcommand event forwarded to handler.
+         * @return nothing
+         */
+        dpp::task<void> _command_callback(const dpp::slashcommand_t &event) override;
+
     public:
         /**
          * @brief Constructs a new `Discord_2048_command_impl` object.

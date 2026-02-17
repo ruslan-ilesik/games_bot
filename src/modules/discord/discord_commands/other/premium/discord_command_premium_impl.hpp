@@ -17,7 +17,15 @@ namespace gb {
      * Premium Manager to check, modify, and manage premium subscription statuses of users.
      */
     class Discord_command_premium_impl : public Discord_command_premium {
-        Premium_manager_ptr _premium;  ///< Pointer to the Premium Manager module for managing premium status.
+        Premium_manager_ptr _premium; ///< Pointer to the Premium Manager module for managing premium status.
+
+    protected:
+        /**
+         * Overrides command callback with proper handler.
+         * @param event slashcommand event forwarded to handler.
+         * @return nothing
+         */
+        dpp::task<void> _command_callback(const dpp::slashcommand_t &event) override;
 
     public:
         /**

@@ -17,6 +17,15 @@ namespace gb {
      * within Discord.
      */
     class Discord_battleships_command_impl : public Discord_battleships_command {
+
+    protected:
+        /**
+         * Overrides command callback with proper handler.
+         * @param event slashcommand event forwarded to handler.
+         * @return nothing
+         */
+        dpp::task<void> _command_callback(const dpp::slashcommand_t &event) override;
+
     public:
         /**
          * @brief Constructs a new `Discord_battleships_command_impl` object.

@@ -31,6 +31,16 @@ namespace gb {
          */
         std::condition_variable _cv;
 
+        /**
+         * @brief Increments the command counter to signify the start of a command.
+         */
+        void _command_start();
+
+        /**
+         * @brief Decrements the command counter and notifies all waiting threads.
+         */
+        void _command_end();
+
     protected:
         /**
          * @brief Shared pointer to the Discord command handler.
@@ -52,6 +62,27 @@ namespace gb {
          */
         Logging_ptr _log;
 
+
+        /**
+         * @brief Command execution wrapper, use it registering command.
+         */
+        std::function<dpp::task<void>(const dpp::slashcommand_t &)> _command_executor =
+            [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
+            _command_start();
+            co_await _command_callback(event);
+            _command_end();
+            co_return;
+        };
+
+        /**
+         * @brief Command callback which will be executed with command, define your command handler here, is called from
+         * main wrapper to handle command start and end properly.
+         * @param event - slash command event forwarded from handlers.
+         * @return nothing
+         */
+        virtual dpp::task<void> _command_callback(const dpp::slashcommand_t &event) = 0;
+
+
     public:
         /**
          * @brief Constructs a Discord_general_command object.
@@ -61,21 +92,11 @@ namespace gb {
          */
         Discord_general_command(const std::string &name, const std::vector<std::string> &dependencies);
 
-        /**
-         * @brief Increments the command counter to signify the start of a command.
-         */
-        void command_start();
-
-        /**
-         * @brief Decrements the command counter and notifies all waiting threads.
-         */
-        void command_end();
 
         /**
          * @brief Stops the module, waiting for all active commands to finish.
          */
         virtual void stop();
-
 
         /**
          * @brief Inits module, sets up all variables.

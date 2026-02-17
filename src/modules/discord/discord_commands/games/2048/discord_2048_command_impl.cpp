@@ -5,6 +5,15 @@
 #include "discord_2048_command_impl.hpp"
 #include <src/modules/discord/discord_games/2048/discord_game_2048.hpp>
 namespace gb {
+    dpp::task<void> Discord_2048_command_impl::_command_callback(const dpp::slashcommand_t &event) {
+
+        auto d = get_game_data_initialization("2048");
+        auto game = std::make_unique<Discord_game_2048>(d, std::vector<dpp::snowflake>{event.command.usr.id});
+        co_await game->run(event);
+
+        co_return;
+    }
+
     Discord_2048_command_impl::Discord_2048_command_impl() : Discord_2048_command("discord_2048_command", {}) {
         lobby_title = "2048";
         lobby_description =
@@ -18,19 +27,11 @@ namespace gb {
             dpp::slashcommand command("2048", "Command to start 2048 game", _bot->get_bot()->me.id);
 
             _command_handler->register_command(_discord->create_discord_command(
-                command,
-                [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                    this->command_start();
-                    auto d = get_game_data_initialization("2048");
-                    auto game =
-                        std::make_unique<Discord_game_2048>(d, std::vector<dpp::snowflake>{event.command.usr.id});
-                    co_await game->run(event);
-                    this->command_end();
-                    co_return;
-                },
+                command, _command_executor,
                 {"__**Rules**__:\n[External link](https://levelskip.com/puzzle/How-to-play-2048/)"
                  "\n\n\n__**How does it works in bot?**__\n"
-               "Bot will show you grid with buttons, just choose direction (same as with arrows in original game) and that`s all :)",
+                 "Bot will show you grid with buttons, just choose direction (same as with arrows in original game) "
+                 "and that`s all :)",
                  {"game", "single-player"}}));
         });
     }
@@ -43,4 +44,4 @@ namespace gb {
     }
 
     Module_ptr create() { return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_2048_command_impl>()); }
-} // gb
+} // namespace gb

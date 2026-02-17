@@ -18,13 +18,7 @@ namespace gb {
             dpp::slashcommand command("help", "Command to get help about commands", _bot->get_bot()->me.id);
 
             _command_handler->register_command(
-                _discord->create_discord_command(command,
-                                                 [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                                                     this->command_start();
-                                                     co_await help_command(event);
-                                                     this->command_end();
-                                                     co_return;
-                                                 },
+                _discord->create_discord_command(command,_command_executor,
                                                  {"Help command provides you ability to get information about every "
                                                   "command in bot sorted by categories.",
                                                   {"other"}}));
@@ -209,6 +203,10 @@ namespace gb {
         m3.add_embed(command_embed);
         _bot->reply(select_cat, m3);
         co_return;
+    }
+
+    dpp::task<void> Discord_command_help_impl::_command_callback(const dpp::slashcommand_t &event) {
+        co_await help_command(event);
     }
 
     Module_ptr create() { return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_command_help_impl>()); }

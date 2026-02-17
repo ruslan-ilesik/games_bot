@@ -7,6 +7,48 @@
 #include <src/modules/discord/discord_games/dominoes/discord_dominoes_game.hpp>
 
 namespace gb {
+    dpp::task<void> Discord_dominoes_command_impl::_command_callback(const dpp::slashcommand_t &event) {
+
+        std::vector<dpp::snowflake> players = {};
+        long players_amount = 2;
+
+        auto parameter = event.get_parameter("player");
+        if (std::holds_alternative<dpp::snowflake>(parameter)) {
+            players.push_back(std::get<dpp::snowflake>(parameter));
+        }
+        parameter = event.get_parameter("player2");
+        if (std::holds_alternative<dpp::snowflake>(parameter)) {
+            players.push_back(std::get<dpp::snowflake>(parameter));
+        }
+        parameter = event.get_parameter("player3");
+        if (std::holds_alternative<dpp::snowflake>(parameter)) {
+            players.push_back(std::get<dpp::snowflake>(parameter));
+        }
+        parameter = event.get_parameter("players_amount");
+        if (std::holds_alternative<long>(parameter)) {
+            players_amount = std::get<long>(parameter);
+        }
+
+        if (players_amount < 2 || players_amount > 4) {
+            dpp::embed embed;
+            embed.set_color(dpp::colors::red)
+                .set_title("Error!")
+                .set_description("players amount should be between 2 and 4, while you gave " +
+                                 std::to_string(players_amount));
+
+            _bot->reply(event, dpp::message().add_embed(embed).set_flags(dpp::m_ephemeral));
+        } else {
+            Lobby_return r = co_await this->lobby(event, players, event.command.usr.id, players_amount);
+            if (!r.is_timeout) {
+                auto d = get_game_data_initialization("dominoes");
+                auto game = std::make_unique<Discord_dominoes_game>(d, r.players);
+                co_await game->run(r.event);
+            }
+        }
+
+        co_return;
+    }
+
     Discord_dominoes_command_impl::Discord_dominoes_command_impl() :
         Discord_dominoes_command("discord_dominoes_command", {}) {
         lobby_title = "Dominoes";
@@ -28,49 +70,7 @@ namespace gb {
                                                 false));
 
             _command_handler->register_command(_discord->create_discord_command(
-                command,
-                [this](const dpp::slashcommand_t &event) -> dpp::task<void> {
-                    this->command_start();
-                    std::vector<dpp::snowflake> players = {};
-                    long players_amount = 2;
-
-                    auto parameter = event.get_parameter("player");
-                    if (std::holds_alternative<dpp::snowflake>(parameter)) {
-                        players.push_back(std::get<dpp::snowflake>(parameter));
-                    }
-                    parameter = event.get_parameter("player2");
-                    if (std::holds_alternative<dpp::snowflake>(parameter)) {
-                        players.push_back(std::get<dpp::snowflake>(parameter));
-                    }
-                    parameter = event.get_parameter("player3");
-                    if (std::holds_alternative<dpp::snowflake>(parameter)) {
-                        players.push_back(std::get<dpp::snowflake>(parameter));
-                    }
-                    parameter = event.get_parameter("players_amount");
-                    if (std::holds_alternative<long>(parameter)) {
-                        players_amount = std::get<long>(parameter);
-                    }
-
-                    if (players_amount < 2 || players_amount > 4) {
-                        dpp::embed embed;
-                        embed.set_color(dpp::colors::red)
-                            .set_title("Error!")
-                            .set_description("players amount should be between 2 and 4, while you gave " +
-                                             std::to_string(players_amount));
-
-                        _bot->reply(event, dpp::message().add_embed(embed).set_flags(dpp::m_ephemeral));
-                    } else {
-                        Lobby_return r = co_await this->lobby(event, players, event.command.usr.id, players_amount);
-                        if (!r.is_timeout) {
-                            auto d = get_game_data_initialization("dominoes");
-                            auto game = std::make_unique<Discord_dominoes_game>(d, r.players);
-                            co_await game->run(r.event);
-                        }
-                    }
-
-                    this->command_end();
-                    co_return;
-                },
+                command, _command_executor,
                 {"__**Rules**__:\n[External "
                  "link](https://hungry-bags.ru/en/domino/kak_igrat_v_domino_pravila_igry_v_domino_kozel/)"
                  "\n\n\n__**How does it works in bot?**__\n"
