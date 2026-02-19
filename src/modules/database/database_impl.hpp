@@ -17,6 +17,10 @@
 #include <shared_mutex>
 #include <thread>
 
+#if defined(__FreeBSD__)
+using my_bool = bool;
+#endif
+
 namespace gb {
 
     /*

@@ -6,6 +6,7 @@
 #include <mysql/mysql.h>
 #include <mysql/errmsg.h>
 
+
 namespace gb {
     Database_impl::Database_impl() : Database("database", {"config", "logging", "admin_terminal"}) {
         _bg_thread = std::thread([this]() -> Task<void> {
