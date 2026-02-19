@@ -33,7 +33,7 @@ namespace gb {
 
     Discord_hangman_game::Discord_hangman_game(Game_data_initialization &_data,
                                                const std::vector<dpp::snowflake> &players) :
-        Discord_game(_data, players) {}
+        Discord_game(_data, players,&Discord_hangman_game::run_btn) {}
 
     std::vector<std::pair<std::string, image_generator_t>> Discord_hangman_game::get_image_generators() {
         std::vector<std::pair<std::string, image_generator_t>> generators;
@@ -391,21 +391,26 @@ namespace gb {
 
     dpp::task<void> Discord_hangman_game::run(dpp::slashcommand_t sevent) {
         game_start(sevent.command.channel_id, sevent.command.guild_id);
-        start();
-        _message.add_embed(dpp::embed());
-        _message.guild_id = sevent.command.guild_id;
-        _message.channel_id = sevent.command.channel_id;
-        _messages.insert({sevent.command.usr.id, _message});
-        prepare_message(_messages.at(get_current_player()), get_current_player());
-        dpp::task<Button_click_return> button_click_awaitable =
-            _data.button_click_handler->wait_for_with_reply(_messages.at(get_current_player()), {get_current_player()}, 60);
-        _data.bot->reply(sevent, _messages.at(get_current_player()));
-        co_await per_player_run(get_current_player(), button_click_awaitable);
+        try {
+            start();
+            _message.add_embed(dpp::embed());
+            _message.guild_id = sevent.command.guild_id;
+            _message.channel_id = sevent.command.channel_id;
+            _messages.insert({sevent.command.usr.id, _message});
+            prepare_message(_messages.at(get_current_player()), get_current_player());
+            dpp::task<Button_click_return> button_click_awaitable =
+                _data.button_click_handler->wait_for_with_reply(_messages.at(get_current_player()), {get_current_player()}, 60);
+            _data.bot->reply(sevent, _messages.at(get_current_player()));
+            co_await per_player_run(get_current_player(), button_click_awaitable);
+        } catch (...) {
+            game_stop();
+            throw;
+        }
         game_stop(results_json());
         co_return;
     }
 
-    dpp::task<void> Discord_hangman_game::run(dpp::button_click_t event) {
+    dpp::task<std::string> Discord_hangman_game::run_btn(dpp::button_click_t event) {
         start();
         _data.bot->reply(event, dpp::message().add_embed(
                                     dpp::embed().set_color(dpp::colors::blue).set_title("Game is starting...")));
@@ -448,7 +453,6 @@ namespace gb {
                 _data.bot->message_edit(message);
             }
         } else {
-            game_start(event.command.channel_id, event.command.guild_id);
             std::list<dpp::task<Button_click_return>> temp;
             std::list<dpp::task<void>> list;
             _messages = messages.second;
@@ -467,10 +471,10 @@ namespace gb {
             for (auto &i: list) {
                 co_await i;
             }
-            game_stop(results_json());
+
         }
 
-        co_return;
+        co_return results_json();
     }
 } // namespace gb
 

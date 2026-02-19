@@ -16,10 +16,20 @@ namespace gb {
      * and button interactions, with real-time gameplay rendered using images.
      */
     class Discord_game_2048 : public Discord_game {
-        unsigned int _board[4][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}; ///< The game board for 2048.
+        unsigned int _board[4][4] = {
+            {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}; ///< The game board for 2048.
         std::vector<std::array<int, 2>> _clear_places; ///< Stores the positions of empty spaces on the board.
         std::map<char, bool> _possible_moves; ///< Tracks possible moves: w (up), s (down), a (left), d (right).
         std::default_random_engine _rand_obj; ///< Random engine used for generating game states.
+
+        /**
+         * @brief Runs the game loop, processing player inputs and game events.
+         *
+         * @param sevent The slash command event that triggered the game start.
+         * @return dpp::task<void> Coroutine representing the game execution.
+         */
+        dpp::task<void> run(dpp::slashcommand_t sevent);
+
 
     public:
         /**
@@ -38,14 +48,6 @@ namespace gb {
         static std::vector<std::pair<std::string, image_generator_t>> get_image_generators();
 
         /**
-         * @brief Runs the game loop, processing player inputs and game events.
-         *
-         * @param sevent The slash command event that triggered the game start.
-         * @return dpp::task<void> Coroutine representing the game execution.
-         */
-        dpp::task<void> run(dpp::slashcommand_t sevent);
-
-        /**
          * @brief Creates an image of the current game state.
          *
          * @return Image_ptr Pointer to the generated image.
@@ -57,7 +59,7 @@ namespace gb {
          *
          * @param message The message to be prepared with the game state and controls.
          */
-        void prepare_message(dpp::message& message);
+        void prepare_message(dpp::message &message);
 
         /**
          * @brief Handles the "up" movement on the board.

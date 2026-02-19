@@ -7,7 +7,7 @@
 namespace gb {
     Discord_battleships_game::Discord_battleships_game(Game_data_initialization &_data,
                                                        const std::vector<dpp::snowflake> &players) :
-        Discord_game(_data, players) {
+        Discord_game(_data, players,&Discord_battleships_game::run) {
         int cnt = 0;
         for (auto &i: players) {
             _user_to_player_id.emplace(i, cnt);
@@ -248,7 +248,6 @@ namespace gb {
 
         } else {
             _messages = messages.second;
-            game_start(event.command.channel_id, event.command.guild_id);
             _game_start_time =
                 std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch())
                     .count();
@@ -476,7 +475,6 @@ namespace gb {
                     _states[_user_to_player_id[get_current_player()]]++;
                 }
             }
-            game_stop();
         }
         co_return;
     }

@@ -92,7 +92,7 @@ namespace gb {
 
     Discord_tic_tac_toe_game::Discord_tic_tac_toe_game(Game_data_initialization &_data,
                                                        const std::vector<dpp::snowflake> &players) :
-        Discord_game(_data, players) {}
+        Discord_game(_data, players,&Discord_tic_tac_toe_game::run) {}
 
     std::vector<std::pair<std::string, image_generator_t>> Discord_tic_tac_toe_game::get_image_generators() {
         image_generator_t base = [](const Image_processing_ptr &image_processing, const Vector2i &resolution) {
@@ -112,7 +112,6 @@ namespace gb {
         return {{"tic_tac_toe_base", base}};
     }
     dpp::task<void> Discord_tic_tac_toe_game::run(const dpp::button_click_t &event) {
-        game_start(event.command.channel_id,event.command.guild_id);
         _event = event;
         _event.reply(dpp::ir_update_message,"Game is starting");
         while (1) {
@@ -197,7 +196,6 @@ namespace gb {
             // game has not finished
             next_player();
         }
-        game_stop();
         co_return;
     }
 } // namespace gb

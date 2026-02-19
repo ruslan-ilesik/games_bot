@@ -162,6 +162,14 @@ namespace gb {
         dominoes::piece _to_place; ///< Piece currently being placed.
         std::map<dpp::snowflake, dpp::message> _messages; ///< Messages sent to players.
 
+        /**
+         * @brief Starts the game and handles user interaction through Discord buttons.
+         *
+         * @param event The button click event from Discord.
+         * @return A task representing the asynchronous operation of running the game.
+         */
+        dpp::task<void> run(const dpp::button_click_t &event);
+
     public:
         /**
          * @brief Constructor for the Discord Dominoes game.
@@ -195,13 +203,6 @@ namespace gb {
          */
         static void draw_dots(Image_ptr &img, const Vector2i &position, int resolution, int dot);
 
-        /**
-         * @brief Starts the game and handles user interaction through Discord buttons.
-         *
-         * @param event The button click event from Discord.
-         * @return A task representing the asynchronous operation of running the game.
-         */
-        dpp::task<void> run(const dpp::button_click_t &event);
 
         /**
          * @brief Generates the decks for all players.

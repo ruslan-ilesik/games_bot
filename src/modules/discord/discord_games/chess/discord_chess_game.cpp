@@ -94,10 +94,9 @@ namespace gb {
     }
 
     Discord_chess_game::Discord_chess_game(Game_data_initialization &_data,
-                                           const std::vector<dpp::snowflake> &players) : Discord_game(_data, players) {}
+                                           const std::vector<dpp::snowflake> &players) : Discord_game(_data, players,&Discord_chess_game::run) {}
 
     dpp::task<void> Discord_chess_game::run(dpp::button_click_t event, int timeout) {
-        game_start(event.command.channel_id, event.command.guild_id);
         dpp::message message;
         message.add_embed(dpp::embed());
         message.id = event.command.message_id;
@@ -339,7 +338,6 @@ namespace gb {
                 co_await send_message();
             }
         }
-        game_stop();
         co_return;
     }
 

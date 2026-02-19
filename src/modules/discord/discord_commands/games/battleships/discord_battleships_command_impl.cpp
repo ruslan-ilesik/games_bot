@@ -18,7 +18,7 @@ namespace gb {
         if (!r.is_timeout) {
             auto d = get_game_data_initialization("battleships");
             auto game = std::make_unique<Discord_battleships_game>(d, r.players);
-            co_await game->run(r.event);
+            co_await game->start_game(r.event);
         }
         co_return;
     }

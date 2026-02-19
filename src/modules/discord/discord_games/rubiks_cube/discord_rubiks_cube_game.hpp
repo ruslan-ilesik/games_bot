@@ -17,7 +17,7 @@ namespace rubiks_cube {
      * isometric projections of Rubik's cube sides.
      */
     struct isometric_data {
-        gb::Vector2d start_p;  /**< The starting point of the isometric projection. */
+        gb::Vector2d start_p; /**< The starting point of the isometric projection. */
         gb::Vector2d vector_x; /**< The X-axis vector for isometric transformation. */
         gb::Vector2d vector_y; /**< The Y-axis vector for isometric transformation. */
 
@@ -44,14 +44,14 @@ namespace rubiks_cube {
      * corresponding RGB color values.
      */
     inline std::map<char, gb::Color> colors = {
-        {'B', gb::Color(0, 0, 255)},   /**< Blue color for 'B' face */
+        {'B', gb::Color(0, 0, 255)}, /**< Blue color for 'B' face */
         {'W', gb::Color(255, 255, 255)}, /**< White color for 'W' face */
-        {'R', gb::Color(255, 0, 0)},   /**< Red color for 'R' face */
-        {'G', gb::Color(0, 255, 0)},   /**< Green color for 'G' face */
+        {'R', gb::Color(255, 0, 0)}, /**< Red color for 'R' face */
+        {'G', gb::Color(0, 255, 0)}, /**< Green color for 'G' face */
         {'Y', gb::Color(255, 255, 0)}, /**< Yellow color for 'Y' face */
-        {'O', gb::Color(255, 102, 0)}  /**< Orange color for 'O' face */
+        {'O', gb::Color(255, 102, 0)} /**< Orange color for 'O' face */
     };
-}
+} // namespace rubiks_cube
 
 namespace gb {
 
@@ -64,9 +64,16 @@ namespace gb {
      */
     class Discord_rubiks_cube_game : public Discord_game {
         rubiks_cube::Rubiks_cube_engine _engine; /**< The Rubik's Cube game engine. */
-        bool _is_view = false;                   /**< Whether the game is in view (rotation) mode. */
-        int _amount_moves = 0;                   /**< The number of moves made in the game. */
-        std::default_random_engine _rand_obj;    /**< Random engine for shuffling the Rubik's cube. */
+        bool _is_view = false; /**< Whether the game is in view (rotation) mode. */
+        int _amount_moves = 0; /**< The number of moves made in the game. */
+        std::default_random_engine _rand_obj; /**< Random engine for shuffling the Rubik's cube. */
+
+        /**
+         * @brief Main game loop that runs the Rubik's Cube game.
+         * @param sevent The slash command event that triggered the game.
+         * @return A task representing the asynchronous execution of the game loop with additional data for game record.
+         */
+        dpp::task<std::string> run(dpp::slashcommand_t sevent);
 
     public:
         /**
@@ -77,8 +84,8 @@ namespace gb {
         Discord_rubiks_cube_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players);
 
         /**
-        * @breif Define destructor.
-        */
+         * @breif Define destructor.
+         */
         virtual ~Discord_rubiks_cube_game() = default;
 
         /**
@@ -88,17 +95,10 @@ namespace gb {
         static std::vector<std::pair<std::string, image_generator_t>> get_image_generators();
 
         /**
-         * @brief Main game loop that runs the Rubik's Cube game.
-         * @param sevent The slash command event that triggered the game.
-         * @return A task representing the asynchronous execution of the game loop.
-         */
-        dpp::task<void> run(dpp::slashcommand_t sevent);
-
-        /**
          * @brief Prepares the Discord message containing the game state and components.
          * @param message The message to be updated with game details.
          */
-        void prepare_message(dpp::message& message);
+        void prepare_message(dpp::message &message);
 
         /**
          * @brief Creates an image representing the current state of the Rubik's Cube.

@@ -32,7 +32,8 @@ namespace gb {
             if (!r.is_timeout) {
                 auto d = get_game_data_initialization("chess");
                 auto game = std::make_unique<Discord_chess_game>(d, r.players);
-                co_await game->run(r.event, timeout);
+                auto t = static_cast<int>(timeout);
+                co_await game->start_game(r.event, t);
             }
         }
 

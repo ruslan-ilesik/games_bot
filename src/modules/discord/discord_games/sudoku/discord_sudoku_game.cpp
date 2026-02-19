@@ -7,7 +7,7 @@
 namespace gb {
     Discord_sudoku_game::Discord_sudoku_game(Game_data_initialization &_data,
                                              const std::vector<dpp::snowflake> &players) :
-        Discord_game(_data, players) {}
+        Discord_game(_data, players,&Discord_sudoku_game::run) {}
 
     std::vector<std::pair<std::string, image_generator_t>> Discord_sudoku_game::get_image_generators() { return {}; }
 
@@ -156,7 +156,6 @@ namespace gb {
     }
 
     dpp::task<void> Discord_sudoku_game::run(dpp::slashcommand_t sevent) {
-        game_start(sevent.command.channel_id, sevent.command.guild_id);
         dpp::message message;
         message.add_embed(dpp::embed());
         message.channel_id = sevent.command.channel_id;
@@ -271,7 +270,7 @@ namespace gb {
                 continue;
             }
         }
-        game_stop();
+
         co_return;
     }
 } // namespace gb

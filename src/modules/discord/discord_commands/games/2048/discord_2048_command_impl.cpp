@@ -9,8 +9,7 @@ namespace gb {
 
         auto d = get_game_data_initialization("2048");
         auto game = std::make_unique<Discord_game_2048>(d, std::vector<dpp::snowflake>{event.command.usr.id});
-        co_await game->run(event);
-
+        co_await game->start_game(event);
         co_return;
     }
 

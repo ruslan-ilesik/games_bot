@@ -7,7 +7,7 @@
 namespace gb {
     Discord_connect_four_game::Discord_connect_four_game(Game_data_initialization &_data,
                                                          const std::vector<dpp::snowflake> &players) :
-        Discord_game(_data, players) {}
+        Discord_game(_data, players, &Discord_connect_four_game::run) {}
 
     std::vector<std::pair<std::string, image_generator_t>> Discord_connect_four_game::get_image_generators() {
         return {};
@@ -44,7 +44,6 @@ namespace gb {
 
 
     dpp::task<void> Discord_connect_four_game::run(dpp::button_click_t event) {
-        game_start(event.command.channel_id, event.command.guild_id);
         dpp::message message;
         message.add_embed(dpp::embed());
         message.id = event.command.message_id;
@@ -199,7 +198,6 @@ namespace gb {
             remove_player(USER_REMOVE_REASON::DRAW,get_current_player());
             break;
         }
-        game_stop();
         co_return;
     }
 } // namespace gb

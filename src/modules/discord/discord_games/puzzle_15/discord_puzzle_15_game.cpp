@@ -7,7 +7,7 @@
 namespace gb {
     Discord_puzzle_15_game::Discord_puzzle_15_game(Game_data_initialization &_data,
                                                    const std::vector<dpp::snowflake> &players) :
-        Discord_game(_data, players) {}
+        Discord_game(_data, players,&Discord_puzzle_15_game::run) {}
 
     void Discord_puzzle_15_game::prepare_message(dpp::message &message) {
         message.embeds[0]
@@ -127,8 +127,7 @@ namespace gb {
         return img;
     }
 
-    dpp::task<void> Discord_puzzle_15_game::run(dpp::slashcommand_t sevent) {
-        game_start(sevent.command.channel_id, sevent.command.guild_id);
+    dpp::task<std::string> Discord_puzzle_15_game::run(dpp::slashcommand_t sevent) {
         _engine.shuffle();
         dpp::message message;
         message.add_embed(dpp::embed());
@@ -196,8 +195,7 @@ namespace gb {
 
         nlohmann::json json;
         json["moves_cnt"] = _engine.get_moves_cnt();
-        game_stop(json.dump());
-        co_return;
+        co_return json.dump();
     }
 
     std::vector<std::pair<std::string, image_generator_t>> Discord_puzzle_15_game::get_image_generators() {

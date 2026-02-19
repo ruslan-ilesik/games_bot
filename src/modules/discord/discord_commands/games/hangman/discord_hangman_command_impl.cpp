@@ -114,7 +114,7 @@ namespace gb {
                     Lobby_return r = co_await this->lobby(event, players, event.command.usr.id, players_amount);
                     if (!r.is_timeout) {
                         auto game = std::make_unique<Discord_hangman_game>(d, r.players);
-                        co_await game->run(r.event);
+                        co_await game->start_game(r.event);
                     }
                 }
             }

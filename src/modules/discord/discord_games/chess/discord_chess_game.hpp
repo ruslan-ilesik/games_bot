@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "src/games/chess/chess/chess.h"
 #include <src/modules/discord/discord_games/discord_game.hpp>
+#include "src/games/chess/chess/chess.h"
 
 namespace chess {
 
@@ -13,7 +13,8 @@ namespace chess {
      * @brief A map linking chess pieces to corresponding emoji names and Discord snowflake IDs.
      *
      * This map holds tuples containing the emoji's name and its Discord snowflake ID for various chess pieces.
-     * '.' represents an empty square, while uppercase letters represent white pieces and lowercase letters represent black pieces.
+     * '.' represents an empty square, while uppercase letters represent white pieces and lowercase letters represent
+     * black pieces.
      */
     inline std::map<char, std::tuple<std::string, dpp::snowflake>> emojis = {
         {'.', {"clear", 1015646216509468683}}, {'B', {"B_", 883415614755045397}}, {'K', {"K_", 883415619649806337}},
@@ -23,7 +24,7 @@ namespace chess {
         {'r', {"r1", 883415619733688320}},
     };
 
-}
+} // namespace chess
 
 namespace gb {
 
@@ -35,16 +36,25 @@ namespace gb {
      */
     class Discord_chess_game : public Discord_game {
     private:
-        chess::Board _board;                          ///< The internal chess board state.
-        bool _choose_figure = true;                   ///< Tracks whether the player is currently selecting a figure.
-        std::string _selected_figure = "";            ///< Stores the currently selected chess piece.
+        chess::Board _board; ///< The internal chess board state.
+        bool _choose_figure = true; ///< Tracks whether the player is currently selecting a figure.
+        std::string _selected_figure = ""; ///< Stores the currently selected chess piece.
         std::vector<std::string> _possible_places_to_go; ///< A list of possible moves for the selected piece.
-        bool _next = false;                           ///< Indicates whether the select turn menu should show second page.
-        int _moves_amount = 0;                        ///< The number of moves made in the game.
-        bool is_view = false;                         ///< Indicates if the current game state is being viewed (as opposed to played).
+        bool _next = false; ///< Indicates whether the select turn menu should show second page.
+        int _moves_amount = 0; ///< The number of moves made in the game.
+        bool is_view = false; ///< Indicates if the current game state is being viewed (as opposed to played).
+
+        /**
+         * @brief Runs the main loop of the chess game, handling button clicks and moves.
+         *
+         * @param event The button click event that triggered the function.
+         * @param timeout The amount of time (in seconds) before a move times out. Defaults to 60 seconds.
+         * @return A task representing the asynchronous execution of the game.
+         */
+        dpp::task<void> run(dpp::button_click_t event, int timeout = 60);
+
 
     public:
-
         /**
          * @brief Converts chess board coordinates (e.g., "e2") into numerical grid positions.
          *
@@ -69,18 +79,10 @@ namespace gb {
         Discord_chess_game(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players);
 
         /**
-         * @brief Runs the main loop of the chess game, handling button clicks and moves.
-         *
-         * @param event The button click event that triggered the function.
-         * @param timeout The amount of time (in seconds) before a move times out. Defaults to 60 seconds.
-         * @return A task representing the asynchronous execution of the game.
-         */
-        dpp::task<void> run(dpp::button_click_t event, int timeout = 60);
-
-        /**
          * @brief Retrieves the image generators used to render the chess board.
          *
-         * @return A vector of pairs, where each pair consists of a string identifier and the corresponding image generator function.
+         * @return A vector of pairs, where each pair consists of a string identifier and the corresponding image
+         * generator function.
          */
         static std::vector<std::pair<std::string, image_generator_t>> get_image_generators();
     };

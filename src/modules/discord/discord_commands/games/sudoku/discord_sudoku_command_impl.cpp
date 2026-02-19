@@ -11,7 +11,7 @@ namespace gb {
 
         auto d = get_game_data_initialization("sudoku");
         auto game = std::make_unique<Discord_sudoku_game>(d, std::vector<dpp::snowflake>{event.command.usr.id});
-        co_await game->run(event);
+        co_await game->start_game(event);
         co_return;
     }
 

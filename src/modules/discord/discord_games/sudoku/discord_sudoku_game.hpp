@@ -29,6 +29,18 @@ namespace gb {
         int _timeout = 300; /**< The maximum time in seconds a player can take to make a move before timing out. */
         bool _is_mistake = false; /**< A flag indicating if the last action was a mistake. */
 
+        /**
+         * @brief The main game loop for the Sudoku game.
+         *
+         * This function handles the game flow, including user inputs, game state updates,
+         * and rendering of the game board and components. It awaits user interactions
+         * via Discord buttons and updates the game state accordingly.
+         *
+         * @param sevent The slash command event that initiated the game.
+         * @return A task representing the asynchronous execution of the game loop.
+         */
+        dpp::task<void> run(dpp::slashcommand_t sevent);
+
     public:
         /**
          * @brief Constructor for initializing the Sudoku game.
@@ -59,18 +71,6 @@ namespace gb {
          * @return A pointer to the generated image.
          */
         Image_ptr create_image();
-
-        /**
-         * @brief The main game loop for the Sudoku game.
-         *
-         * This function handles the game flow, including user inputs, game state updates,
-         * and rendering of the game board and components. It awaits user interactions
-         * via Discord buttons and updates the game state accordingly.
-         *
-         * @param sevent The slash command event that initiated the game.
-         * @return A task representing the asynchronous execution of the game loop.
-         */
-        dpp::task<void> run(dpp::slashcommand_t sevent);
     };
 
 } // namespace gb

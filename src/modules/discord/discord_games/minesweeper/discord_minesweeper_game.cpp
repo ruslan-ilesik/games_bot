@@ -28,7 +28,7 @@ namespace gb {
 
     Discord_minesweeper_game::Discord_minesweeper_game(Game_data_initialization &_data,
                                                        const std::vector<dpp::snowflake> &players, int level) :
-        Discord_game(_data, players), _engine(level), _level(level) {
+        Discord_game(_data, players,&Discord_minesweeper_game::run), _engine(level), _level(level) {
         _timeout_time = std::array<int, 3>({2 * 60, 3 * 60, 5 * 60})[level - 1];
     }
 
@@ -223,8 +223,7 @@ namespace gb {
         return img;
     }
 
-    dpp::task<void> Discord_minesweeper_game::run(dpp::slashcommand_t sevent) {
-        game_start(sevent.command.channel_id, sevent.command.guild_id);
+    dpp::task<std::string> Discord_minesweeper_game::run(dpp::slashcommand_t sevent) {
         _rd.seed(std::chrono::system_clock::now().time_since_epoch().count());
         Button_click_return r;
         dpp::task<Button_click_return> button_click_awaitable;
@@ -371,7 +370,7 @@ namespace gb {
                 _data.bot->event_edit_original_response(event, message);
             }
         }
-        game_stop("{\"level\":"+std::to_string(_level)+"}");
-        co_return;
+        co_return "{\"level\":"+std::to_string(_level)+"}";
+
     }
 } // namespace gb

@@ -34,6 +34,17 @@ namespace gb {
                                                       {SIGNS::EMPTY, SIGNS::EMPTY, SIGNS::EMPTY}}};
 
         /**
+         * @brief Runs the Tic Tac Toe game.
+         *
+         * This function manages the game loop, handling player turns, checking for
+         * wins or draws, and responding to user interactions.
+         *
+         * @param _event The initial button click event that starts the game.
+         * @return dpp::task<void> A task representing the game's execution.
+         */
+        dpp::task<void> run(const dpp::button_click_t &_event);
+
+        /**
          * @brief Creates an image representation of the current game state.
          *
          * @param m The Discord message object to which the image will be attached.
@@ -87,17 +98,6 @@ namespace gb {
          * @return std::vector<std::pair<std::string, image_generator_t>> The image generators.
          */
         static std::vector<std::pair<std::string, image_generator_t>> get_image_generators();
-
-        /**
-         * @brief Runs the Tic Tac Toe game.
-         *
-         * This function manages the game loop, handling player turns, checking for
-         * wins or draws, and responding to user interactions.
-         *
-         * @param _event The initial button click event that starts the game.
-         * @return dpp::task<void> A task representing the game's execution.
-         */
-        dpp::task<void> run(const dpp::button_click_t &_event);
     };
 
 } // namespace gb

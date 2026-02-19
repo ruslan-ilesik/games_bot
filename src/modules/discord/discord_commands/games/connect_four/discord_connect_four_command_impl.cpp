@@ -18,7 +18,7 @@ namespace gb {
         if (!r.is_timeout) {
             auto d = get_game_data_initialization("connect_four");
             auto game = std::make_unique<Discord_connect_four_game>(d, r.players);
-            co_await game->run(r.event);
+            co_await game->start_game(r.event);
         }
         co_return;
     }

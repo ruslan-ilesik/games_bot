@@ -37,6 +37,16 @@ namespace gb {
         int _timeout_time; ///< Timeout duration for player response.
         std::default_random_engine _rd; ///< Random engine used for mine generation.
 
+        /**
+         * @brief The main game loop, executed as a coroutine.
+         *
+         * Manages the game flow, handles user input, and updates the game state accordingly.
+         *
+         * @param sevent The slash command event that triggered the game.
+         * @return A dpp::task<std::string> representing the asynchronous execution of the game loop with additional game data.
+         */
+        dpp::task<std::string> run(dpp::slashcommand_t sevent);
+
     public:
         /**
          * @brief Constructs a new Discord Minesweeper Game.
@@ -73,16 +83,6 @@ namespace gb {
          * @return A pointer to the generated image.
          */
         Image_ptr create_image();
-
-        /**
-         * @brief The main game loop, executed as a coroutine.
-         *
-         * Manages the game flow, handles user input, and updates the game state accordingly.
-         *
-         * @param sevent The slash command event that triggered the game.
-         * @return A dpp::task<void> representing the asynchronous execution of the game loop.
-         */
-        dpp::task<void> run(dpp::slashcommand_t sevent);
     };
 
 } // namespace gb

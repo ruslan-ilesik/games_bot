@@ -26,7 +26,7 @@ namespace gb {
             auto d = get_game_data_initialization("minesweeper");
             auto game = std::make_unique<Discord_minesweeper_game>(d, std::vector<dpp::snowflake>{event.command.usr.id},
                                                                    difficulty);
-            co_await game->run(event);
+            co_await game->start_game(event);
         }
         co_return;
     }

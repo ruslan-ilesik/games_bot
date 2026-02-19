@@ -18,7 +18,7 @@ namespace rubiks_cube {
 namespace gb {
     Discord_rubiks_cube_game::Discord_rubiks_cube_game(Game_data_initialization &_data,
                                                        const std::vector<dpp::snowflake> &players) :
-        Discord_game(_data, players) {}
+        Discord_game(_data, players,&Discord_rubiks_cube_game::run) {}
 
 
     std::vector<std::pair<std::string, image_generator_t>> Discord_rubiks_cube_game::get_image_generators() {
@@ -176,10 +176,7 @@ namespace gb {
     };
 
 
-    dpp::task<void> Discord_rubiks_cube_game::run(dpp::slashcommand_t sevent) {
-        game_start(sevent.command.channel_id, sevent.command.guild_id);
-
-
+    dpp::task<std::string> Discord_rubiks_cube_game::run(dpp::slashcommand_t sevent) {
         // seeding and making puzzle
         _rand_obj.seed(std::chrono::system_clock::now().time_since_epoch().count());
         using func_type = void (rubiks_cube::Rubiks_cube_engine::*)();
@@ -341,7 +338,7 @@ namespace gb {
         }
 
         nlohmann::json json{{"moves", _amount_moves}};
-        game_stop(json.dump());
-        co_return;
+        co_return json.dump();
+
     }
 } // namespace gb

@@ -35,7 +35,7 @@ namespace gb {
         } else {
             auto d = get_game_data_initialization("puzzle_15");
             auto game = std::make_unique<Discord_puzzle_15_game>(d, std::vector<dpp::snowflake>{event.command.usr.id});
-            co_await game->run(event);
+            co_await game->start_game(event);
         }
 
         co_return;

@@ -17,7 +17,7 @@ namespace gb {
         if (!r.is_timeout) {
             auto d = get_game_data_initialization("tic tac toe");
             auto game = std::make_unique<Discord_tic_tac_toe_game>(d, r.players);
-            co_await game->run(r.event);
+            co_await game->start_game(r.event);
         }
 
         co_return;

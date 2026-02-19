@@ -3,8 +3,8 @@
 //
 
 #pragma once
-#include "src/games/battleships/battleships.hpp"
 #include <src/modules/discord/discord_games/discord_game.hpp>
+#include "src/games/battleships/battleships.hpp"
 
 namespace gb {
 
@@ -25,7 +25,8 @@ namespace gb {
         /**
          * @brief The size of one sector in the grid. Calculated based on the field size and line width.
          */
-        constexpr static double _sector_size = (_field_size - ((_field_size - _line_width * 11.0) / 10.0) - _line_width * 11.0) / 10.0;
+        constexpr static double _sector_size =
+            (_field_size - ((_field_size - _line_width * 11.0) / 10.0) - _line_width * 11.0) / 10.0;
 
         constexpr static int _line_length = _sector_size * 10 + _line_width * 10; ///< Length of the grid lines.
         constexpr static double _text_scale = _sector_size / 45; ///< Text scaling factor for navigation labels.
@@ -40,23 +41,23 @@ namespace gb {
         // Color constants for the game's visual elements.
         inline static const Color _default_background{32, 42, 68}; ///< Background color of the game.
         inline static const Color _line_color{255, 255, 255}; ///< Color of the grid lines.
-        inline static const Color _text_active{251, 192, 45}; ///< Color for active text (e.g., when a player selects something).
+        inline static const Color _text_active{251, 192,
+                                               45}; ///< Color for active text (e.g., when a player selects something).
         inline static const Color _text_standard{255, 255, 255}; ///< Standard text color.
 
         // Map linking ship types to colors for ship representation.
-        inline static std::map<battleships_engine::Ship_types, Color> _ship_colors
-        {
+        inline static std::map<battleships_engine::Ship_types, Color> _ship_colors{
             {battleships_engine::Ship_types::Carrier, {21, 21, 21}},
             {battleships_engine::Ship_types::Battleship, {37, 37, 37}},
             {battleships_engine::Ship_types::Patrol_Boat, {53, 53, 53}},
             {battleships_engine::Ship_types::Submarine, {69, 69, 69}},
-            {battleships_engine::Ship_types::Destroyer, {85, 85, 85}}
-        };
+            {battleships_engine::Ship_types::Destroyer, {85, 85, 85}}};
 
         inline static const Color _miss_cell_color{128, 128, 128}; ///< Color for missed shots on the grid.
         inline static const Color _damaged_cell_color{255, 0, 0}; ///< Color for damaged ships.
         inline static const Color _occupied_cell_color{255, 255, 255, 0.5}; ///< Color for occupied cells (ships).
-        inline static const Color _selected_col_color{251, 192, 45, 0.5}; ///< Color for selected columns (e.g., during ship placement).
+        inline static const Color _selected_col_color{
+            251, 192, 45, 0.5}; ///< Color for selected columns (e.g., during ship placement).
 
         // Data members for managing game state and interactions.
         std::map<dpp::snowflake, dpp::message> _messages; ///< Stores messages sent to Discord users.
@@ -66,13 +67,22 @@ namespace gb {
         std::array<int, 2> _states = {0, 0}; ///< Stores the game states of both players.
         std::array<std::array<int, 2>, 2> _temp_pos; ///< Temporary positions for each player.
         battleships_engine::Battleships _engine; ///< The core Battleships game engine.
-        std::array<battleships_engine::Ship*, 2> _temp_ships; ///< Temporary storage for player ships.
+        std::array<battleships_engine::Ship *, 2> _temp_ships; ///< Temporary storage for player ships.
 
-        std::array<bool, 2> _last_was_back = {false, false}; ///< Tracks whether the last move was a 'back' operation for each player.
+        std::array<bool, 2> _last_was_back = {
+            false, false}; ///< Tracks whether the last move was a 'back' operation for each player.
         time_t _move_start; ///< Timestamp of when the current move started.
         int _is_timeout = 0; ///< Flag indicating whether a timeout occurred.
         dpp::message _message; ///< Discord message object for handling game interactions.
         std::mutex _mutex; ///< Mutex for synchronizing game state across threads.
+
+        /**
+         * @brief Handles the game loop when a player clicks a button in Discord.
+         *
+         * @param event The button click event.
+         * @return A task that processes the event asynchronously.
+         */
+        dpp::task<void> run(dpp::button_click_t event);
 
     public:
         /**
@@ -109,8 +119,10 @@ namespace gb {
          * @param ships The container holding the player's ships.
          * @param to_not_draw Optional pointer to a ship that should not be drawn (e.g., during placement).
          */
-        void draw_private_field(Image_ptr &image, const std::array<int, 2> &position, const battleships_engine::Field &field,
-                                const battleships_engine::Ships_container &ships, battleships_engine::Ship *to_not_draw = nullptr);
+        void draw_private_field(Image_ptr &image, const std::array<int, 2> &position,
+                                const battleships_engine::Field &field,
+                                const battleships_engine::Ships_container &ships,
+                                battleships_engine::Ship *to_not_draw = nullptr);
 
         /**
          * @brief Draws a single ship on the game field.
@@ -129,16 +141,9 @@ namespace gb {
          * @param field The field data representing the player's grid.
          * @param ships The container holding the player's ships.
          */
-        void draw_public_field(Image_ptr &image, const std::array<int, 2> &position, const battleships_engine::Field &field,
+        void draw_public_field(Image_ptr &image, const std::array<int, 2> &position,
+                               const battleships_engine::Field &field,
                                const battleships_engine::Ships_container &ships);
-
-        /**
-         * @brief Handles the game loop when a player clicks a button in Discord.
-         *
-         * @param event The button click event.
-         * @return A task that processes the event asynchronously.
-         */
-        dpp::task<void> run(dpp::button_click_t event);
 
         /**
          * @brief Ends the game due to a timeout.

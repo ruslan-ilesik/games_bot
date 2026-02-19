@@ -7,7 +7,7 @@
 namespace gb {
     Discord_dominoes_game::Discord_dominoes_game(Game_data_initialization &_data,
                                                  const std::vector<dpp::snowflake> &players) :
-        Discord_game(_data, players) {}
+        Discord_game(_data, players,&Discord_dominoes_game::run) {}
 
 
     std::vector<std::pair<std::string, image_generator_t>> Discord_dominoes_game::get_image_generators() {
@@ -105,7 +105,7 @@ namespace gb {
 
         } else {
             this->_messages = messages.second;
-            game_start(event.command.channel_id, event.command.guild_id);
+
             this->_pieces_in_deck = (this->get_players().size() > 2 ? 5 : 7);
             generate_decks();
             make_first_turn();
@@ -362,7 +362,6 @@ namespace gb {
                     break;
                 }
             }
-            game_stop();
         }
         co_return;
     }

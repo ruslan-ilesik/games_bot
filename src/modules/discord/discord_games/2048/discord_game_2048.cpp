@@ -22,12 +22,12 @@ namespace gb {
     } // namespace n_2048
 
     Discord_game_2048::Discord_game_2048(Game_data_initialization &_data, const std::vector<dpp::snowflake> &players) :
-        Discord_game(_data, players) {}
+        Discord_game(_data, players,&Discord_game_2048::run) {}
 
     std::vector<std::pair<std::string, image_generator_t>> Discord_game_2048::get_image_generators() { return {}; }
 
     dpp::task<void> Discord_game_2048::run(dpp::slashcommand_t sevent) {
-        game_start(sevent.command.channel_id, sevent.command.guild_id);
+
         dpp::message message;
         message.add_embed(dpp::embed());
         message.channel_id = sevent.command.channel_id;
@@ -122,8 +122,6 @@ namespace gb {
             r = co_await button_click_awaitable;
         }
 
-
-        game_stop();
         co_return;
     }
     Image_ptr Discord_game_2048::create_image() {

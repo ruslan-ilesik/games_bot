@@ -33,6 +33,17 @@ namespace gb {
          */
         std::string _signs[2] = {"r", "y"};
 
+        /**
+         * @brief Runs the Connect Four game in response to a button click event.
+         *
+         * This method manages the game flow, including player moves, checking for a win or draw,
+         * and updating the game board after each interaction.
+         *
+         * @param event The button click event triggered by a player.
+         * @return A task that handles the asynchronous game execution.
+         */
+        dpp::task<void> run(dpp::button_click_t event);
+
     public:
         /**
          * @brief Constructs a new `Discord_connect_four_game` object.
@@ -66,17 +77,6 @@ namespace gb {
          * @return A pointer to the generated image.
          */
         Image_ptr generate_image();
-
-        /**
-         * @brief Runs the Connect Four game in response to a button click event.
-         *
-         * This method manages the game flow, including player moves, checking for a win or draw,
-         * and updating the game board after each interaction.
-         *
-         * @param event The button click event triggered by a player.
-         * @return A task that handles the asynchronous game execution.
-         */
-        dpp::task<void> run(dpp::button_click_t event);
     };
 
 } // namespace gb

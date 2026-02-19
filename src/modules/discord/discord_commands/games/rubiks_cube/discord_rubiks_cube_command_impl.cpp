@@ -10,7 +10,7 @@ namespace gb {
     dpp::task<void> Discord_rubiks_cube_command_impl::_command_callback(const dpp::slashcommand_t &event) {
         auto d = get_game_data_initialization("rubiks_cube");
         auto game = std::make_unique<Discord_rubiks_cube_game>(d, std::vector<dpp::snowflake>{event.command.usr.id});
-        co_await game->run(event);
+        co_await game->start_game(event);
         co_return;
     }
 

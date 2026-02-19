@@ -17,6 +17,19 @@ namespace gb {
     class Discord_puzzle_15_game : public Discord_game {
         puzzle_15::Puzzle_15 _engine; /**< The Puzzle 15 game engine instance. */
 
+
+        /**
+         * @brief The main game loop, executed as a coroutine.
+         *
+         * Manages the game flow, processes player input, and updates the game state. This function
+         * runs asynchronously and is triggered by a Discord slash command event.
+         *
+         * @param sevent The slash command event that triggered the game.
+         * @return A dpp::task<string> representing the asynchronous execution of the game loop with return of
+         * additional data for game record.
+         */
+        dpp::task<std::string> run(dpp::slashcommand_t sevent);
+
     public:
         /**
          * @brief Constructs a new Discord Puzzle 15 Game.
@@ -33,7 +46,7 @@ namespace gb {
          *
          * @param message The Discord message object to be updated.
          */
-        void prepare_message(dpp::message& message);
+        void prepare_message(dpp::message &message);
 
         /**
          * @brief Creates and returns an image representation of the current Puzzle 15 game board.
@@ -41,17 +54,6 @@ namespace gb {
          * @return A pointer to the generated image representing the game state.
          */
         Image_ptr create_image();
-
-        /**
-         * @brief The main game loop, executed as a coroutine.
-         *
-         * Manages the game flow, processes player input, and updates the game state. This function
-         * runs asynchronously and is triggered by a Discord slash command event.
-         *
-         * @param sevent The slash command event that triggered the game.
-         * @return A dpp::task<void> representing the asynchronous execution of the game loop.
-         */
-        dpp::task<void> run(dpp::slashcommand_t sevent);
 
         /**
          * @brief Retrieves a list of image generators for the game.
