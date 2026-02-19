@@ -199,6 +199,11 @@ namespace gb {
          */
         uint64_t get_image_cnt() const;
 
+        /**
+         * Sends private messages to users and returns them.
+         * @param ids  users to send private messages to.
+         * @return private messages or failed once.
+         */
         dpp::task<Direct_messages_return> get_private_messages(const std::vector<dpp::snowflake> &ids);
 
         /**
