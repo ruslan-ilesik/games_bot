@@ -6,7 +6,7 @@
 
 namespace gb {
 
-    Discord_bot_impl::Discord_bot_impl() : Discord_bot("discord_bot", {"config","database"}) {}
+    Discord_bot_impl::Discord_bot_impl() : Discord_bot("discord_bot", {"config", "database", "logging"}) {}
 
     Discord_bot_impl::~Discord_bot_impl() {}
 
@@ -16,7 +16,6 @@ namespace gb {
     }
 
     void Discord_bot_impl::run() {
-
         if (_bot != nullptr) {
             throw std::runtime_error("Bot variable is not nullptr, memory leak possible");
         }
@@ -30,15 +29,53 @@ namespace gb {
             }
             _pre_requirements.clear();
         }
-        auto fp = _config->get_value("db_backup_path");
-        _db->backup(fp);
-        _bot->direct_message_create(_config->get_value("owner_discord_id"),dpp::message("backup").add_file("backup.sql",dpp::utility::read_file(fp)));
-        _db_backup_timer = _bot->start_timer([this](const dpp::timer& timer) {
-            _bot->log(dpp::ll_info,"Doing backup of database");
-            auto fp = _config->get_value("db_backup_path");
-            _db->backup(fp);
-            _bot->direct_message_create(_config->get_value("owner_discord_id"),dpp::message("backup").add_file("backup.sql",dpp::utility::read_file(fp)));
-        },60*60*24); // once per day
+
+        auto backup_fn = [this]() {
+            _bot->log(dpp::ll_info, "Doing backup of database");
+            auto local_file = _config->get_value("db_backup_path");
+            _db->backup(local_file);
+
+            std::string user = _config->get_value("db_backup_scp_user");
+            std::string host = _config->get_value("db_backup_scp_host");
+            std::string port = _config->get_value("db_backup_scp_port");
+            std::string remote_base = _config->get_value("db_backup_scp_base");
+            std::string password = _config->get_value("db_backup_scp_password");
+            // Get local hostname
+            char hostname[256];
+            if (gethostname(hostname, sizeof(hostname)) != 0) {
+                _bot->log(dpp::ll_error, "gethostname");
+                return;
+            }
+
+            std::string remote_path = remote_base + "/" + std::string(hostname) + "/backup.sql";
+
+            // Make directory on remote server first
+            std::string mkdir_cmd = "sshpass -p '" + password + "' ssh -p " + port + " " + user + "@" + host +
+                                    " 'mkdir -p " + remote_base + "/" + hostname + "'";
+            int ret = system(mkdir_cmd.c_str());
+            if (ret != 0) {
+                _bot->log(dpp::ll_error, "Error: Failed to create remote directory.\n");
+                return;
+            }
+
+            // SCP the file
+            std::string scp_cmd = "sshpass -p '" + password + "' scp -P " + port + " " + local_file + " " + user + "@" +
+                                  host + ":" + remote_path;
+            ret = system(scp_cmd.c_str());
+            if (ret != 0) {
+                _bot->log(dpp::ll_error, "Error: SCP command failed.\n");
+                return;
+            }
+
+            _bot->log(dpp::ll_info, "Backup uploaded successfully to " + remote_path + "\n");
+        };
+
+        backup_fn();
+        _db_backup_timer = _bot->start_timer(
+            [=](const dpp::timer &timer) {
+                backup_fn();
+            },
+            60 * 60 * 24); // once per day
 
         _bot->start(dpp::st_return);
     }
@@ -51,9 +88,7 @@ namespace gb {
         _bot->shutdown();
     }
 
-    Discord_cluster *Discord_bot_impl::get_bot() {
-        return _bot.get();
-    }
+    Discord_cluster *Discord_bot_impl::get_bot() { return _bot.get(); }
 
     void Discord_bot_impl::add_pre_requirement(const std::function<void()> &func) {
         std::unique_lock<std::mutex> lock(_mutex);
@@ -83,14 +118,13 @@ namespace gb {
     }
 
     void Discord_bot_impl::reply(const dpp::button_click_t &event, const dpp::message &message,
-        const dpp::command_completion_event_t &callback) {
+                                 const dpp::command_completion_event_t &callback) {
         event.reply(dpp::ir_update_message, message_preprocessing(message), callback);
     }
 
-    void Discord_bot_impl::reply_new(
-        const dpp::button_click_t &event, const dpp::message &message,
-        const dpp::command_completion_event_t &callback) {
-      event.reply(message_preprocessing(message), callback);
+    void Discord_bot_impl::reply_new(const dpp::button_click_t &event, const dpp::message &message,
+                                     const dpp::command_completion_event_t &callback) {
+        event.reply(message_preprocessing(message), callback);
     }
 
     void Discord_bot_impl::message_edit(const dpp::message &message, const dpp::command_completion_event_t &callback) {
@@ -114,11 +148,9 @@ namespace gb {
 
     dpp::task<dpp::confirmation_callback_t> Discord_bot_impl::co_direct_message_create(const dpp::snowflake &user_id,
                                                                                        dpp::message &message) {
-        co_return co_await _bot->co_direct_message_create(user_id,message_preprocessing(message));
+        co_return co_await _bot->co_direct_message_create(user_id, message_preprocessing(message));
     }
 
-    Module_ptr create() {
-        return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_bot_impl>());
-    }
+    Module_ptr create() { return std::dynamic_pointer_cast<Module>(std::make_shared<Discord_bot_impl>()); }
 
-} // gb
+} // namespace gb
