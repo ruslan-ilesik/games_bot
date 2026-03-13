@@ -17,8 +17,14 @@
 #include <shared_mutex>
 #include <thread>
 
-#ifdef USE_MYSQL_8
+
+#ifndef HAVE_MY_BOOL
+#if defined(MYSQL_VERSION_ID) && MYSQL_VERSION_ID >= 80000
 using my_bool = bool;
+#else
+
+#endif
+#define HAVE_MY_BOOL
 #endif
 
 namespace gb {
