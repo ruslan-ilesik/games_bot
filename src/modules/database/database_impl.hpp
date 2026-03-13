@@ -17,7 +17,7 @@
 #include <shared_mutex>
 #include <thread>
 
-#if defined(__FreeBSD__)
+#ifdef USE_MYSQL_8
 using my_bool = bool;
 #endif
 
