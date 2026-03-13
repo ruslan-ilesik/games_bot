@@ -30,7 +30,24 @@ namespace gb {
             _pre_requirements.clear();
         }
 
-        auto backup_fn = [this]() {
+        auto run_command = [this](const std::string &cmd) -> std::string {
+
+            std::array<char, 128> buffer;
+            std::string result;
+
+            // Open pipe with stderr redirected to stdout
+            std::unique_ptr<FILE, decltype(&pclose)> pipe(popen((cmd + " 2>&1").c_str(), "r"), pclose);
+            if (!pipe) {
+                return "popen() failed!";
+            }
+
+            while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+                result += buffer.data();
+            }
+            return result;
+        };
+
+        auto backup_fn = [this, run_command]() {
             _bot->log(dpp::ll_info, "Doing backup of database");
             auto local_file = _config->get_value("db_backup_path");
             _db->backup(local_file);
@@ -52,18 +69,18 @@ namespace gb {
             // Make directory on remote server first
             std::string mkdir_cmd = "sshpass -p '" + password + "' ssh -p " + port + " " + user + "@" + host +
                                     " 'mkdir -p " + remote_base + "/" + hostname + "'";
-            int ret = system(mkdir_cmd.c_str());
-            if (ret != 0) {
-                _bot->log(dpp::ll_error, "Error: Failed to create remote directory.\n");
+            auto  ret = run_command(mkdir_cmd.c_str());
+            if (!ret.empty()) {
+                _bot->log(dpp::ll_error, "Error: Failed to create remote directory.\n"+ret+"\n");
                 return;
             }
 
             // SCP the file
             std::string scp_cmd = "sshpass -p '" + password + "' scp -P " + port + " " + local_file + " " + user + "@" +
                                   host + ":" + remote_path;
-            ret = system(scp_cmd.c_str());
-            if (ret != 0) {
-                _bot->log(dpp::ll_error, "Error: SCP command failed.\n");
+            ret = run_command(scp_cmd.c_str());
+            if (!ret.empty()) {
+                _bot->log(dpp::ll_error, "Error: SCP command failed.\n"+ret+"\n");
                 return;
             }
 
