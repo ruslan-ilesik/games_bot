@@ -20,7 +20,7 @@
 #if defined(MARIADB_VERSION_ID)
 
 #elif defined(MYSQL_VERSION_ID)
-    typedef char my_bool;
+    typedef bool my_bool;
 #endif
 
 namespace gb {
