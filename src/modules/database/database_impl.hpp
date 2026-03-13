@@ -17,6 +17,11 @@
 #include <shared_mutex>
 #include <thread>
 
+#if defined(MARIADB_VERSION_ID)
+
+#elif defined(MYSQL_VERSION_ID)
+    typedef char my_bool;
+#endif
 
 namespace gb {
 

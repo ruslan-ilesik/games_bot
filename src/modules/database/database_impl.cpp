@@ -588,10 +588,10 @@ namespace gb {
                     auto bindings = std::make_unique<MYSQL_BIND[]>(num_fields);
                     auto string_buffers = std::make_unique<std::unique_ptr<char[]>[]>(num_fields);
                     auto lengths = std::make_unique<unsigned long[]>(num_fields);
-                    auto is_null = std::make_unique<char[]>(num_fields);
+                    auto is_null = std::make_unique<my_bool[]>(num_fields);
 
                     std::memset(bindings.get(), 0, sizeof(MYSQL_BIND) * num_fields);
-                    std::memset(is_null.get(), 0, sizeof(char) * num_fields);
+                    std::memset(is_null.get(), 0, sizeof(my_bool) * num_fields);
                     std::memset(lengths.get(), 0, sizeof(unsigned long) * num_fields);
 
                     for (size_t i = 0; i < num_fields; i++) {
