@@ -71,33 +71,90 @@ namespace gb {
 
         drogon::app().setDocumentRoot("./website");
 
-        drogon::app().registerHandlerViaRegex(
-            ".*", // Match any path using a proper regex
-            [this](const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
-                std::string path = req->path();
+  drogon::app().registerHandlerViaRegex(
+    ".*",
+    [this](const drogon::HttpRequestPtr &req,
+           std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
 
-                // Handle paths without extensions (e.g., /commands -> /commands.html)
-                if (path.find('.') == std::string::npos && path != "/") {
-                    path += ".html";
-                } else if (path == "/") {
-                    path = "/index.html";
-                }
+        namespace fs = std::filesystem;
 
-                // Construct the file path relative to the website directory
-                auto filePath = "./website" + path;
+        const fs::path _base_dir = fs::canonical("./website");
 
-                if (std::filesystem::exists(filePath)) {
-                    // Serve the file if it exists
-                    auto resp = drogon::HttpResponse::newFileResponse(filePath);
-                    callback(resp);
-                } else {
-                    // File not found, return 404
-                    auto resp = drogon::HttpResponse::newHttpResponse();
-                    resp->setStatusCode(drogon::k404NotFound);
-                    resp->setBody("404 Not Found");
-                    callback(resp);
-                }
-            });
+        // lambda: check if target is inside base
+        auto _is_inside_base = [](const fs::path &_base, const fs::path &_target) {
+            auto _base_it = _base.begin();
+            auto _target_it = _target.begin();
+
+            for (; _base_it != _base.end() && _target_it != _target.end(); ++_base_it, ++_target_it) {
+                if (*_base_it != *_target_it)
+                    return false;
+            }
+            return _base_it == _base.end();
+        };
+
+        // lambda: build safe path
+        auto _build_safe_path = [&](std::string _path) -> std::optional<fs::path> {
+
+            if (_path.empty() || _path[0] != '/')
+                return std::nullopt;
+
+            // reject Windows-style tricks early
+            if (_path.find('\\') != std::string::npos)
+                return std::nullopt;
+
+            fs::path _rel = _path.substr(1); // remove leading '/'
+
+            // routing rules
+            if (_path == "/") {
+                _rel = "index.html";
+            } else if (_path.back() == '/') {
+                _rel /= "index.html";
+            } else if (!_rel.has_extension()) {
+                _rel += ".html";
+            }
+
+            // block traversal components BEFORE filesystem access
+            for (const auto &_part : _rel) {
+                if (_part == ".." || _part == ".")
+                    return std::nullopt;
+            }
+
+            fs::path _candidate = _base_dir / _rel;
+
+            if (!fs::exists(_candidate) || !fs::is_regular_file(_candidate))
+                return std::nullopt;
+
+            // resolve symlinks + normalize
+            fs::path _resolved = fs::canonical(_candidate);
+
+            // enforce sandbox
+            if (!_is_inside_base(_base_dir, _resolved))
+                return std::nullopt;
+
+            return _resolved;
+        };
+
+        try {
+            auto _safe_path = _build_safe_path(req->path());
+
+            if (!_safe_path) {
+                auto _resp = drogon::HttpResponse::newHttpResponse();
+                _resp->setStatusCode(drogon::k404NotFound);
+                _resp->setBody("404 Not Found");
+                callback(_resp);
+                return;
+            }
+
+            auto _resp = drogon::HttpResponse::newFileResponse(_safe_path->string());
+            callback(_resp);
+
+        } catch (...) {
+            auto _resp = drogon::HttpResponse::newHttpResponse();
+            _resp->setStatusCode(drogon::k500InternalServerError);
+            _resp->setBody("Internal Server Error");
+            callback(_resp);
+        }
+    });
 
         _drogon_thread = std::thread(
             [this]() { drogon::app().addListener("0.0.0.0", std::stoi(config->get_value("webserver_port"))).run(); });
