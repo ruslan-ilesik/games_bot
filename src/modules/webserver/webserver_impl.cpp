@@ -10,6 +10,7 @@
 #include "api/index_page.hpp"
 #include "api/patreon.hpp"
 #include "api/premium.hpp"
+#include "api/topgg_webhook.hpp"
 
 
 namespace gb {
@@ -68,6 +69,7 @@ namespace gb {
         patreon_api(this);
         premium_api(this);
         dashboard_page_api(this);
+        topgg_webhook(this);
 
         drogon::app().setDocumentRoot("./website");
 

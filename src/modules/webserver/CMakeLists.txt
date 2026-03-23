@@ -13,6 +13,8 @@ add_library(webserver SHARED
         ./utils/cookie_manager.cpp
         ./utils/other.cpp
         ../../module/module.cpp
+        api/topgg_webhook.cpp
+        api/topgg_webhook.hpp
 )
 
 add_definitions(-DCXX_FILESYSTEM_NO_LINK_NEEDED)

@@ -49,6 +49,10 @@ namespace gb {
 
         auto backup_fn = [this, run_command]() {
             _bot->log(dpp::ll_info, "Doing backup of database");
+            if (_config->get_value("db_backup_enabled") == "false") {
+                _bot->log(dpp::ll_warning, "Database backup is disabled");
+                return;
+            }
             auto local_file = _config->get_value("db_backup_path");
             _db->backup(local_file);
 
