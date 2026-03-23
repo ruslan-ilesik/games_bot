@@ -6,6 +6,12 @@
 #include <openssl/hmac.h>
 
 void gb::topgg_webhook(Webserver_impl *server) {
+    Prepared_statement vote_webhook_stmt = server->db->create_prepared_statement("CALL topgg_webhook(?);");
+
+    server->on_stop.emplace_back([=]() {
+        server->db->remove_prepared_statement(vote_webhook_stmt);
+    });
+
     drogon::app().registerHandler(
         "/api/topgg-webhook",
         [=](drogon::HttpRequestPtr req,
@@ -64,6 +70,19 @@ void gb::topgg_webhook(Webserver_impl *server) {
             }
 
             server->log->info(std::format("Valid Top.gg webhook received: {}", data.dump()));
+
+            auto type = data["type"].get<std::string>();
+
+            if (type != "vote.create" && type != "webhook.test") {
+                server->log->warn("Top.gg webhook received unknown type "+ type);
+                auto resp = drogon::HttpResponse::newHttpResponse();
+                resp->setStatusCode(drogon::k200OK);
+                callback(resp);
+                co_return;
+            }
+
+            dpp::snowflake user_id = data["data"]["user"]["platform_id"].get<std::string>();
+            co_await server->db->execute_prepared_statement(vote_webhook_stmt,user_id);
 
             auto resp = drogon::HttpResponse::newHttpResponse();
             resp->setStatusCode(drogon::k200OK);
