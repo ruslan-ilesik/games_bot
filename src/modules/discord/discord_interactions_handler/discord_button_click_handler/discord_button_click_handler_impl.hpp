@@ -58,7 +58,7 @@ namespace gb {
                                                 bool clear_ids = true) override;
 
         /**
-         * @brief Waits for a user interaction with the select menu within a specified timeout and automatically replies
+         * @brief Waits for a user interaction with the buttons menu within a specified timeout and automatically replies
          * to message if not timeout ensuring event will be valid. In case reply failed, it retries awaiting.
          *
          * This function waits for an interaction with a button in a Discord message. If an interaction
