@@ -1,6 +1,7 @@
-[submodule "src/utils/filewatch"]
-	path = src/utils/filewatch
-	url = https://github.com/ThomasMonkman/filewatch
 [submodule "src/games/chess"]
 	path = src/games/chess
 	url = https://github.com/ruslan-ilesik/cpp-chess
+[submodule "src/utils/filewatch"]
+	path = src/utils/filewatch
+	url = https://github.com/bernard-technologies/filewatch.git
+	branch = fix/cpp20
