@@ -58,3 +58,11 @@ test/test_runner
 dependencies.txt
 docs/*
 tests/*
+
+.cmake/*
+
+.ninja_deps
+.ninja_log
+Testing/*
+build.ninja
+compile_commands.json
