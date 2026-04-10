@@ -63,6 +63,8 @@ tests/*
 
 .ninja_deps
 .ninja_log
-.ninja_depsTesting/*
+
 build.ninja
 compile_commands.json
+cmake_install.cmake
+*Testing/*
