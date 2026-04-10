@@ -63,6 +63,6 @@ tests/*
 
 .ninja_deps
 .ninja_log
-Testing/*
+.ninja_depsTesting/*
 build.ninja
 compile_commands.json
