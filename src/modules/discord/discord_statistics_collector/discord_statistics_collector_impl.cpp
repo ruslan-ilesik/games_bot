@@ -7,7 +7,7 @@
 namespace gb {
     Discord_statistics_collector_impl::Discord_statistics_collector_impl() :
         Discord_statistics_collector("discord_statistics_collector",
-                                     {"discord_bot", "config", "database", "database"}) {}
+                                     {"discord_bot", "config", "database"}) {}
 
     void Discord_statistics_collector_impl::run() {
         _report_timer = _bot->get_bot()->start_timer(

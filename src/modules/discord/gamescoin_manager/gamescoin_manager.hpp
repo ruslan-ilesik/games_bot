@@ -7,6 +7,7 @@
 
 
 #include "src/module/module.hpp"
+#include "src/modules/database/database.hpp"
 #include "src/utils/coro/coro.hpp"
 
 namespace gb {
@@ -33,6 +34,7 @@ namespace gb {
         //always ordered
         virtual  Task<std::vector<Gamescoin_transaction>> get_user_transactions_between (const dpp::snowflake& user_id, uint64_t t_start, uint64_t t_end, uint32_t limit = std::numeric_limits<uint32_t>::max()) = 0;
 
-
     };
+
+
 } // namespace gb

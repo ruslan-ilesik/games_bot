@@ -1,0 +1,88 @@
+{
+	"abstract" : true,
+	"backtrace" : 5,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"include",
+			"find_package",
+			"set_target_properties"
+		],
+		"files" : 
+		[
+			"/usr/local/share/cmake/cpp-jwt/cpp-jwtTargets.cmake",
+			"/usr/local/share/cmake/cpp-jwt/cpp-jwtConfig.cmake",
+			"src/modules/webserver/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 2
+			},
+			{
+				"command" : 2,
+				"file" : 2,
+				"line" : 23,
+				"parent" : 0
+			},
+			{
+				"file" : 1,
+				"parent" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 28,
+				"parent" : 2
+			},
+			{
+				"file" : 0,
+				"parent" : 3
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 59,
+				"parent" : 4
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 61,
+				"parent" : 4
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"id" : "cpp-jwt::cpp-jwt::@6865d4cba21fd7615bf8",
+	"imported" : true,
+	"interfaceCompileDependencies" : 
+	[
+		{
+			"backtrace" : 6,
+			"id" : "OpenSSL::SSL::@6865d4cba21fd7615bf8"
+		}
+	],
+	"interfaceLinkLibraries" : 
+	[
+		{
+			"backtrace" : 6,
+			"id" : "OpenSSL::SSL::@6865d4cba21fd7615bf8"
+		}
+	],
+	"local" : true,
+	"name" : "cpp-jwt::cpp-jwt",
+	"paths" : 
+	{
+		"build" : "src/modules/webserver",
+		"source" : "src/modules/webserver"
+	},
+	"sources" : [],
+	"type" : "INTERFACE_LIBRARY"
+}

@@ -1,0 +1,93 @@
+{
+	"abstract" : true,
+	"backtrace" : 9,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"include",
+			"find_package",
+			"__find_dependency_common",
+			"find_dependency"
+		],
+		"files" : 
+		[
+			"/usr/lib/x86_64-linux-gnu/cmake/fmt/fmt-targets.cmake",
+			"/usr/lib/x86_64-linux-gnu/cmake/fmt/fmt-config.cmake",
+			"/home/ilesik/.cache/JetBrains/RemoteDev/dist/4ccbadfc52e3c_CLion-2026.1/bin/cmake/linux/x64/share/cmake-4.2/Modules/CMakeFindDependencyMacro.cmake",
+			"/usr/lib/x86_64-linux-gnu/cmake/spdlog/spdlogConfig.cmake",
+			"src/modules/logging/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 4
+			},
+			{
+				"command" : 2,
+				"file" : 4,
+				"line" : 7,
+				"parent" : 0
+			},
+			{
+				"file" : 3,
+				"parent" : 1
+			},
+			{
+				"command" : 4,
+				"file" : 3,
+				"line" : 48,
+				"parent" : 2
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 125,
+				"parent" : 3
+			},
+			{
+				"command" : 2,
+				"file" : 2,
+				"line" : 93,
+				"parent" : 4
+			},
+			{
+				"file" : 1,
+				"parent" : 5
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 38,
+				"parent" : 6
+			},
+			{
+				"file" : 0,
+				"parent" : 7
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 78,
+				"parent" : 8
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"id" : "fmt::fmt-header-only::@43591c05de11486d6419",
+	"imported" : true,
+	"local" : true,
+	"name" : "fmt::fmt-header-only",
+	"paths" : 
+	{
+		"build" : "src/modules/logging",
+		"source" : "src/modules/logging"
+	},
+	"sources" : [],
+	"type" : "INTERFACE_LIBRARY"
+}

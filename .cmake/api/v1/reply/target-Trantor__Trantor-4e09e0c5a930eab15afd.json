@@ -1,0 +1,133 @@
+{
+	"abstract" : true,
+	"artifacts" : 
+	[
+		{
+			"path" : "/usr/local/lib/libtrantor.a"
+		}
+	],
+	"backtrace" : 9,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"include",
+			"find_package",
+			"__find_dependency_common",
+			"find_dependency",
+			"set_target_properties"
+		],
+		"files" : 
+		[
+			"/usr/local/lib/cmake/Trantor/TrantorTargets.cmake",
+			"/usr/local/lib/cmake/Trantor/TrantorConfig.cmake",
+			"/home/ilesik/.cache/JetBrains/RemoteDev/dist/4ccbadfc52e3c_CLion-2026.1/bin/cmake/linux/x64/share/cmake-4.2/Modules/CMakeFindDependencyMacro.cmake",
+			"/usr/local/lib/cmake/Drogon/DrogonConfig.cmake",
+			"src/modules/webserver/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 4
+			},
+			{
+				"command" : 2,
+				"file" : 4,
+				"line" : 25,
+				"parent" : 0
+			},
+			{
+				"file" : 3,
+				"parent" : 1
+			},
+			{
+				"command" : 4,
+				"file" : 3,
+				"line" : 40,
+				"parent" : 2
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 125,
+				"parent" : 3
+			},
+			{
+				"command" : 2,
+				"file" : 2,
+				"line" : 93,
+				"parent" : 4
+			},
+			{
+				"file" : 1,
+				"parent" : 5
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 57,
+				"parent" : 6
+			},
+			{
+				"file" : 0,
+				"parent" : 7
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 59,
+				"parent" : 8
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 61,
+				"parent" : 8
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"id" : "Trantor::Trantor::@6865d4cba21fd7615bf8",
+	"imported" : true,
+	"interfaceCompileDependencies" : 
+	[
+		{
+			"backtrace" : 10,
+			"id" : "Threads::Threads::@6890427a1f51a3e7e1df"
+		}
+	],
+	"interfaceLinkLibraries" : 
+	[
+		{
+			"backtrace" : 10,
+			"id" : "OpenSSL::SSL::@6865d4cba21fd7615bf8"
+		},
+		{
+			"backtrace" : 10,
+			"id" : "OpenSSL::Crypto::@6865d4cba21fd7615bf8"
+		},
+		{
+			"backtrace" : 10,
+			"id" : "Threads::Threads::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 10,
+			"fragment" : "pthread"
+		}
+	],
+	"local" : true,
+	"name" : "Trantor::Trantor",
+	"nameOnDisk" : "libtrantor.a",
+	"paths" : 
+	{
+		"build" : "src/modules/webserver",
+		"source" : "src/modules/webserver"
+	},
+	"sources" : [],
+	"type" : "STATIC_LIBRARY"
+}

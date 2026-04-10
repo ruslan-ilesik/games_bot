@@ -1,0 +1,103 @@
+{
+	"abstract" : true,
+	"backtrace" : 11,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"find_package",
+			"__find_dependency_common",
+			"find_dependency",
+			"include"
+		],
+		"files" : 
+		[
+			"/home/ilesik/.cache/JetBrains/RemoteDev/dist/4ccbadfc52e3c_CLion-2026.1/bin/cmake/linux/x64/share/cmake-4.2/Modules/FindOpenSSL.cmake",
+			"/home/ilesik/.cache/JetBrains/RemoteDev/dist/4ccbadfc52e3c_CLion-2026.1/bin/cmake/linux/x64/share/cmake-4.2/Modules/CMakeFindDependencyMacro.cmake",
+			"/usr/lib/cmake/dpp/dpp-config.cmake",
+			"/usr/lib/cmake/dpp/dpp.cmake",
+			"src/modules/discord/discord_command_handler/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 4
+			},
+			{
+				"command" : 1,
+				"file" : 4,
+				"line" : 6,
+				"parent" : 0
+			},
+			{
+				"file" : 2,
+				"parent" : 1
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 7,
+				"parent" : 2
+			},
+			{
+				"file" : 3,
+				"parent" : 3
+			},
+			{
+				"command" : 4,
+				"file" : 3,
+				"line" : 69,
+				"parent" : 4
+			},
+			{
+				"file" : 2,
+				"parent" : 5
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 21,
+				"parent" : 6
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 125,
+				"parent" : 7
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 93,
+				"parent" : 8
+			},
+			{
+				"file" : 0,
+				"parent" : 9
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 846,
+				"parent" : 10
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"id" : "OpenSSL::applink::@c6b66522eb9544e6bb24",
+	"imported" : true,
+	"local" : true,
+	"name" : "OpenSSL::applink",
+	"paths" : 
+	{
+		"build" : "src/modules/discord/discord_command_handler",
+		"source" : "src/modules/discord/discord_command_handler"
+	},
+	"sources" : [],
+	"type" : "INTERFACE_LIBRARY"
+}

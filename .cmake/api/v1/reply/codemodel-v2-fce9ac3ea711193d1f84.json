@@ -1,0 +1,2945 @@
+{
+	"configurations" : 
+	[
+		{
+			"abstractTargets" : 
+			[
+				{
+					"directoryIndex" : 41,
+					"id" : "Brotli_lib::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-Brotli_lib-c1b49b766e94a717fe57.json",
+					"name" : "Brotli_lib",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 41,
+					"id" : "Drogon::Drogon::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-Drogon__Drogon-251b8702fa6ef74fbb16.json",
+					"name" : "Drogon::Drogon",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 41,
+					"id" : "Jsoncpp_lib::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-Jsoncpp_lib-22e36d067e2dbea6aade.json",
+					"name" : "Jsoncpp_lib",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 15,
+					"id" : "OpenSSL::Crypto::@9dd7385d1ec3e1354f0b",
+					"jsonFile" : "target-OpenSSL__Crypto-f3d802db16cdfdc65933.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 34,
+					"id" : "OpenSSL::Crypto::@234ac4705f461032f00f",
+					"jsonFile" : "target-OpenSSL__Crypto-08b79fc711ad17fe7a66.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 14,
+					"id" : "OpenSSL::Crypto::@5d022304c368e3b19471",
+					"jsonFile" : "target-OpenSSL__Crypto-d22d4a2cc0790d691dea.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 30,
+					"id" : "OpenSSL::Crypto::@a80d733fcbb5eed41017",
+					"jsonFile" : "target-OpenSSL__Crypto-259d6adc76b8dc5b6e70.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 13,
+					"id" : "OpenSSL::Crypto::@4c05569a4bc4c593ad68",
+					"jsonFile" : "target-OpenSSL__Crypto-e120f05f701a1bf9f402.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 31,
+					"id" : "OpenSSL::Crypto::@24fe91bce0a9544475dc",
+					"jsonFile" : "target-OpenSSL__Crypto-80c42b5a276a0c6e0440.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 12,
+					"id" : "OpenSSL::Crypto::@2742d8b11acf181db56b",
+					"jsonFile" : "target-OpenSSL__Crypto-f65b345907a5e59dbfda.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 11,
+					"id" : "OpenSSL::Crypto::@c6b66522eb9544e6bb24",
+					"jsonFile" : "target-OpenSSL__Crypto-9e84502aec6788a36c30.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 32,
+					"id" : "OpenSSL::Crypto::@f00ac651a1973c101483",
+					"jsonFile" : "target-OpenSSL__Crypto-ad6e94d8a549b762f1e6.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "OpenSSL::Crypto::@ef63ad77538ec712b0a7",
+					"jsonFile" : "target-OpenSSL__Crypto-7902c7eec6da7fb827de.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 33,
+					"id" : "OpenSSL::Crypto::@eb00e6530c4ec0f6dc86",
+					"jsonFile" : "target-OpenSSL__Crypto-8b2280c019001a347f82.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "OpenSSL::Crypto::@aa2bb0cccd6fbc4d9e53",
+					"jsonFile" : "target-OpenSSL__Crypto-ebeb2f834bad2461dd26.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "OpenSSL::Crypto::@1eb0498467916f834675",
+					"jsonFile" : "target-OpenSSL__Crypto-54309aeac608c0e048fa.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 24,
+					"id" : "OpenSSL::Crypto::@b331b3ba1877840fb50f",
+					"jsonFile" : "target-OpenSSL__Crypto-125108ba5c896a43781c.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 29,
+					"id" : "OpenSSL::Crypto::@3b2a69512865834782c1",
+					"jsonFile" : "target-OpenSSL__Crypto-04f29da12f8e624ea2f4.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 16,
+					"id" : "OpenSSL::Crypto::@557e379e1e2b140e3435",
+					"jsonFile" : "target-OpenSSL__Crypto-beb2e7e8b91c13c76156.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 17,
+					"id" : "OpenSSL::Crypto::@9ba8d56eb04a45f999ec",
+					"jsonFile" : "target-OpenSSL__Crypto-36afbc5136de2129778e.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 28,
+					"id" : "OpenSSL::Crypto::@9a40b23b15dbb043aff3",
+					"jsonFile" : "target-OpenSSL__Crypto-6d70c5b209954bf18c50.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 18,
+					"id" : "OpenSSL::Crypto::@1aae4e56ebcb2e495bba",
+					"jsonFile" : "target-OpenSSL__Crypto-7ade017117c6987b3cf5.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 27,
+					"id" : "OpenSSL::Crypto::@b30bd9e000dcc9441e22",
+					"jsonFile" : "target-OpenSSL__Crypto-52a3920777f994ba964e.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 19,
+					"id" : "OpenSSL::Crypto::@61028ac0cbf1db5ef023",
+					"jsonFile" : "target-OpenSSL__Crypto-9c5fde00d2466e3f390e.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 20,
+					"id" : "OpenSSL::Crypto::@e1459d0819cd27a04a61",
+					"jsonFile" : "target-OpenSSL__Crypto-ccb963fab6b667363f36.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 26,
+					"id" : "OpenSSL::Crypto::@6643b8831b18980fce47",
+					"jsonFile" : "target-OpenSSL__Crypto-79616d4f070838fa045c.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 21,
+					"id" : "OpenSSL::Crypto::@57a6ec4d402009a8deda",
+					"jsonFile" : "target-OpenSSL__Crypto-d392c2a61ad772de9217.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 25,
+					"id" : "OpenSSL::Crypto::@d772c3c43a6e61ec5089",
+					"jsonFile" : "target-OpenSSL__Crypto-7c3b7d25344d16e38b94.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 22,
+					"id" : "OpenSSL::Crypto::@39542f919b61a27dd95f",
+					"jsonFile" : "target-OpenSSL__Crypto-8705ed7437c3b2b56dc5.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 23,
+					"id" : "OpenSSL::Crypto::@e7322b4556c68f9bcf48",
+					"jsonFile" : "target-OpenSSL__Crypto-5d8798dbd8b4286ed015.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "OpenSSL::Crypto::@7d9f538564ada47d3859",
+					"jsonFile" : "target-OpenSSL__Crypto-8f0b6d579208a743eaa7.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 36,
+					"id" : "OpenSSL::Crypto::@49150e90ac2f73a387d7",
+					"jsonFile" : "target-OpenSSL__Crypto-f94bc4d7425ff6d2ad8d.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 35,
+					"id" : "OpenSSL::Crypto::@250fa288fd855d5d680c",
+					"jsonFile" : "target-OpenSSL__Crypto-cc437fa3561c6fa632ae.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 41,
+					"id" : "OpenSSL::Crypto::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-OpenSSL__Crypto-5368a4fa341877291020.json",
+					"name" : "OpenSSL::Crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 31,
+					"id" : "OpenSSL::SSL::@24fe91bce0a9544475dc",
+					"jsonFile" : "target-OpenSSL__SSL-6680cc879d8b0f49fc7c.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 34,
+					"id" : "OpenSSL::SSL::@234ac4705f461032f00f",
+					"jsonFile" : "target-OpenSSL__SSL-6e6b200318bf7f6bc33e.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 35,
+					"id" : "OpenSSL::SSL::@250fa288fd855d5d680c",
+					"jsonFile" : "target-OpenSSL__SSL-50bb3f4cfef526c1d5b1.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 12,
+					"id" : "OpenSSL::SSL::@2742d8b11acf181db56b",
+					"jsonFile" : "target-OpenSSL__SSL-11b4808d16bc9259d5c2.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 13,
+					"id" : "OpenSSL::SSL::@4c05569a4bc4c593ad68",
+					"jsonFile" : "target-OpenSSL__SSL-607efb9b01d754d4bbbd.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 30,
+					"id" : "OpenSSL::SSL::@a80d733fcbb5eed41017",
+					"jsonFile" : "target-OpenSSL__SSL-fc134795774a88c3a21c.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 14,
+					"id" : "OpenSSL::SSL::@5d022304c368e3b19471",
+					"jsonFile" : "target-OpenSSL__SSL-868438b6b53d0a3b666c.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 36,
+					"id" : "OpenSSL::SSL::@49150e90ac2f73a387d7",
+					"jsonFile" : "target-OpenSSL__SSL-1c7777cb48bb894b9ca6.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 15,
+					"id" : "OpenSSL::SSL::@9dd7385d1ec3e1354f0b",
+					"jsonFile" : "target-OpenSSL__SSL-25d3e7a9c64f2b9cb517.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 29,
+					"id" : "OpenSSL::SSL::@3b2a69512865834782c1",
+					"jsonFile" : "target-OpenSSL__SSL-12e7126671ed00c3696c.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 16,
+					"id" : "OpenSSL::SSL::@557e379e1e2b140e3435",
+					"jsonFile" : "target-OpenSSL__SSL-66f2d0e00f80998c64e6.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 28,
+					"id" : "OpenSSL::SSL::@9a40b23b15dbb043aff3",
+					"jsonFile" : "target-OpenSSL__SSL-560ee5d5609d1710a36f.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 17,
+					"id" : "OpenSSL::SSL::@9ba8d56eb04a45f999ec",
+					"jsonFile" : "target-OpenSSL__SSL-7881b017027bc9cbdf4d.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 41,
+					"id" : "OpenSSL::SSL::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-OpenSSL__SSL-4738d3f84cf89c1a51df.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 18,
+					"id" : "OpenSSL::SSL::@1aae4e56ebcb2e495bba",
+					"jsonFile" : "target-OpenSSL__SSL-14920e31f321eb696bf1.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 27,
+					"id" : "OpenSSL::SSL::@b30bd9e000dcc9441e22",
+					"jsonFile" : "target-OpenSSL__SSL-5a54dcf275148e7d2406.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 19,
+					"id" : "OpenSSL::SSL::@61028ac0cbf1db5ef023",
+					"jsonFile" : "target-OpenSSL__SSL-b25fbf60b1d669af3dc2.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 20,
+					"id" : "OpenSSL::SSL::@e1459d0819cd27a04a61",
+					"jsonFile" : "target-OpenSSL__SSL-01412af58d8bd92c1dd9.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 26,
+					"id" : "OpenSSL::SSL::@6643b8831b18980fce47",
+					"jsonFile" : "target-OpenSSL__SSL-e301d2760a66bbb3f359.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 21,
+					"id" : "OpenSSL::SSL::@57a6ec4d402009a8deda",
+					"jsonFile" : "target-OpenSSL__SSL-0d911445d3a47e69f619.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 25,
+					"id" : "OpenSSL::SSL::@d772c3c43a6e61ec5089",
+					"jsonFile" : "target-OpenSSL__SSL-ee060c4d22a66eb94cab.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 22,
+					"id" : "OpenSSL::SSL::@39542f919b61a27dd95f",
+					"jsonFile" : "target-OpenSSL__SSL-d061095f631e24efbcd4.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 23,
+					"id" : "OpenSSL::SSL::@e7322b4556c68f9bcf48",
+					"jsonFile" : "target-OpenSSL__SSL-8ce22a89f004dc86b961.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 24,
+					"id" : "OpenSSL::SSL::@b331b3ba1877840fb50f",
+					"jsonFile" : "target-OpenSSL__SSL-ec57f77ea28e91c99161.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 33,
+					"id" : "OpenSSL::SSL::@eb00e6530c4ec0f6dc86",
+					"jsonFile" : "target-OpenSSL__SSL-2367dafa2b8e36e00f39.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "OpenSSL::SSL::@ef63ad77538ec712b0a7",
+					"jsonFile" : "target-OpenSSL__SSL-b0795090f55fd1be1a7c.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "OpenSSL::SSL::@aa2bb0cccd6fbc4d9e53",
+					"jsonFile" : "target-OpenSSL__SSL-184ce873d6d928137b39.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 32,
+					"id" : "OpenSSL::SSL::@f00ac651a1973c101483",
+					"jsonFile" : "target-OpenSSL__SSL-7adf1291df4e21cb41ec.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "OpenSSL::SSL::@1eb0498467916f834675",
+					"jsonFile" : "target-OpenSSL__SSL-81b402cfeeee3f3b5b02.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "OpenSSL::SSL::@7d9f538564ada47d3859",
+					"jsonFile" : "target-OpenSSL__SSL-5533c0ad429620a23648.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 11,
+					"id" : "OpenSSL::SSL::@c6b66522eb9544e6bb24",
+					"jsonFile" : "target-OpenSSL__SSL-eed8086d95b54ac30300.json",
+					"name" : "OpenSSL::SSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 41,
+					"id" : "OpenSSL::applink::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-OpenSSL__applink-a4c736e2bf8b9a26e464.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 22,
+					"id" : "OpenSSL::applink::@39542f919b61a27dd95f",
+					"jsonFile" : "target-OpenSSL__applink-48ece807b3b4e4576904.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 18,
+					"id" : "OpenSSL::applink::@1aae4e56ebcb2e495bba",
+					"jsonFile" : "target-OpenSSL__applink-d2f21df263853efe178c.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 14,
+					"id" : "OpenSSL::applink::@5d022304c368e3b19471",
+					"jsonFile" : "target-OpenSSL__applink-82da31c2a07e17da0928.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 29,
+					"id" : "OpenSSL::applink::@3b2a69512865834782c1",
+					"jsonFile" : "target-OpenSSL__applink-b182a19c998ba73e7611.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "OpenSSL::applink::@7d9f538564ada47d3859",
+					"jsonFile" : "target-OpenSSL__applink-d28251b60bc9ed529d2b.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 32,
+					"id" : "OpenSSL::applink::@f00ac651a1973c101483",
+					"jsonFile" : "target-OpenSSL__applink-f4f778e5b08dbccc131a.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 15,
+					"id" : "OpenSSL::applink::@9dd7385d1ec3e1354f0b",
+					"jsonFile" : "target-OpenSSL__applink-362630a3a73d3bf41c39.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 17,
+					"id" : "OpenSSL::applink::@9ba8d56eb04a45f999ec",
+					"jsonFile" : "target-OpenSSL__applink-41d03603867096515262.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 28,
+					"id" : "OpenSSL::applink::@9a40b23b15dbb043aff3",
+					"jsonFile" : "target-OpenSSL__applink-7a62de3a6a0964da7321.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "OpenSSL::applink::@aa2bb0cccd6fbc4d9e53",
+					"jsonFile" : "target-OpenSSL__applink-d55f06939352e9e2e200.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 36,
+					"id" : "OpenSSL::applink::@49150e90ac2f73a387d7",
+					"jsonFile" : "target-OpenSSL__applink-47c422db4d82db1e694b.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 25,
+					"id" : "OpenSSL::applink::@d772c3c43a6e61ec5089",
+					"jsonFile" : "target-OpenSSL__applink-147094a0466862ba8806.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 21,
+					"id" : "OpenSSL::applink::@57a6ec4d402009a8deda",
+					"jsonFile" : "target-OpenSSL__applink-0dbffa520f3bb36b4ce4.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 16,
+					"id" : "OpenSSL::applink::@557e379e1e2b140e3435",
+					"jsonFile" : "target-OpenSSL__applink-a62da219364ba1fa4895.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "OpenSSL::applink::@1eb0498467916f834675",
+					"jsonFile" : "target-OpenSSL__applink-3cf34a7a7a27ff99a5c9.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 11,
+					"id" : "OpenSSL::applink::@c6b66522eb9544e6bb24",
+					"jsonFile" : "target-OpenSSL__applink-547b3f9375ba22d4b2fc.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "OpenSSL::applink::@ef63ad77538ec712b0a7",
+					"jsonFile" : "target-OpenSSL__applink-fe68acafd10fe39aaa57.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 33,
+					"id" : "OpenSSL::applink::@eb00e6530c4ec0f6dc86",
+					"jsonFile" : "target-OpenSSL__applink-99ed98d658ea2b185d44.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 20,
+					"id" : "OpenSSL::applink::@e1459d0819cd27a04a61",
+					"jsonFile" : "target-OpenSSL__applink-e661bfb51322edb78d46.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 30,
+					"id" : "OpenSSL::applink::@a80d733fcbb5eed41017",
+					"jsonFile" : "target-OpenSSL__applink-b3aea543717d47b01cb3.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 24,
+					"id" : "OpenSSL::applink::@b331b3ba1877840fb50f",
+					"jsonFile" : "target-OpenSSL__applink-8c57595417927b92bff2.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 13,
+					"id" : "OpenSSL::applink::@4c05569a4bc4c593ad68",
+					"jsonFile" : "target-OpenSSL__applink-46ba4fa1858fb3082836.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 19,
+					"id" : "OpenSSL::applink::@61028ac0cbf1db5ef023",
+					"jsonFile" : "target-OpenSSL__applink-aa415b1ebaf52003e3ba.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 27,
+					"id" : "OpenSSL::applink::@b30bd9e000dcc9441e22",
+					"jsonFile" : "target-OpenSSL__applink-bb0179bc93fd3726ea79.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 34,
+					"id" : "OpenSSL::applink::@234ac4705f461032f00f",
+					"jsonFile" : "target-OpenSSL__applink-6c015388c089824ec902.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 35,
+					"id" : "OpenSSL::applink::@250fa288fd855d5d680c",
+					"jsonFile" : "target-OpenSSL__applink-49e0041ab2af66f4677d.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 23,
+					"id" : "OpenSSL::applink::@e7322b4556c68f9bcf48",
+					"jsonFile" : "target-OpenSSL__applink-e776d5612202fe97574e.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 12,
+					"id" : "OpenSSL::applink::@2742d8b11acf181db56b",
+					"jsonFile" : "target-OpenSSL__applink-56c3a9fe32cac5343d60.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 31,
+					"id" : "OpenSSL::applink::@24fe91bce0a9544475dc",
+					"jsonFile" : "target-OpenSSL__applink-5a32ca9bafb15e9758ee.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 26,
+					"id" : "OpenSSL::applink::@6643b8831b18980fce47",
+					"jsonFile" : "target-OpenSSL__applink-c0b8f856a4cedf3d8479.json",
+					"name" : "OpenSSL::applink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Threads::Threads::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Threads__Threads-c96eaf6d214398b92f70.json",
+					"name" : "Threads::Threads",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 41,
+					"id" : "Trantor::Trantor::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-Trantor__Trantor-4e09e0c5a930eab15afd.json",
+					"name" : "Trantor::Trantor",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 41,
+					"id" : "UUID_lib::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-UUID_lib-7927e28bbe3ba80cdb30.json",
+					"name" : "UUID_lib",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 41,
+					"id" : "ZLIB::ZLIB::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-ZLIB__ZLIB-0ce297d61fd788482878.json",
+					"name" : "ZLIB::ZLIB",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 41,
+					"id" : "cpp-jwt::cpp-jwt::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-cpp-jwt__cpp-jwt-c4c1ae57c26d52183e9b.json",
+					"name" : "cpp-jwt::cpp-jwt",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 29,
+					"id" : "dpp::dpp::@3b2a69512865834782c1",
+					"jsonFile" : "target-dpp__dpp-c0410cfcb9e28f244125.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 27,
+					"id" : "dpp::dpp::@b30bd9e000dcc9441e22",
+					"jsonFile" : "target-dpp__dpp-1d9bf3e9af3f77d5806f.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 41,
+					"id" : "dpp::dpp::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-dpp__dpp-a63ff9b975ad0758fa39.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 35,
+					"id" : "dpp::dpp::@250fa288fd855d5d680c",
+					"jsonFile" : "target-dpp__dpp-558d02d9c1cfbe35b34b.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 30,
+					"id" : "dpp::dpp::@a80d733fcbb5eed41017",
+					"jsonFile" : "target-dpp__dpp-b71fc582c862250d9828.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 33,
+					"id" : "dpp::dpp::@eb00e6530c4ec0f6dc86",
+					"jsonFile" : "target-dpp__dpp-7c8ee660aa47200dae4e.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 25,
+					"id" : "dpp::dpp::@d772c3c43a6e61ec5089",
+					"jsonFile" : "target-dpp__dpp-cbd8c34023322db3e0c3.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 36,
+					"id" : "dpp::dpp::@49150e90ac2f73a387d7",
+					"jsonFile" : "target-dpp__dpp-a00b927e765d018f7815.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 28,
+					"id" : "dpp::dpp::@9a40b23b15dbb043aff3",
+					"jsonFile" : "target-dpp__dpp-5264480d93c46965ee26.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 31,
+					"id" : "dpp::dpp::@24fe91bce0a9544475dc",
+					"jsonFile" : "target-dpp__dpp-7475e9b93b6490426a43.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 32,
+					"id" : "dpp::dpp::@f00ac651a1973c101483",
+					"jsonFile" : "target-dpp__dpp-7d46f9b32ceef568b5d1.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 34,
+					"id" : "dpp::dpp::@234ac4705f461032f00f",
+					"jsonFile" : "target-dpp__dpp-1d978c1afce9a3a2f7cf.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 26,
+					"id" : "dpp::dpp::@6643b8831b18980fce47",
+					"jsonFile" : "target-dpp__dpp-c4b584e7c14175889c81.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "dpp::dpp::@aa2bb0cccd6fbc4d9e53",
+					"jsonFile" : "target-dpp__dpp-a94e4cf38a0d4e639d4c.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 16,
+					"id" : "dpp::dpp::@557e379e1e2b140e3435",
+					"jsonFile" : "target-dpp__dpp-20ad5840cdb86eda3ad4.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 15,
+					"id" : "dpp::dpp::@9dd7385d1ec3e1354f0b",
+					"jsonFile" : "target-dpp__dpp-dd7227c4554b74facf75.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 24,
+					"id" : "dpp::dpp::@b331b3ba1877840fb50f",
+					"jsonFile" : "target-dpp__dpp-509d638bb7331de57213.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 17,
+					"id" : "dpp::dpp::@9ba8d56eb04a45f999ec",
+					"jsonFile" : "target-dpp__dpp-2e6ad73a9c717de024ae.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 14,
+					"id" : "dpp::dpp::@5d022304c368e3b19471",
+					"jsonFile" : "target-dpp__dpp-9de8d4ebf35646d09e1c.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 18,
+					"id" : "dpp::dpp::@1aae4e56ebcb2e495bba",
+					"jsonFile" : "target-dpp__dpp-ba47da4b1aeaec4b31a9.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 13,
+					"id" : "dpp::dpp::@4c05569a4bc4c593ad68",
+					"jsonFile" : "target-dpp__dpp-421ea897aba937a860b4.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 19,
+					"id" : "dpp::dpp::@61028ac0cbf1db5ef023",
+					"jsonFile" : "target-dpp__dpp-dcb10bbfe3013cb3fedb.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 12,
+					"id" : "dpp::dpp::@2742d8b11acf181db56b",
+					"jsonFile" : "target-dpp__dpp-221cb450158bf5246de4.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 20,
+					"id" : "dpp::dpp::@e1459d0819cd27a04a61",
+					"jsonFile" : "target-dpp__dpp-ddbf36f04232f9dd6f18.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 11,
+					"id" : "dpp::dpp::@c6b66522eb9544e6bb24",
+					"jsonFile" : "target-dpp__dpp-6223a9a9e72de1900f59.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 21,
+					"id" : "dpp::dpp::@57a6ec4d402009a8deda",
+					"jsonFile" : "target-dpp__dpp-f47a7c4154cb716718c4.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 23,
+					"id" : "dpp::dpp::@e7322b4556c68f9bcf48",
+					"jsonFile" : "target-dpp__dpp-941b615409058f0aee7b.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "dpp::dpp::@1eb0498467916f834675",
+					"jsonFile" : "target-dpp__dpp-d5b3ea57d3c07bd4d6a8.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 22,
+					"id" : "dpp::dpp::@39542f919b61a27dd95f",
+					"jsonFile" : "target-dpp__dpp-cbe621fd28483c4c6393.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "dpp::dpp::@ef63ad77538ec712b0a7",
+					"jsonFile" : "target-dpp__dpp-369a78398255cef057d4.json",
+					"name" : "dpp::dpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 38,
+					"id" : "fmt::fmt::@43591c05de11486d6419",
+					"jsonFile" : "target-fmt__fmt-e713afe79fba886caab2.json",
+					"name" : "fmt::fmt",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 38,
+					"id" : "fmt::fmt-header-only::@43591c05de11486d6419",
+					"jsonFile" : "target-fmt__fmt-header-only-c48850a248b9b465efa0.json",
+					"name" : "fmt::fmt-header-only",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "nlohmann_json::@aa2bb0cccd6fbc4d9e53",
+					"jsonFile" : "target-nlohmann_json-5ea38e6f2ccdd7714fd0.json",
+					"name" : "nlohmann_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "nlohmann_json::nlohmann_json::@aa2bb0cccd6fbc4d9e53",
+					"jsonFile" : "target-nlohmann_json__nlohmann_json-46fe5d2ca063a14ef8fa.json",
+					"name" : "nlohmann_json::nlohmann_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "nlohmann_json::nlohmann_json::@20d9867bec5b673a3402",
+					"jsonFile" : "target-nlohmann_json__nlohmann_json-1a93317afbb3648a35cd.json",
+					"name" : "nlohmann_json::nlohmann_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_alphamat::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_alphamat-5ce2dd241692b9e39f7d.json",
+					"name" : "opencv_alphamat",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_aruco::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_aruco-929a5d67be6626b8ec33.json",
+					"name" : "opencv_aruco",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_barcode::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_barcode-4676ad195a638dad92fa.json",
+					"name" : "opencv_barcode",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_bgsegm::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_bgsegm-949cfa257bd07f3e4614.json",
+					"name" : "opencv_bgsegm",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_bioinspired::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_bioinspired-45fa04b73aa125e6c2f3.json",
+					"name" : "opencv_bioinspired",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_calib3d::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_calib3d-840e3354c8c8066d7130.json",
+					"name" : "opencv_calib3d",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_ccalib::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_ccalib-93e22602aff1f28dbad0.json",
+					"name" : "opencv_ccalib",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_core::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_core-2e81b197145866c58d52.json",
+					"name" : "opencv_core",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_cvv::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_cvv-330f0718d4e86de0bf43.json",
+					"name" : "opencv_cvv",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_datasets::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_datasets-4498092179e067e3d1ec.json",
+					"name" : "opencv_datasets",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_dnn::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_dnn-d4d92216742d8d6be344.json",
+					"name" : "opencv_dnn",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_dnn_objdetect::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_dnn_objdetect-2cb8b5cd72aa35671a73.json",
+					"name" : "opencv_dnn_objdetect",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_dnn_superres::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_dnn_superres-e62dc1a124e9cdb22fc5.json",
+					"name" : "opencv_dnn_superres",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_dpm::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_dpm-849da5cba9f98a4c4533.json",
+					"name" : "opencv_dpm",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_face::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_face-63578e5766f526eb36e0.json",
+					"name" : "opencv_face",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_features2d::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_features2d-1b75956ecbea5f059ce2.json",
+					"name" : "opencv_features2d",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_flann::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_flann-09aba24c855711e84259.json",
+					"name" : "opencv_flann",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_freetype::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_freetype-1b4c85da760094e56fab.json",
+					"name" : "opencv_freetype",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_fuzzy::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_fuzzy-22d5c1b5a06d41732a60.json",
+					"name" : "opencv_fuzzy",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_hdf::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_hdf-cc2a47367a463e547f6b.json",
+					"name" : "opencv_hdf",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_hfs::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_hfs-c8513cbb3b25d36fe590.json",
+					"name" : "opencv_hfs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_highgui::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_highgui-73ae7b8e7fc9c9167097.json",
+					"name" : "opencv_highgui",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_img_hash::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_img_hash-ffd5cc3c85974999edfb.json",
+					"name" : "opencv_img_hash",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_imgcodecs::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_imgcodecs-b69e6e4982e11d94553c.json",
+					"name" : "opencv_imgcodecs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_imgproc::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_imgproc-d14e30db952fba9cd264.json",
+					"name" : "opencv_imgproc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_intensity_transform::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_intensity_transform-dc554cf29fa931167160.json",
+					"name" : "opencv_intensity_transform",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_line_descriptor::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_line_descriptor-e7e2a89087a4e324b53a.json",
+					"name" : "opencv_line_descriptor",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_mcc::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_mcc-6b5d8a16bd042d37b71d.json",
+					"name" : "opencv_mcc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_ml::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_ml-d0121cd091dfea1e9d94.json",
+					"name" : "opencv_ml",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_objdetect::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_objdetect-ca17ab10584b72c59369.json",
+					"name" : "opencv_objdetect",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_optflow::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_optflow-c89341a33c3b25a4fe14.json",
+					"name" : "opencv_optflow",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_phase_unwrapping::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_phase_unwrapping-a4fb59398b382f68f9fa.json",
+					"name" : "opencv_phase_unwrapping",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_photo::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_photo-d3768faa17965270f4ee.json",
+					"name" : "opencv_photo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_plot::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_plot-fa626846e9ac9a137b70.json",
+					"name" : "opencv_plot",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_quality::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_quality-946f1f485f0396975c08.json",
+					"name" : "opencv_quality",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_rapid::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_rapid-7328055aca9df5ddc139.json",
+					"name" : "opencv_rapid",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_reg::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_reg-a2a1c4f35b3ef1b5c4b9.json",
+					"name" : "opencv_reg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_rgbd::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_rgbd-6271537adf1528f95354.json",
+					"name" : "opencv_rgbd",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_saliency::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_saliency-4209ee4d9a6719f05de6.json",
+					"name" : "opencv_saliency",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_shape::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_shape-270399df5fe21717b987.json",
+					"name" : "opencv_shape",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_stereo::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_stereo-3d05fb35375e11911553.json",
+					"name" : "opencv_stereo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_stitching::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_stitching-d43eb2a4320cade82dc7.json",
+					"name" : "opencv_stitching",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_structured_light::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_structured_light-91e123bb3b19fa07bd1b.json",
+					"name" : "opencv_structured_light",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_superres::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_superres-0b58824ea5e71d75f860.json",
+					"name" : "opencv_superres",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_surface_matching::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_surface_matching-fa10f471e1b3db4449f0.json",
+					"name" : "opencv_surface_matching",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_text::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_text-a4387fabfcf5c795e3f3.json",
+					"name" : "opencv_text",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_tracking::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_tracking-1eb3446a4660df5c411b.json",
+					"name" : "opencv_tracking",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_video::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_video-4c7d6697413cf90a4207.json",
+					"name" : "opencv_video",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_videoio::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_videoio-5cf86e3f393d00687057.json",
+					"name" : "opencv_videoio",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_videostab::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_videostab-3928249f043c136ac681.json",
+					"name" : "opencv_videostab",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_viz::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_viz-e6c057e7a9f029f3aaff.json",
+					"name" : "opencv_viz",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_wechat_qrcode::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_wechat_qrcode-22fb1dba0e6a51537119.json",
+					"name" : "opencv_wechat_qrcode",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_ximgproc::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_ximgproc-5f7d1c356b4c274ee620.json",
+					"name" : "opencv_ximgproc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_xobjdetect::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_xobjdetect-3d87ef44898a78f4ac22.json",
+					"name" : "opencv_xobjdetect",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "opencv_xphoto::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-opencv_xphoto-5901b7bee84025aacf74.json",
+					"name" : "opencv_xphoto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 38,
+					"id" : "spdlog::spdlog::@43591c05de11486d6419",
+					"jsonFile" : "target-spdlog__spdlog-6db3de86947085e67d19.json",
+					"name" : "spdlog::spdlog",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 38,
+					"id" : "spdlog::spdlog_header_only::@43591c05de11486d6419",
+					"jsonFile" : "target-spdlog__spdlog_header_only-4135fb193aec162b32c6.json",
+					"name" : "spdlog::spdlog_header_only",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 41,
+					"id" : "std::filesystem::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-std__filesystem-664bc81b7593e0349f1e.json",
+					"name" : "std::filesystem",
+					"projectIndex" : 0
+				}
+			],
+			"directories" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						96
+					],
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						29,
+						30,
+						31,
+						32,
+						33,
+						34,
+						35,
+						36,
+						37,
+						38,
+						39,
+						40,
+						41
+					],
+					"jsonFile" : "directory-.-9ad1a58d4644cf6543fa.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						33
+					]
+				},
+				{
+					"build" : "src/modules/achievements_processing",
+					"jsonFile" : "directory-src.modules.achievements_processing-c6d6d59b7c207c66669d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/achievements_processing",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "src/modules/admin_terminal",
+					"jsonFile" : "directory-src.modules.admin_terminal-46ecb4fc1f901b6c85f5.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/admin_terminal",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "src/modules/config/config_manager",
+					"jsonFile" : "directory-src.modules.config.config_manager-5b8519a20afc63e431fb.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/config/config_manager",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "src/modules/config/env_config",
+					"jsonFile" : "directory-src.modules.config.env_config-3b24471779c4f551c1e6.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/config/env_config",
+					"targetIndexes" : 
+					[
+						32
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						135
+					],
+					"build" : "src/modules/config/json_config",
+					"jsonFile" : "directory-src.modules.config.json_config-049c0852d65f4c06cb0b.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/config/json_config",
+					"targetIndexes" : 
+					[
+						36
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						30,
+						63,
+						70
+					],
+					"build" : "src/modules/crypto",
+					"jsonFile" : "directory-src.modules.crypto-f8a1ce2767aba84e4a0e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/crypto",
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"build" : "src/modules/database",
+					"jsonFile" : "directory-src.modules.database-56e39b1940b628877fde.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/database",
+					"targetIndexes" : 
+					[
+						4
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						15,
+						62,
+						80,
+						128
+					],
+					"build" : "src/modules/discord/discord",
+					"jsonFile" : "directory-src.modules.discord.discord-ff28c74a33462f2419dd.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord",
+					"targetIndexes" : 
+					[
+						5
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						14,
+						60,
+						75,
+						114,
+						133,
+						134
+					],
+					"build" : "src/modules/discord/discord_achievements_processing",
+					"jsonFile" : "directory-src.modules.discord.discord_achievements_processing-667e39774862e7e9e4e0.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_achievements_processing",
+					"targetIndexes" : 
+					[
+						6
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						12,
+						59,
+						82,
+						130
+					],
+					"build" : "src/modules/discord/discord_bot",
+					"jsonFile" : "directory-src.modules.discord.discord_bot-ea23038f0dd1de4b398f.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_bot",
+					"targetIndexes" : 
+					[
+						7
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						10,
+						64,
+						81,
+						125
+					],
+					"build" : "src/modules/discord/discord_command_handler",
+					"jsonFile" : "directory-src.modules.discord.discord_command_handler-82380f1bc143bfee6db9.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_command_handler",
+					"targetIndexes" : 
+					[
+						11
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						9,
+						37,
+						93,
+						123
+					],
+					"build" : "src/modules/discord/discord_commands/games/2048",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.games.2048-d3973ea712c42c4e6464.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/games/2048",
+					"targetIndexes" : 
+					[
+						16
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						7,
+						38,
+						87,
+						121
+					],
+					"build" : "src/modules/discord/discord_commands/games/battleships",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.games.battleships-c50713aec24a91741a59.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/games/battleships",
+					"targetIndexes" : 
+					[
+						17
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						5,
+						40,
+						68,
+						119
+					],
+					"build" : "src/modules/discord/discord_commands/games/chess",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.games.chess-9618a388435de1a549ab.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/games/chess",
+					"targetIndexes" : 
+					[
+						18
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						3,
+						42,
+						72,
+						116
+					],
+					"build" : "src/modules/discord/discord_commands/games/connect_four",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.games.connect_four-d2089240351d2edf5257.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/games/connect_four",
+					"targetIndexes" : 
+					[
+						19
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						18,
+						44,
+						79,
+						115
+					],
+					"build" : "src/modules/discord/discord_commands/games/dominoes",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.games.dominoes-0cc51e349bf06e516a7f.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/games/dominoes",
+					"targetIndexes" : 
+					[
+						20
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						19,
+						46,
+						73,
+						118
+					],
+					"build" : "src/modules/discord/discord_commands/games/hangman",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.games.hangman-2e18092e41ea47fecbdb.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/games/hangman",
+					"targetIndexes" : 
+					[
+						21
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						21,
+						48,
+						67,
+						120
+					],
+					"build" : "src/modules/discord/discord_commands/games/minesweeper",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.games.minesweeper-4216c5e5a85c37e55b0d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/games/minesweeper",
+					"targetIndexes" : 
+					[
+						22
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						23,
+						50,
+						88,
+						122
+					],
+					"build" : "src/modules/discord/discord_commands/games/puzzle_15",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.games.puzzle_15-e12a055dd6ddff121aec.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/games/puzzle_15",
+					"targetIndexes" : 
+					[
+						23
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						24,
+						51,
+						84,
+						124
+					],
+					"build" : "src/modules/discord/discord_commands/games/rubiks_cube",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.games.rubiks_cube-2ca1b2405e84e2023227.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/games/rubiks_cube",
+					"targetIndexes" : 
+					[
+						24
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						26,
+						53,
+						78,
+						126
+					],
+					"build" : "src/modules/discord/discord_commands/games/sudoku",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.games.sudoku-cbbd3123bee8e429c28f.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/games/sudoku",
+					"targetIndexes" : 
+					[
+						25
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						28,
+						55,
+						66,
+						129
+					],
+					"build" : "src/modules/discord/discord_commands/games/tic_tac_toe",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.games.tic_tac_toe-452e6e011a7b0476cbf7.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/games/tic_tac_toe",
+					"targetIndexes" : 
+					[
+						26
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						29,
+						56,
+						92,
+						127
+					],
+					"build" : "src/modules/discord/discord_commands/other/help",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.other.help-17a133efc475d9bd4fc2.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/other/help",
+					"targetIndexes" : 
+					[
+						12
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						16,
+						57,
+						86,
+						117
+					],
+					"build" : "src/modules/discord/discord_commands/other/ping",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.other.ping-fdfe53c4aad26f218cfb.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/other/ping",
+					"targetIndexes" : 
+					[
+						14
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						27,
+						54,
+						77,
+						107
+					],
+					"build" : "src/modules/discord/discord_commands/other/premium",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.other.premium-171c6a268422f3a3ded7.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/other/premium",
+					"targetIndexes" : 
+					[
+						15
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						25,
+						52,
+						95,
+						113
+					],
+					"build" : "src/modules/discord/discord_commands/stats/achievements",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.stats.achievements-647305abae4ad62bd631.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/stats/achievements",
+					"targetIndexes" : 
+					[
+						9
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						22,
+						49,
+						89,
+						102
+					],
+					"build" : "src/modules/discord/discord_commands/stats/global_stats",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.stats.global_stats-ffa673c95c5f6572e41e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/stats/global_stats",
+					"targetIndexes" : 
+					[
+						10
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						20,
+						45,
+						74,
+						109
+					],
+					"build" : "src/modules/discord/discord_commands/stats/local_stats",
+					"jsonFile" : "directory-src.modules.discord.discord_commands.stats.local_stats-cd5c0528e6d2ec6f42bb.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_commands/stats/local_stats",
+					"targetIndexes" : 
+					[
+						13
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						17,
+						43,
+						69,
+						101
+					],
+					"build" : "src/modules/discord/discord_games/discord_games_manager",
+					"jsonFile" : "directory-src.modules.discord.discord_games.discord_games_manager-ac658f950853dae052ab.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_games/discord_games_manager",
+					"targetIndexes" : 
+					[
+						27
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						6,
+						39,
+						85,
+						105
+					],
+					"build" : "src/modules/discord/discord_interactions_handler/discord_button_click_handler",
+					"jsonFile" : "directory-src.modules.discord.discord_interactions_handler.discord_button_click_handler-d0259ceac764b4f22ac8.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_interactions_handler/discord_button_click_handler",
+					"targetIndexes" : 
+					[
+						8
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						8,
+						34,
+						94,
+						110
+					],
+					"build" : "src/modules/discord/discord_interactions_handler/discord_select_menu_handler",
+					"jsonFile" : "directory-src.modules.discord.discord_interactions_handler.discord_select_menu_handler-f5f0022d6040936b1452.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_interactions_handler/discord_select_menu_handler",
+					"targetIndexes" : 
+					[
+						30
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						11,
+						61,
+						71,
+						111
+					],
+					"build" : "src/modules/discord/discord_logging",
+					"jsonFile" : "directory-src.modules.discord.discord_logging-27eb5ac1dcd071ddd1c4.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_logging",
+					"targetIndexes" : 
+					[
+						28
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						13,
+						58,
+						83,
+						106
+					],
+					"build" : "src/modules/discord/discord_reports",
+					"jsonFile" : "directory-src.modules.discord.discord_reports-cf2434e67dfca923d8c2.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_reports",
+					"targetIndexes" : 
+					[
+						29
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						4,
+						35,
+						90,
+						112
+					],
+					"build" : "src/modules/discord/discord_statistics_collector",
+					"jsonFile" : "directory-src.modules.discord.discord_statistics_collector-c0bbe3f11cb7f32aa438.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/discord_statistics_collector",
+					"targetIndexes" : 
+					[
+						31
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						32,
+						36,
+						91,
+						104
+					],
+					"build" : "src/modules/discord/gamescoin_manager",
+					"jsonFile" : "directory-src.modules.discord.gamescoin_manager-dbdde31edd5e2c8bef63.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/gamescoin_manager",
+					"targetIndexes" : 
+					[
+						34
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						31,
+						41,
+						76,
+						108
+					],
+					"build" : "src/modules/discord/premium_manager",
+					"jsonFile" : "directory-src.modules.discord.premium_manager-cfefc6ce8aac73d39ff7.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/discord/premium_manager",
+					"targetIndexes" : 
+					[
+						38
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						136,
+						137,
+						138,
+						139,
+						140,
+						141,
+						142,
+						143,
+						144,
+						145,
+						146,
+						147,
+						148,
+						149,
+						150,
+						151,
+						152,
+						153,
+						154,
+						155,
+						156,
+						157,
+						158,
+						159,
+						160,
+						161,
+						162,
+						163,
+						164,
+						165,
+						166,
+						167,
+						168,
+						169,
+						170,
+						171,
+						172,
+						173,
+						174,
+						175,
+						176,
+						177,
+						178,
+						179,
+						180,
+						181,
+						182,
+						183,
+						184,
+						185,
+						186,
+						187,
+						188,
+						189,
+						190
+					],
+					"build" : "src/modules/image_processing",
+					"jsonFile" : "directory-src.modules.image_processing-9e916aae1eb0765922dd.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/image_processing",
+					"targetIndexes" : 
+					[
+						35
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						131,
+						132,
+						191,
+						192
+					],
+					"build" : "src/modules/logging",
+					"jsonFile" : "directory-src.modules.logging-bc33ba95281975ea2d1a.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/logging",
+					"targetIndexes" : 
+					[
+						37
+					]
+				},
+				{
+					"build" : "src/modules/test/test_module_1",
+					"jsonFile" : "directory-src.modules.test.test_module_1-08c122d7d8ce02df7d83.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/test/test_module_1",
+					"targetIndexes" : 
+					[
+						39
+					]
+				},
+				{
+					"build" : "src/modules/test/test_module_2",
+					"jsonFile" : "directory-src.modules.test.test_module_2-d60c20df538a8e9e23e7.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/test/test_module_2",
+					"targetIndexes" : 
+					[
+						40
+					]
+				},
+				{
+					"abstractTargetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						33,
+						47,
+						65,
+						97,
+						98,
+						99,
+						100,
+						103,
+						193
+					],
+					"build" : "src/modules/webserver",
+					"jsonFile" : "directory-src.modules.webserver-85e69e6e7a252750c373.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src/modules/webserver",
+					"targetIndexes" : 
+					[
+						41
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						29,
+						30,
+						31,
+						32,
+						33,
+						34,
+						35,
+						36,
+						37,
+						38,
+						39,
+						40,
+						41,
+						42,
+						43,
+						44,
+						45,
+						46,
+						47,
+						48,
+						49,
+						50,
+						51,
+						52,
+						53,
+						54,
+						55,
+						56,
+						57,
+						58,
+						59,
+						60,
+						61,
+						62,
+						63,
+						64,
+						65,
+						66,
+						67,
+						68,
+						69,
+						70,
+						71,
+						72,
+						73,
+						74,
+						75,
+						76,
+						77,
+						78,
+						79,
+						80,
+						81,
+						82,
+						83,
+						84,
+						85,
+						86,
+						87,
+						88,
+						89,
+						90,
+						91,
+						92,
+						93,
+						94,
+						95,
+						96,
+						97,
+						98,
+						99,
+						100,
+						101,
+						102,
+						103,
+						104,
+						105,
+						106,
+						107,
+						108,
+						109,
+						110,
+						111,
+						112,
+						113,
+						114,
+						115,
+						116,
+						117,
+						118,
+						119,
+						120,
+						121,
+						122,
+						123,
+						124,
+						125,
+						126,
+						127,
+						128,
+						129,
+						130,
+						131,
+						132,
+						133,
+						134,
+						135,
+						136,
+						137,
+						138,
+						139,
+						140,
+						141,
+						142,
+						143,
+						144,
+						145,
+						146,
+						147,
+						148,
+						149,
+						150,
+						151,
+						152,
+						153,
+						154,
+						155,
+						156,
+						157,
+						158,
+						159,
+						160,
+						161,
+						162,
+						163,
+						164,
+						165,
+						166,
+						167,
+						168,
+						169,
+						170,
+						171,
+						172,
+						173,
+						174,
+						175,
+						176,
+						177,
+						178,
+						179,
+						180,
+						181,
+						182,
+						183,
+						184,
+						185,
+						186,
+						187,
+						188,
+						189,
+						190,
+						191,
+						192,
+						193
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						29,
+						30,
+						31,
+						32,
+						33,
+						34,
+						35,
+						36,
+						37,
+						38,
+						39,
+						40,
+						41
+					],
+					"name" : "games_bot",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						29,
+						30,
+						31,
+						32,
+						33,
+						34,
+						35,
+						36,
+						37,
+						38,
+						39,
+						40,
+						41
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "achievements_processing::@a4708cca50b449804e3b",
+					"jsonFile" : "target-achievements_processing-d93e5d5e5b2a24fc8002.json",
+					"name" : "achievements_processing",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "admin_terminal::@3040ba1d2a4b3bf2d90e",
+					"jsonFile" : "target-admin_terminal-f41a6b8f0acdf652c516.json",
+					"name" : "admin_terminal",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "config_manager::@6b3fe47f13ae765a8d5b",
+					"jsonFile" : "target-config_manager-8171f2cb2d47f8d6ea04.json",
+					"name" : "config_manager",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "crypto::@7d9f538564ada47d3859",
+					"jsonFile" : "target-crypto-755f979aaec8915df93f.json",
+					"name" : "crypto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 7,
+					"id" : "database::@259c1e16432a45d76be2",
+					"jsonFile" : "target-database-b8206ee805494968e5da.json",
+					"name" : "database",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "discord::@1eb0498467916f834675",
+					"jsonFile" : "target-discord-075d40bcbf709b452a66.json",
+					"name" : "discord",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "discord_achievements_processing::@aa2bb0cccd6fbc4d9e53",
+					"jsonFile" : "target-discord_achievements_processing-e46be9d1b74a506d1ff8.json",
+					"name" : "discord_achievements_processing",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "discord_bot::@ef63ad77538ec712b0a7",
+					"jsonFile" : "target-discord_bot-75a445b9d4840a283048.json",
+					"name" : "discord_bot",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 30,
+					"id" : "discord_button_click_handler::@a80d733fcbb5eed41017",
+					"jsonFile" : "target-discord_button_click_handler-4dcdd5f98bd2fd0643ca.json",
+					"name" : "discord_button_click_handler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 26,
+					"id" : "discord_command_achievements::@6643b8831b18980fce47",
+					"jsonFile" : "target-discord_command_achievements-73203acb558969328513.json",
+					"name" : "discord_command_achievements",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 27,
+					"id" : "discord_command_global_stats::@b30bd9e000dcc9441e22",
+					"jsonFile" : "target-discord_command_global_stats-90e95f95e8c91197f842.json",
+					"name" : "discord_command_global_stats",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 11,
+					"id" : "discord_command_handler::@c6b66522eb9544e6bb24",
+					"jsonFile" : "target-discord_command_handler-2515f4777fe589393195.json",
+					"name" : "discord_command_handler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 23,
+					"id" : "discord_command_help::@e7322b4556c68f9bcf48",
+					"jsonFile" : "target-discord_command_help-54ee5fee9b85e9249023.json",
+					"name" : "discord_command_help",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 28,
+					"id" : "discord_command_local_stats::@9a40b23b15dbb043aff3",
+					"jsonFile" : "target-discord_command_local_stats-a44b6be2ee2a586e3a35.json",
+					"name" : "discord_command_local_stats",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 24,
+					"id" : "discord_command_ping::@b331b3ba1877840fb50f",
+					"jsonFile" : "target-discord_command_ping-c533dfb37b83750eec57.json",
+					"name" : "discord_command_ping",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 25,
+					"id" : "discord_command_premium::@d772c3c43a6e61ec5089",
+					"jsonFile" : "target-discord_command_premium-9bcc0b83c5199d4dac3c.json",
+					"name" : "discord_command_premium",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 12,
+					"id" : "discord_game_2048::@2742d8b11acf181db56b",
+					"jsonFile" : "target-discord_game_2048-05b9523d3835215ccaf7.json",
+					"name" : "discord_game_2048",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 13,
+					"id" : "discord_game_battleships::@4c05569a4bc4c593ad68",
+					"jsonFile" : "target-discord_game_battleships-806af469f078d675c741.json",
+					"name" : "discord_game_battleships",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 14,
+					"id" : "discord_game_chess::@5d022304c368e3b19471",
+					"jsonFile" : "target-discord_game_chess-363ecc589d4054718d2f.json",
+					"name" : "discord_game_chess",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 15,
+					"id" : "discord_game_connect_four::@9dd7385d1ec3e1354f0b",
+					"jsonFile" : "target-discord_game_connect_four-b23ecf4199e6b94e4267.json",
+					"name" : "discord_game_connect_four",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 16,
+					"id" : "discord_game_dominoes::@557e379e1e2b140e3435",
+					"jsonFile" : "target-discord_game_dominoes-c36e1903e78d9363e21f.json",
+					"name" : "discord_game_dominoes",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 17,
+					"id" : "discord_game_hangman::@9ba8d56eb04a45f999ec",
+					"jsonFile" : "target-discord_game_hangman-83a7b298afc81f7c1af4.json",
+					"name" : "discord_game_hangman",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 18,
+					"id" : "discord_game_minesweeper::@1aae4e56ebcb2e495bba",
+					"jsonFile" : "target-discord_game_minesweeper-d8e78838d1e8145af583.json",
+					"name" : "discord_game_minesweeper",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 19,
+					"id" : "discord_game_puzzle_15::@61028ac0cbf1db5ef023",
+					"jsonFile" : "target-discord_game_puzzle_15-bb5e00296dad7cc4c6bb.json",
+					"name" : "discord_game_puzzle_15",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 20,
+					"id" : "discord_game_rubiks_cube::@e1459d0819cd27a04a61",
+					"jsonFile" : "target-discord_game_rubiks_cube-767300f437585775196b.json",
+					"name" : "discord_game_rubiks_cube",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 21,
+					"id" : "discord_game_sudoku::@57a6ec4d402009a8deda",
+					"jsonFile" : "target-discord_game_sudoku-269336bc8d542300af61.json",
+					"name" : "discord_game_sudoku",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 22,
+					"id" : "discord_game_tic_tac_toe::@39542f919b61a27dd95f",
+					"jsonFile" : "target-discord_game_tic_tac_toe-4091ad6bd488fbcf355a.json",
+					"name" : "discord_game_tic_tac_toe",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 29,
+					"id" : "discord_games_manager::@3b2a69512865834782c1",
+					"jsonFile" : "target-discord_games_manager-40a654b207d3a4e6c56c.json",
+					"name" : "discord_games_manager",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 32,
+					"id" : "discord_logging::@f00ac651a1973c101483",
+					"jsonFile" : "target-discord_logging-1b99bcc2a4cece957247.json",
+					"name" : "discord_logging",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 33,
+					"id" : "discord_reports::@eb00e6530c4ec0f6dc86",
+					"jsonFile" : "target-discord_reports-81bae70d2d0b632eaf99.json",
+					"name" : "discord_reports",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 31,
+					"id" : "discord_select_menu_handler::@24fe91bce0a9544475dc",
+					"jsonFile" : "target-discord_select_menu_handler-1ff6eeff3055da6bda60.json",
+					"name" : "discord_select_menu_handler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 34,
+					"id" : "discord_statistics_collector::@234ac4705f461032f00f",
+					"jsonFile" : "target-discord_statistics_collector-b7d6ec7627435218ede0.json",
+					"name" : "discord_statistics_collector",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "env_config::@9f233e20afcd1549a36e",
+					"jsonFile" : "target-env_config-2e8ce867dcf676951957.json",
+					"name" : "env_config",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "games_bot::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-games_bot-64ca4b714f5206399722.json",
+					"name" : "games_bot",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 35,
+					"id" : "gamescoin_manager::@250fa288fd855d5d680c",
+					"jsonFile" : "target-gamescoin_manager-0271cc7ecc3b1aff9348.json",
+					"name" : "gamescoin_manager",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 37,
+					"id" : "image_processing::@4aab93c63c63dd620c8b",
+					"jsonFile" : "target-image_processing-efc48d5da3e744a1cf8b.json",
+					"name" : "image_processing",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "json_config::@20d9867bec5b673a3402",
+					"jsonFile" : "target-json_config-d7a21aa0849493dd9e6a.json",
+					"name" : "json_config",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 38,
+					"id" : "logging::@43591c05de11486d6419",
+					"jsonFile" : "target-logging-27b0babc785c38952591.json",
+					"name" : "logging",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 36,
+					"id" : "premium_manager::@49150e90ac2f73a387d7",
+					"jsonFile" : "target-premium_manager-667e1f9bef698543bdd6.json",
+					"name" : "premium_manager",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 39,
+					"id" : "test_module_1::@b3510fa39391301b90c7",
+					"jsonFile" : "target-test_module_1-458403653a9bb9054c57.json",
+					"name" : "test_module_1",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 40,
+					"id" : "test_module_2::@466d91433686079c2804",
+					"jsonFile" : "target-test_module_2-2cddec682f3d1f7b79bc.json",
+					"name" : "test_module_2",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 41,
+					"id" : "webserver::@6865d4cba21fd7615bf8",
+					"jsonFile" : "target-webserver-119a501c487a0ed4a611.json",
+					"name" : "webserver",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/ilesik/games_bot",
+		"source" : "/home/ilesik/games_bot"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	}
+}

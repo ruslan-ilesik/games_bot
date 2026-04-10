@@ -1,0 +1,104 @@
+{
+	"abstract" : true,
+	"artifacts" : 
+	[
+		{
+			"path" : "/usr/lib/libdpp.so.10.1.4"
+		}
+	],
+	"backtrace" : 5,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"include",
+			"find_package",
+			"set_target_properties"
+		],
+		"files" : 
+		[
+			"/usr/lib/cmake/dpp/dpp.cmake",
+			"/usr/lib/cmake/dpp/dpp-config.cmake",
+			"src/modules/discord/discord_achievements_processing/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 2
+			},
+			{
+				"command" : 2,
+				"file" : 2,
+				"line" : 6,
+				"parent" : 0
+			},
+			{
+				"file" : 1,
+				"parent" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 7,
+				"parent" : 2
+			},
+			{
+				"file" : 0,
+				"parent" : 3
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 59,
+				"parent" : 4
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 61,
+				"parent" : 4
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"id" : "dpp::dpp::@aa2bb0cccd6fbc4d9e53",
+	"imported" : true,
+	"interfaceLinkLibraries" : 
+	[
+		{
+			"backtrace" : 6,
+			"fragment" : "/usr/lib/x86_64-linux-gnu/libssl.so"
+		},
+		{
+			"backtrace" : 6,
+			"fragment" : "/usr/lib/x86_64-linux-gnu/libcrypto.so"
+		},
+		{
+			"backtrace" : 6,
+			"fragment" : "/usr/lib/x86_64-linux-gnu/libz.so"
+		},
+		{
+			"backtrace" : 6,
+			"fragment" : "/usr/lib/x86_64-linux-gnu/libopus.so"
+		},
+		{
+			"backtrace" : 6,
+			"fragment" : "/usr/lib/x86_64-linux-gnu/libm.so"
+		}
+	],
+	"local" : true,
+	"name" : "dpp::dpp",
+	"nameOnDisk" : "libdpp.so.10.1.4",
+	"paths" : 
+	{
+		"build" : "src/modules/discord/discord_achievements_processing",
+		"source" : "src/modules/discord/discord_achievements_processing"
+	},
+	"sources" : [],
+	"type" : "SHARED_LIBRARY"
+}
