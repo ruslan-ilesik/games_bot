@@ -51,6 +51,7 @@ namespace gb {
         //always ordered
         virtual  Task<std::vector<Gamescoin_transaction>> get_user_transactions_between (const dpp::snowflake& user_id, uint64_t t_start, uint64_t t_end, uint32_t limit = std::numeric_limits<uint32_t>::max()) = 0;
 
+        virtual Task<void> execute_transaction(const dpp::snowflake& user_id, GAMESCOIN_TRANSACTION_TYPE type, int32_t amount) = 0;
     };
 
 

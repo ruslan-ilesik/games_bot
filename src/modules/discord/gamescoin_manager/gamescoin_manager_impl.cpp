@@ -28,10 +28,12 @@ namespace gb {
         _db->remove_prepared_statement(_get_user_balance_stmt);
         _db->remove_prepared_statement(_get_user_last_transaction_stmt);
         _db->remove_prepared_statement(_get_user_transactions_between_stmt);
+        _db->remove_prepared_statement(_execute_transaction_stmt);
     }
 
     void Gamescoin_manager_impl::init(const Modules &modules) {
         _db = std::static_pointer_cast<Database>(modules.at("database"));
+        _execute_transaction_stmt = _db->create_prepared_statement("CALL gamescoin_transaction(?,?,?);");
         _get_user_balance_stmt =
             _db->create_prepared_statement("SELECT balance from gamescoin_balances where user_id=?;");
         _get_user_last_transaction_stmt =
@@ -59,6 +61,12 @@ namespace gb {
                                                           uint64_t t_end, uint32_t limit) {
         auto r = co_await _db->execute_prepared_statement(_get_user_transactions_between_stmt,user_id,t_start,t_end,limit);
         co_return db_records_to_transactions(r);
+    }
+
+    Task<void> Gamescoin_manager_impl::execute_transaction(const dpp::snowflake &user_id,
+                                                           GAMESCOIN_TRANSACTION_TYPE type, int32_t amount) {
+        co_await _db->execute_prepared_statement(_execute_transaction_stmt, user_id, amount,to_string(type));
+        co_return;
     }
 
 

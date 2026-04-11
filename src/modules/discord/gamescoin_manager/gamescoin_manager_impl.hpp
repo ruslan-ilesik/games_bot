@@ -13,6 +13,7 @@ namespace gb {
         Prepared_statement _get_user_balance_stmt;
         Prepared_statement _get_user_last_transaction_stmt;
         Prepared_statement _get_user_transactions_between_stmt;
+        Prepared_statement _execute_transaction_stmt;
 
 
         Gamescoin_transaction db_return_to_transaction(Database_return_record_t& data);
@@ -37,6 +38,8 @@ namespace gb {
         Task<std::vector<Gamescoin_transaction>>
         get_user_transactions_between(const dpp::snowflake &user_id, uint64_t t_start, uint64_t t_end,
                                       uint32_t limit = std::numeric_limits<uint32_t>::max()) override;
+
+        Task<void> execute_transaction(const dpp::snowflake& user_id, GAMESCOIN_TRANSACTION_TYPE type, int32_t amount) override;
     };
 
     extern "C" Module_ptr create();
