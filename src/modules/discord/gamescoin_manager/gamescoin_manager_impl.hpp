@@ -15,6 +15,9 @@ namespace gb {
         Prepared_statement _get_user_transactions_between_stmt;
 
 
+        Gamescoin_transaction db_return_to_transaction(Database_return_record_t& data);
+        std::vector<Gamescoin_transaction> db_records_to_transactions(Database_return_t& data);
+
     public:
         Gamescoin_manager_impl();
 
@@ -29,7 +32,7 @@ namespace gb {
         Task<uint32_t> get_user_balance(const dpp::snowflake &user_id) override;
 
         Task<std::vector<Gamescoin_transaction>>
-        get_user_last_transaction(const dpp::snowflake &user_id, uint32_t amount, uint32_t offset = 0) override;
+        get_user_last_transactions(const dpp::snowflake &user_id, uint32_t amount, uint32_t offset = 0) override;
 
         Task<std::vector<Gamescoin_transaction>>
         get_user_transactions_between(const dpp::snowflake &user_id, uint64_t t_start, uint64_t t_end,

@@ -14,6 +14,14 @@
 #include "src/utils/coro/coro.hpp"
 
 namespace gb {
+    /**
+    * @brief Type representing the singular result of a database query.
+    *
+    * map represents a row
+    * from the query result. Each entry in the map consists of a column
+    * name (as a string) and its corresponding value (also as a string).
+    */
+    typedef std::map<std::string, std::string> Database_return_record_t;
 
     /**
      * @brief Type representing the result of a database query.
@@ -22,7 +30,7 @@ namespace gb {
      * from the query result. Each entry in the map consists of a column
      * name (as a string) and its corresponding value (also as a string).
      */
-    typedef std::vector<std::map<std::string, std::string>> Database_return_t;
+    typedef std::vector<Database_return_record_t> Database_return_t;
 
     /**
      * @brief Type representing a prepared statement identifier.
