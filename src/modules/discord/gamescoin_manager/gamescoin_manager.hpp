@@ -54,5 +54,6 @@ namespace gb {
         virtual Task<void> execute_transaction(const dpp::snowflake& user_id, GAMESCOIN_TRANSACTION_TYPE type, int32_t amount) = 0;
     };
 
+typedef std::shared_ptr<Gamescoin_manager> Gamescoin_manager_ptr;
 
 } // namespace gb

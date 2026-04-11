@@ -43,5 +43,5 @@ namespace gb {
     };
 
     extern "C" Module_ptr create();
-    ;
+
 } // namespace gb
