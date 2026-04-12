@@ -12,30 +12,7 @@ namespace gb {
             throw std::runtime_error("Discord_command_handler can not apply bulk as it set to true");
         }
         _discord_bot->get_bot()->log(dpp::ll_info, "Bulk commands create is running");
-        std::vector<dpp::slashcommand> slash_cmds;
-        std::ranges::transform(_command_register_queue, std::back_inserter(slash_cmds),
-                               [this](const std::string &c) { return _commands.at(c)->get_command(); });
-
-        _discord_bot->get_bot()->global_bulk_command_create(
-            slash_cmds, [this,slash_cmds](const dpp::confirmation_callback_t &event) {
-                std::unique_lock<std::shared_mutex> lock(_mutex);
-                if (event.is_error()) {
-                    _discord_bot->get_bot()->log(dpp::ll_error, "bulk command create failed, "+ std::to_string(slash_cmds.size()));
-                    return;
-                }
-                for (auto &[k, v]: event.get<dpp::slashcommand_map>()) {
-                    _commands.at(v.name)->get_command().id = k;
-                }
-            });
-
-        std::string registered_commands = "Registered commands:";
-        size_t cnt = 0;
-        for (auto &i: slash_cmds) {
-            cnt++;
-            registered_commands += std::format("\n {}) {}", cnt, i.name);
-        }
-        _discord_bot->get_bot()->log(dpp::ll_info, registered_commands);
-        _command_register_queue.clear();
+        register_commands();
     }
 
     void Discord_command_handler_impl::do_command_remove(const std::string &name) {
@@ -191,9 +168,10 @@ namespace gb {
         std::unique_lock<std::shared_mutex> lock(_mutex);
         if (!value && _bulk != value) {
             _bulk = value;
+            lock.unlock();
             bulk_actions();
         }
-        _bulk = value;
+
     }
 
     bool Discord_command_handler_impl::is_bulk() {
@@ -241,15 +219,25 @@ namespace gb {
                                [](const Discord_command_ptr &command) { return command->get_command(); });
 
         _discord_bot->get_bot()->global_bulk_command_create(
-            slash_cmds, [this,slash_cmds](const dpp::confirmation_callback_t &event) {
+            slash_cmds, [this, slash_cmds](const dpp::confirmation_callback_t &event) {
                 std::unique_lock<std::shared_mutex> lock(_mutex);
                 if (event.is_error()) {
-                    _discord_bot->get_bot()->log(dpp::ll_error, "bulk command create failed, "+ std::to_string(slash_cmds.size()));
+                    _discord_bot->get_bot()->log(dpp::ll_error,
+                                                 "bulk command create failed, " + std::to_string(slash_cmds.size())+"\nerror: "+ event.get_error().human_readable);
                     return;
                 }
                 for (auto &[k, v]: event.get<dpp::slashcommand_map>()) {
                     _commands.at(v.name)->get_command().id = k;
                 }
+
+                std::string registered_commands = "Registered commands:";
+                size_t cnt = 0;
+                for (auto &i: slash_cmds) {
+                    cnt++;
+                    registered_commands += std::format("\n {}) {}", cnt, i.name);
+                }
+                _discord_bot->get_bot()->log(dpp::ll_info, registered_commands);
+                _command_register_queue.clear();
             });
     }
 

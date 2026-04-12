@@ -99,6 +99,16 @@ namespace gb {
             60 * 60 * 24); // once per day
 
         _bot->start(dpp::st_return);
+
+        std::promise<void> ready_promise;
+        std::future<void> ready_future = ready_promise.get_future();
+        _bot->on_ready([&](const dpp::ready_t& event) {
+            if (dpp::run_once<struct bot_ready_signal>()) {
+                _bot->log(dpp::ll_info, "Bot is READY, unblocking main thread");
+                ready_promise.set_value();
+            }
+        });
+        ready_future.wait();
     }
 
     void Discord_bot_impl::stop() {
