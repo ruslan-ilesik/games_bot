@@ -65,9 +65,14 @@ namespace gb {
                 next_player();
             }
 
-            embed.set_description(std::format("Player {} won the game!\n{} will be luckier next time.",
-                                              dpp::utility::user_mention(get_current_player()),
-                                              dpp::utility::user_mention(next_player())));
+            auto current = get_current_player();
+            auto next = next_player();
+            
+            embed.set_description(std::format(
+                "Player {} won the game!\n{} will be luckier next time.",
+                dpp::utility::user_mention(current),
+                dpp::utility::user_mention(next)
+            ));
             next_player();
             create_image(m, embed);
             remove_player(USER_REMOVE_REASON::WIN, get_current_player());
